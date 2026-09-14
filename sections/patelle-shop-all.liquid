@@ -1,0 +1,186 @@
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-card.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-shop-all.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'patelle-tabs.js' | asset_url }}" defer="defer"></script>
+
+<section
+  class="pt-section pt-shop-all"
+  style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="pt-wrap">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pt-h2 pt-h2--center pt-shop-all__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <patelle-tabs class="pt-shop-all__controls">
+      <div class="pt-tabs" role="tablist" aria-label="{{ section.settings.heading | escape }}">
+        {%- for block in section.blocks -%}
+          <button
+            type="button"
+            class="pt-tab{% if forloop.first %} is-active{% endif %}"
+            role="tab"
+            id="pt-tab-{{ section.id }}-{{ forloop.index }}"
+            aria-controls="pt-panel-{{ section.id }}-{{ forloop.index }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.label }}
+          </button>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.show_view_all -%}
+        <a
+          class="pt-pill pt-shop-all__view-all"
+          href="{{ section.settings.view_all_url | default: routes.all_products_collection_url }}"
+        >
+          {{ section.settings.view_all_label }}
+        </a>
+      {%- endif -%}
+    </patelle-tabs>
+
+    {%- for block in section.blocks -%}
+      {%- assign tab_collection = block.settings.collection -%}
+      <div
+        class="pt-shop-all__panel{% unless forloop.first %} is-hidden{% endunless %}"
+        id="pt-panel-{{ section.id }}-{{ forloop.index }}"
+        role="tabpanel"
+        aria-labelledby="pt-tab-{{ section.id }}-{{ forloop.index }}"
+        {% unless forloop.first %}hidden{% endunless %}
+      >
+        {%- if tab_collection.products.size > 0 -%}
+          <div class="pt-grid pt-grid--4">
+            {%- for product in tab_collection.products limit: section.settings.products_to_show -%}
+              {%- render 'patelle-card',
+                card_product: product,
+                card_style: 'overlay',
+                section_id: section.id,
+                tagline: section.settings.vendor_tagline,
+                index: forloop.index
+              -%}
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="pt-grid pt-grid--4">
+            {%- for i in (1..4) -%}
+              <div class="pt-card pt-card--overlay pt-card--empty">
+                <div class="pt-card__body">
+                  <h3 class="pt-card__title">Assign a collection</h3>
+                  <p class="pt-card__vendor">
+                    Pick one for the “{{ block.settings.label }}” tab in the theme editor.
+                  </p>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Shop All",
+  "tag": "section",
+  "class": "section-patelle-shop-all",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop All"
+    },
+    {
+      "type": "text",
+      "id": "vendor_tagline",
+      "label": "Vendor tagline",
+      "default": "(Luxury. No Markup.)"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Products per tab",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "View all"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show View All button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "Button label",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab label",
+          "default": "Woman"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Shop All",
+      "blocks": [
+        { "type": "tab", "settings": { "label": "Woman" } },
+        { "type": "tab", "settings": { "label": "Man" } },
+        { "type": "tab", "settings": { "label": "Unisex" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

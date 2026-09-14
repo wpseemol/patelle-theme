@@ -1,0 +1,30 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo": "shopify://shop_images/6995b17916b6179352b11d383f1dee73fc713908_aaf7260c-276c-4c22-9787-d265dd522072.png",
+        "logo_width": 250,
+        "logo_text": "PATÉLLE",
+        "menu": "main-menu",
+        "show_search": true,
+        "show_cart": true,
+        "show_account": true
+      }
+    }
+  },
+  "order": [
+    "header"
+  ]
+}

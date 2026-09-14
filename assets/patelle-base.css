@@ -1,0 +1,145 @@
+/* ==========================================================================
+   PATÉLLE — shared tokens
+   Values lifted from the Figma layer export (Landing_Page.css)
+   ========================================================================== */
+
+:root {
+  /* Ink */
+  --pt-ink: #212121;
+  --pt-ink-deep: #0a0a0a;
+  --pt-muted: #4c4c4c;
+  --pt-muted-2: #707070;
+
+  /* Surfaces */
+  --pt-white: #ffffff;
+  --pt-cream: #faf6f0;
+  --pt-sand: #f5ebde;
+  --pt-sand-2: #f4ecdd;
+  --pt-tab: #efe6d3;
+  --pt-gold: #ebd4a9;
+  --pt-star: #f3c612;
+
+  /* Radii */
+  --pt-r-card: 16px;
+  --pt-r-lg: 24px;
+  --pt-r-pill: 100px;
+
+  /* Grid — design canvas is 1440 with 11px gutters and 6px column gaps */
+  --pt-max: 1418px;
+  --pt-gutter: 11px;
+  --pt-gap: 6px;
+
+  --pt-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+/* Layout ----------------------------------------------------------------- */
+
+.pt-section {
+  font-family: var(--pt-font);
+  color: var(--pt-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pt-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--pt-max) + var(--pt-gutter) * 2);
+  margin: 0 auto;
+  padding: 0 var(--pt-gutter);
+}
+
+/* Type ------------------------------------------------------------------- */
+
+.pt-h2 {
+  margin: 0;
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: 44px;
+  line-height: 53px;
+  letter-spacing: -0.01em;
+  color: var(--pt-ink);
+}
+
+.pt-h2--center {
+  text-align: center;
+}
+
+/* Pill buttons ----------------------------------------------------------- */
+
+.pt-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  padding: 14px 28px;
+  border: 1px solid var(--pt-ink);
+  border-radius: var(--pt-r-pill);
+  background: transparent;
+  font-family: var(--pt-font);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: var(--pt-ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.pt-pill:hover,
+.pt-pill:focus-visible {
+  background: var(--pt-ink);
+  color: var(--pt-white);
+}
+
+.pt-pill--solid {
+  border-color: var(--pt-ink-deep);
+  background: var(--pt-ink-deep);
+  color: var(--pt-white);
+}
+
+.pt-pill--solid:hover,
+.pt-pill--solid:focus-visible {
+  background: #2e2e2e;
+  color: var(--pt-white);
+}
+
+/* Focus + motion floor --------------------------------------------------- */
+
+.pt-section a:focus-visible,
+.pt-section button:focus-visible,
+.pt-section input:focus-visible {
+  outline: 2px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-section *,
+  .pt-section *::before,
+  .pt-section *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive scale ------------------------------------------------------- */
+
+@media screen and (max-width: 989px) {
+  .pt-h2 {
+    font-size: 34px;
+    line-height: 41px;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  :root {
+    --pt-gutter: 16px;
+    --pt-gap: 10px;
+  }
+
+  .pt-h2 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+}

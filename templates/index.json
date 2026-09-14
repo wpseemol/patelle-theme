@@ -1,0 +1,124 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_banner": {
+      "type": "hero-banner",
+      "settings": {}
+    },
+    "shop_all": {
+      "type": "patelle-shop-all",
+      "blocks": {
+        "tab_woman": {
+          "type": "tab",
+          "settings": {
+            "label": "Woman",
+            "collection": ""
+          }
+        },
+        "tab_man": {
+          "type": "tab",
+          "settings": {
+            "label": "Man",
+            "collection": ""
+          }
+        },
+        "tab_unisex": {
+          "type": "tab",
+          "settings": {
+            "label": "Unisex",
+            "collection": ""
+          }
+        }
+      },
+      "block_order": ["tab_woman", "tab_man", "tab_unisex"],
+      "settings": {
+        "heading": "Shop All",
+        "vendor_tagline": "(Luxury. No Markup.)",
+        "products_to_show": 4,
+        "show_view_all": true,
+        "view_all_label": "View All",
+        "padding_top": 48,
+        "padding_bottom": 40
+      }
+    },
+    "dossier_collage": {
+      "type": "patelle-collage",
+      "blocks": {
+        "impressions": {
+          "type": "card",
+          "settings": {
+            "background": "#F4ECDD",
+            "heading": "Dossier Impressions",
+            "text": "Designer-inspired, premium-quality favorites.",
+            "logo_width": 210
+          }
+        },
+        "originals": {
+          "type": "card",
+          "settings": {
+            "background": "#D6E4C2",
+            "heading": "Dossier Originals",
+            "text": "Exclusive fragrances crafted in France.",
+            "logo_width": 210
+          }
+        }
+      },
+      "block_order": ["impressions", "originals"],
+      "settings": {
+        "padding_top": 8,
+        "padding_bottom": 48
+      }
+    },
+    "more_to_love": {
+      "type": "patelle-more-to-love",
+      "settings": {
+        "heading": "More to Love",
+        "collection": "",
+        "products_to_show": 3,
+        "vendor_tagline": "(Luxury. No Markup.)",
+        "show_rating": true,
+        "show_view_all": true,
+        "view_all_label": "View all",
+        "padding_top": 40,
+        "padding_bottom": 48
+      }
+    },
+    "news_strip": {
+      "type": "patelle-news-strip",
+      "settings": {
+        "heading": "Chill Out, Shop On National Ice Cream Day",
+        "subtitle": "Nolita Boutique ONLY",
+        "button_label": "Learn more",
+        "padding_top": 24,
+        "padding_bottom": 40
+      }
+    },
+    "brand_banner": {
+      "type": "patelle-brand-banner",
+      "settings": {
+        "background": "#7FA0C4",
+        "heading": "The perfume house for the next generation®",
+        "text": "Premium-quality French fragrances. No excessive markups. Crafted with heart, not ego.",
+        "link_label": "About us",
+        "padding_top": 24,
+        "padding_bottom": 72
+      }
+    }
+  },
+  "order": [
+    "hero_banner",
+    "shop_all",
+    "dossier_collage",
+    "more_to_love",
+    "news_strip",
+    "brand_banner"
+  ]
+}

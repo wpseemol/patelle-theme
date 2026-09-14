@@ -1,0 +1,117 @@
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-brand-banner.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="pt-section pt-brand"
+  style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="pt-wrap">
+    <div class="pt-brand__banner" style="--pt-brand-bg:{{ section.settings.background }};">
+      {%- if section.settings.image != blank -%}
+        <img
+          class="pt-brand__bg"
+          src="{{ section.settings.image | image_url: width: 2880 }}"
+          srcset="
+            {{ section.settings.image | image_url: width: 1440 }} 1440w,
+            {{ section.settings.image | image_url: width: 2160 }} 2160w,
+            {{ section.settings.image | image_url: width: 2880 }} 2880w
+          "
+          sizes="100vw"
+          alt="{{ section.settings.image.alt | escape }}"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+        >
+      {%- endif -%}
+
+      <div class="pt-brand__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="pt-brand__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <p class="pt-brand__text">{{ section.settings.text }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.link_label != blank -%}
+          <a class="pt-brand__link" href="{{ section.settings.link | default: '#' }}">
+            {{ section.settings.link_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Brand banner",
+  "tag": "section",
+  "class": "section-patelle-brand",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Fallback background",
+      "default": "#7FA0C4"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The perfume house for the next generation®"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Premium-quality French fragrances. No excessive markups. Crafted with heart, not ego."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "About us"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Brand banner"
+    }
+  ]
+}
+{% endschema %}

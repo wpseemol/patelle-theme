@@ -1,0 +1,50 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "patelle_footer": {
+      "type": "patelle-footer",
+      "blocks": {
+        "quick_links": {
+          "type": "menu",
+          "settings": {
+            "heading": "Quick links",
+            "menu": "footer"
+          }
+        },
+        "support": {
+          "type": "menu",
+          "settings": {
+            "heading": "Support",
+            "menu": "footer"
+          }
+        }
+      },
+      "block_order": ["quick_links", "support"],
+      "settings": {
+        "background": "#FAF6F0",
+        "brand_name": "PATELLE",
+        "brand_text": "Luxury fragrances crafted to elevate your presence and leave a lasting impression.",
+        "logo_width": 180,
+        "newsletter_enable": true,
+        "newsletter_heading": "Join the PATELLE club",
+        "newsletter_text": "Sign up for exclusive offers, new arrivals and scent inspiration.",
+        "newsletter_placeholder": "Enter your email address",
+        "rating_text": "4.9/5 (10k+ 5 Star Reviews)",
+        "watermark_text": "PATELLE"
+      }
+    }
+  },
+  "order": [
+    "patelle_footer"
+  ]
+}

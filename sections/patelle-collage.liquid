@@ -1,0 +1,168 @@
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-collage.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="pt-section pt-collage"
+  style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="pt-wrap">
+    <div class="pt-collage__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign has_link = false
+          if block.settings.link != blank
+            assign has_link = true
+          endif
+        -%}
+        <{% if has_link %}a href="{{ block.settings.link }}"{% else %}div{% endif %}
+          class="pt-collage__card"
+          style="--pt-collage-bg:{{ block.settings.background }};"
+          {{ block.shopify_attributes }}
+        >
+          {%- if block.settings.image != blank -%}
+            <img
+              class="pt-collage__bg"
+              src="{{ block.settings.image | image_url: width: 1460 }}"
+              srcset="
+                {{ block.settings.image | image_url: width: 730 }} 730w,
+                {{ block.settings.image | image_url: width: 1460 }} 1460w
+              "
+              sizes="(min-width: 990px) 50vw, 100vw"
+              alt="{{ block.settings.image.alt | escape }}"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+              loading="lazy"
+            >
+          {%- endif -%}
+
+          <div class="pt-collage__content">
+            {%- if block.settings.logo != blank -%}
+              <img
+                class="pt-collage__logo"
+                src="{{ block.settings.logo | image_url: width: 420 }}"
+                alt=""
+                width="{{ block.settings.logo.width }}"
+                height="{{ block.settings.logo.height }}"
+                loading="lazy"
+                style="max-width:{{ block.settings.logo_width }}px;"
+              >
+            {%- endif -%}
+
+            {%- if block.settings.heading != blank -%}
+              <h3 class="pt-collage__heading">{{ block.settings.heading }}</h3>
+            {%- endif -%}
+
+            {%- if block.settings.text != blank -%}
+              <p class="pt-collage__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </div>
+        </{% if has_link %}a{% else %}div{% endif %}>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Dossier collage",
+  "tag": "section",
+  "class": "section-patelle-collage",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "Fallback background",
+          "default": "#F4ECDD"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 80,
+          "max": 320,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 210
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Dossier Impressions"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Designer-inspired, premium-quality favorites."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Dossier collage",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Dossier Impressions",
+            "text": "Designer-inspired, premium-quality favorites.",
+            "background": "#F4ECDD"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "heading": "Dossier Originals",
+            "text": "Exclusive fragrances crafted in France.",
+            "background": "#D6E4C2"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,111 @@
+{% comment %}
+  PATÉLLE product card
+
+  Accepts:
+  - card_product   {Object}  product
+  - card_style     {String}  'overlay' (Shop All) or 'stacked' (More to Love)
+  - section_id     {String}
+  - tagline        {String}  vendor parenthetical, e.g. "(Luxury. No Markup.)"
+  - show_rating    {Boolean}
+  - index          {Number}  loop index, used to build unique form ids
+{% endcomment %}
+
+{%- liquid
+  assign style = card_style | default: 'overlay'
+  assign variant = card_product.selected_or_first_available_variant
+  assign form_id = 'pt-add-' | append: section_id | append: '-' | append: card_product.id | append: '-' | append: index
+  assign rating = card_product.metafields.reviews.rating.value
+  assign rating_count = card_product.metafields.reviews.rating_count
+-%}
+
+<div class="pt-card pt-card--{{ style }}">
+  <a
+    class="pt-card__media"
+    href="{{ card_product.url }}"
+    aria-label="{{ card_product.title | escape }}"
+    tabindex="-1"
+  >
+    {%- if card_product.featured_media -%}
+      <img
+        src="{{ card_product.featured_media | image_url: width: 720 }}"
+        srcset="
+          {{ card_product.featured_media | image_url: width: 360 }} 360w,
+          {{ card_product.featured_media | image_url: width: 720 }} 720w,
+          {{ card_product.featured_media | image_url: width: 1080 }} 1080w
+        "
+        sizes="(min-width: 990px) 350px, (min-width: 750px) 45vw, 46vw"
+        alt="{{ card_product.featured_media.alt | escape }}"
+        width="{{ card_product.featured_media.width }}"
+        height="{{ card_product.featured_media.height }}"
+        loading="lazy"
+      >
+    {%- else -%}
+      <div class="pt-card__placeholder">
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'pt-card__placeholder-svg' }}
+      </div>
+    {%- endif -%}
+  </a>
+
+  <div class="pt-card__body">
+    <h3 class="pt-card__title">
+      <a href="{{ card_product.url }}">{{ card_product.title }}</a>
+    </h3>
+
+    {%- if style == 'stacked' and show_rating -%}
+      <div class="pt-card__rating">
+        <span class="pt-stars" role="img" aria-label="
+          {%- if rating -%}
+            {{ rating }} out of 5 stars
+          {%- else -%}
+            5 out of 5 stars
+          {%- endif -%}
+        ">
+          {%- for i in (1..5) -%}
+            <svg class="pt-star" viewBox="0 0 20 19" aria-hidden="true" focusable="false">
+              <path d="M10 0l2.7 6.2 6.7.6-5.1 4.4 1.5 6.6L10 14.3 4.2 17.8l1.5-6.6L.6 6.8l6.7-.6L10 0z" fill="currentColor"/>
+            </svg>
+          {%- endfor -%}
+        </span>
+        {%- if rating_count > 0 -%}
+          <span class="pt-card__rating-count">{{ rating_count }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <p class="pt-card__vendor">
+      {{ card_product.vendor | default: 'PATÉLLE' }}
+      {%- if tagline != blank %} <strong>{{ tagline }}</strong>{% endif -%}
+    </p>
+
+    {%- if card_product.available -%}
+      <product-form data-section-id="{{ section_id }}">
+        {%- form 'product',
+          card_product,
+          id: form_id,
+          class: 'pt-card__form',
+          novalidate: 'novalidate',
+          data-type: 'add-to-cart-form'
+        -%}
+          <input type="hidden" name="id" value="{{ variant.id }}" class="product-variant-id">
+          <button
+            id="{{ form_id }}-submit"
+            type="submit"
+            name="add"
+            class="pt-card__atc"
+            aria-live="polite"
+            data-sold-out-message="true"
+          >
+            <span class="pt-card__atc-label">{{ 'products.product.add_to_cart' | t }}</span>
+            <span class="pt-card__atc-price">{{ variant.price | money }}</span>
+            <span class="sold-out-message hidden">{{ 'products.product.sold_out' | t }}</span>
+            {%- render 'loading-spinner' -%}
+          </button>
+        {%- endform -%}
+      </product-form>
+    {%- else -%}
+      <button class="pt-card__atc pt-card__atc--disabled" type="button" disabled>
+        <span class="pt-card__atc-label">{{ 'products.product.sold_out' | t }}</span>
+      </button>
+    {%- endif -%}
+  </div>
+</div>

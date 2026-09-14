@@ -1,0 +1,143 @@
+/* ==========================================================================
+   PATÉLLE — Shop All
+   ========================================================================== */
+
+.pt-shop-all {
+  background: var(--pt-white);
+}
+
+.pt-shop-all__heading {
+  margin-bottom: 28px;
+}
+
+.pt-shop-all__controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+/* Tabs -------------------------------------------------------------------- */
+
+.pt-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pt-tab {
+  padding: 12px 28px;
+  border: 0;
+  border-radius: var(--pt-r-pill);
+  background: transparent;
+  font-family: var(--pt-font);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 27px;
+  color: var(--pt-ink);
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.pt-tab:hover {
+  background: rgba(239, 230, 211, 0.55);
+}
+
+.pt-tab.is-active {
+  background: var(--pt-tab);
+}
+
+/* View all sits flush right against the grid edge ------------------------- */
+
+.pt-shop-all__view-all {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 12px 26px;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+/* Grid -------------------------------------------------------------------- */
+
+.pt-grid {
+  display: grid;
+  gap: var(--pt-gap);
+}
+
+.pt-grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pt-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pt-shop-all__panel.is-hidden {
+  display: none;
+}
+
+/* Empty state ------------------------------------------------------------- */
+
+.pt-card--empty {
+  background: var(--pt-sand-2);
+}
+
+.pt-card--empty .pt-card__body {
+  background: none;
+  justify-content: flex-end;
+}
+
+.pt-card--empty .pt-card__title,
+.pt-card--empty .pt-card__vendor {
+  color: var(--pt-muted);
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media screen and (max-width: 1100px) {
+  .pt-shop-all__controls {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pt-shop-all__view-all {
+    position: static;
+    transform: none;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .pt-tab {
+    padding: 10px 20px;
+    font-size: 17px;
+    line-height: 21px;
+  }
+
+  .pt-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .pt-tabs {
+    gap: 4px;
+  }
+
+  .pt-tab {
+    padding: 9px 16px;
+    font-size: 15px;
+  }
+
+  .pt-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .pt-grid--3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

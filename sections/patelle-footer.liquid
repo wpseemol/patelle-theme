@@ -1,0 +1,294 @@
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-footer.css' | asset_url | stylesheet_tag }}
+
+<footer class="pt-section pt-footer" style="--pt-footer-bg:{{ section.settings.background }};">
+  <div class="pt-wrap pt-footer__inner">
+    <div class="pt-footer__cols">
+      {%- comment -%} Brand {%- endcomment -%}
+      <div class="pt-footer__brand">
+        {%- if section.settings.logo != blank -%}
+          <img
+            class="pt-footer__logo"
+            src="{{ section.settings.logo | image_url: width: 600 }}"
+            alt="{{ shop.name | escape }}"
+            width="{{ section.settings.logo.width }}"
+            height="{{ section.settings.logo.height }}"
+            loading="lazy"
+            style="max-width:{{ section.settings.logo_width }}px;"
+          >
+        {%- else -%}
+          <p class="pt-footer__wordmark">{{ section.settings.brand_name | default: shop.name }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.brand_text != blank -%}
+          <p class="pt-footer__blurb">{{ section.settings.brand_text }}</p>
+        {%- endif -%}
+
+        <ul class="pt-footer__social" role="list">
+          {%- if settings.social_tiktok_link != blank -%}
+            <li>
+              <a href="{{ settings.social_tiktok_link }}" aria-label="TikTok">
+                {{- 'icon-tiktok.svg' | inline_asset_content -}}
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if section.settings.whatsapp_link != blank -%}
+            <li>
+              <a href="{{ section.settings.whatsapp_link }}" aria-label="WhatsApp">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="currentColor" d="M12.04 2c-5.5 0-9.96 4.46-9.96 9.96 0 1.76.46 3.48 1.34 5L2 22l5.19-1.36a9.9 9.9 0 0 0 4.85 1.24h.01c5.5 0 9.96-4.46 9.96-9.96S17.54 2 12.04 2Zm0 18.16h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.08.81.82-3-.2-.31a8.19 8.19 0 0 1-1.26-4.37c0-4.55 3.7-8.25 8.26-8.25a8.25 8.25 0 0 1 0 16.45Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.79.97-.14.16-.29.19-.54.06a6.7 6.7 0 0 1-3.35-2.93c-.25-.43.25-.4.72-1.33.08-.16.04-.3-.02-.43-.06-.12-.56-1.35-.77-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.54c.13.17 1.74 2.65 4.21 3.72 1.57.67 2.18.73 2.96.62.48-.07 1.47-.6 1.67-1.19.21-.58.21-1.08.15-1.19-.06-.11-.23-.18-.48-.3Z"/>
+                </svg>
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if settings.social_instagram_link != blank -%}
+            <li>
+              <a href="{{ settings.social_instagram_link }}" aria-label="Instagram">
+                {{- 'icon-instagram.svg' | inline_asset_content -}}
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if settings.social_twitter_link != blank -%}
+            <li>
+              <a href="{{ settings.social_twitter_link }}" aria-label="X">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="currentColor" d="M17.53 3h3.06l-6.69 7.64L21.75 21h-6.16l-4.83-6.3L5.24 21H2.18l7.15-8.17L2.25 3h6.31l4.37 5.78L17.53 3Zm-1.07 16.17h1.7L7.62 4.74H5.8l10.66 14.43Z"/>
+                </svg>
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if settings.social_facebook_link != blank -%}
+            <li>
+              <a href="{{ settings.social_facebook_link }}" aria-label="Facebook">
+                {{- 'icon-facebook.svg' | inline_asset_content -}}
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if settings.social_youtube_link != blank -%}
+            <li>
+              <a href="{{ settings.social_youtube_link }}" aria-label="YouTube">
+                {{- 'icon-youtube.svg' | inline_asset_content -}}
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      {%- comment -%} Menu columns {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'menu' -%}
+          <nav class="pt-footer__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h2 class="pt-footer__col-title">{{ block.settings.heading }}</h2>
+            {%- endif -%}
+            {%- if block.settings.menu != blank -%}
+              <ul class="pt-footer__links" role="list">
+                {%- for link in linklists[block.settings.menu].links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%} Newsletter {%- endcomment -%}
+      {%- if section.settings.newsletter_enable -%}
+        <div class="pt-footer__club">
+          {%- if section.settings.newsletter_heading != blank -%}
+            <h2 class="pt-footer__col-title">{{ section.settings.newsletter_heading }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.newsletter_text != blank -%}
+            <p class="pt-footer__blurb">{{ section.settings.newsletter_text }}</p>
+          {%- endif -%}
+
+          {%- form 'customer', id: 'PatelleFooterNewsletter', class: 'pt-footer__form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="pt-field">
+              <label class="visually-hidden" for="PatelleNewsletterEmail">
+                {{ 'newsletter.label' | t }}
+              </label>
+              <input
+                id="PatelleNewsletterEmail"
+                type="email"
+                name="contact[email]"
+                value="{{ form.email }}"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                required
+                placeholder="{{ section.settings.newsletter_placeholder | escape }}"
+              >
+              <button type="submit" name="commit" aria-label="{{ 'newsletter.button_label' | t }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12h15m-6-6 6 6-6 6"/>
+                </svg>
+              </button>
+            </div>
+
+            {%- if form.posted_successfully? -%}
+              <p class="pt-footer__note" role="status">{{ 'newsletter.success' | t }}</p>
+            {%- elsif form.errors -%}
+              <p class="pt-footer__note pt-footer__note--error" role="alert">
+                {{ form.errors.translated_fields.email }} {{ form.errors.messages.email }}
+              </p>
+            {%- endif -%}
+          {%- endform -%}
+
+          {%- if section.settings.rating_text != blank -%}
+            <p class="pt-footer__rating">
+              <span class="pt-stars pt-stars--gold" role="img" aria-hidden="true">
+                {%- for i in (1..5) -%}
+                  <svg class="pt-star" viewBox="0 0 20 19" focusable="false">
+                    <path d="M10 0l2.7 6.2 6.7.6-5.1 4.4 1.5 6.6L10 14.3 4.2 17.8l1.5-6.6L.6 6.8l6.7-.6L10 0z" fill="currentColor"/>
+                  </svg>
+                {%- endfor -%}
+              </span>
+              <span>{{ section.settings.rating_text }}</span>
+            </p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.watermark_text != blank -%}
+    <div class="pt-footer__watermark" aria-hidden="true">
+      <span>{{ section.settings.watermark_text }}</span>
+    </div>
+  {%- endif -%}
+</footer>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Footer",
+  "tag": "footer",
+  "class": "section-patelle-footer",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#FAF6F0"
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Leave empty to use the text wordmark below."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 80,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 180
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Wordmark",
+      "default": "PATELLE"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "label": "Brand text",
+      "default": "Luxury fragrances crafted to elevate your presence and leave a lasting impression."
+    },
+    {
+      "type": "url",
+      "id": "whatsapp_link",
+      "label": "WhatsApp link",
+      "info": "Other social links come from Theme settings → Social media."
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "newsletter_enable",
+      "label": "Show newsletter signup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Heading",
+      "default": "Join the PATELLE club"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_text",
+      "label": "Text",
+      "default": "Sign up for exclusive offers, new arrivals and scent inspiration."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Field placeholder",
+      "default": "Enter your email address"
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Rating text",
+      "default": "4.9/5 (10k+ 5 Star Reviews)"
+    },
+    {
+      "type": "header",
+      "content": "Watermark"
+    },
+    {
+      "type": "text",
+      "id": "watermark_text",
+      "label": "Watermark wordmark",
+      "default": "PATELLE"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Quick links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Footer",
+      "blocks": [
+        { "type": "menu", "settings": { "heading": "Quick links" } },
+        { "type": "menu", "settings": { "heading": "Support" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

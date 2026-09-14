@@ -1,0 +1,245 @@
+/* ==========================================================================
+   PATÉLLE product card
+   Design: 350 × 563 tile, 16px radius, sand base, scrim-mounted copy
+   ========================================================================== */
+
+.pt-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--pt-r-card);
+  background: var(--pt-sand);
+  font-family: var(--pt-font);
+}
+
+.pt-card__media {
+  display: block;
+  overflow: hidden;
+  background: var(--pt-sand);
+}
+
+.pt-card__media img,
+.pt-card__placeholder-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pt-card__placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--pt-sand-2);
+}
+
+.pt-card__title {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pt-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pt-card__vendor {
+  margin: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.pt-card__vendor strong {
+  font-weight: 600;
+}
+
+/* Add to cart ------------------------------------------------------------ */
+
+.pt-card__form {
+  margin: 0;
+}
+
+.pt-card__atc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 15px 20px;
+  border: 1px solid var(--pt-ink);
+  border-radius: var(--pt-r-pill);
+  background: var(--pt-white);
+  font-family: var(--pt-font);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--pt-ink);
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.pt-card__atc:hover,
+.pt-card__atc:focus-visible {
+  background: var(--pt-ink-deep);
+  color: var(--pt-white);
+}
+
+.pt-card__atc--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pt-card__atc .loading__spinner {
+  width: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Overlay variant — Shop All grid
+   Copy sits on a scrim over the bottom of the image
+   -------------------------------------------------------------------------- */
+
+.pt-card--overlay {
+  aspect-ratio: 350 / 563;
+}
+
+.pt-card--overlay .pt-card__media {
+  position: absolute;
+  inset: 0;
+}
+
+.pt-card--overlay .pt-card__body {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 60px 17px 17px;
+  background: linear-gradient(
+    180deg,
+    rgba(24, 20, 16, 0) 0%,
+    rgba(24, 20, 16, 0.45) 45%,
+    rgba(24, 20, 16, 0.72) 100%
+  );
+}
+
+.pt-card--overlay .pt-card__title {
+  font-size: 24px;
+  line-height: 29px;
+  color: var(--pt-white);
+}
+
+.pt-card--overlay .pt-card__vendor {
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.pt-card--overlay .pt-card__atc {
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.pt-card--overlay .pt-card__atc:hover,
+.pt-card--overlay .pt-card__atc:focus-visible {
+  background: var(--pt-ink-deep);
+  color: var(--pt-white);
+}
+
+/* --------------------------------------------------------------------------
+   Stacked variant — More to Love
+   Image on top, cream info block beneath
+   -------------------------------------------------------------------------- */
+
+.pt-card--stacked {
+  background: var(--pt-cream);
+}
+
+.pt-card--stacked .pt-card__media {
+  aspect-ratio: 1 / 1;
+}
+
+.pt-card--stacked .pt-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px 18px;
+}
+
+.pt-card--stacked .pt-card__title {
+  font-size: 20px;
+  line-height: 24px;
+  color: var(--pt-ink);
+}
+
+.pt-card--stacked .pt-card__vendor {
+  color: var(--pt-ink);
+}
+
+.pt-card--stacked .pt-card__atc {
+  margin-top: 6px;
+}
+
+.pt-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pt-stars {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--pt-ink);
+}
+
+.pt-star {
+  width: 15px;
+  height: 15px;
+}
+
+.pt-card__rating-count {
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--pt-muted-2);
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media screen and (max-width: 989px) {
+  .pt-card--overlay .pt-card__title {
+    font-size: 19px;
+    line-height: 23px;
+  }
+
+  .pt-card--stacked .pt-card__title {
+    font-size: 17px;
+    line-height: 21px;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .pt-card--overlay .pt-card__body {
+    padding: 44px 12px 12px;
+  }
+
+  .pt-card--overlay .pt-card__title {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .pt-card__vendor {
+    font-size: 12px;
+    line-height: 15px;
+  }
+
+  .pt-card__atc {
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+}

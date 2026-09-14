@@ -1,0 +1,33 @@
+/* ==========================================================================
+   PATÉLLE — More to Love
+   ========================================================================== */
+
+.pt-more {
+  background: var(--pt-white);
+}
+
+.pt-more__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.pt-more__head .pt-pill {
+  flex: 0 0 auto;
+  padding: 11px 24px;
+  font-size: 17px;
+  line-height: 21px;
+}
+
+@media screen and (max-width: 749px) {
+  .pt-more__head {
+    margin-bottom: 16px;
+  }
+
+  .pt-more__head .pt-pill {
+    padding: 9px 18px;
+    font-size: 14px;
+  }
+}

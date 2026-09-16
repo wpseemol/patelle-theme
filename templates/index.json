@@ -11,6 +11,46 @@
   "sections": {
     "hero_banner": {
       "type": "hero-banner",
+      "blocks": {
+        "slide_REgbaA": {
+          "type": "slide",
+          "settings": {
+            "bg_color": "#ae63ad",
+            "hero_title": "Jasmine",
+            "main_product_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "flower_top_left": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "flower_top_right": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "flower_mid_left": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "flower_bottom_right": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "featured_product": "jasmine",
+            "card_product_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "card_product_title": "Rose Oud Amber",
+            "card_product_desc": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "btn_text": "Add to Cart"
+          }
+        },
+        "slide_fQFeKe": {
+          "type": "slide",
+          "settings": {
+            "bg_color": "#78AB3B",
+            "hero_title": "Pineapple",
+            "main_product_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "flower_top_left": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "flower_top_right": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "flower_mid_left": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "flower_bottom_right": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "featured_product": "jasmine",
+            "card_product_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "card_product_title": "Rose Oud Amber",
+            "card_product_desc": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "btn_text": "Add to Cart"
+          }
+        }
+      },
+      "block_order": [
+        "slide_REgbaA",
+        "slide_fQFeKe"
+      ],
       "settings": {}
     },
     "shop_all": {
@@ -20,7 +60,7 @@
           "type": "tab",
           "settings": {
             "label": "Woman",
-            "collection": ""
+            "collection": "frontpage"
           }
         },
         "tab_man": {
@@ -38,13 +78,18 @@
           }
         }
       },
-      "block_order": ["tab_woman", "tab_man", "tab_unisex"],
+      "block_order": [
+        "tab_woman",
+        "tab_man",
+        "tab_unisex"
+      ],
       "settings": {
         "heading": "Shop All",
         "vendor_tagline": "(Luxury. No Markup.)",
         "products_to_show": 4,
         "show_view_all": true,
         "view_all_label": "View All",
+        "view_all_url": "",
         "padding_top": 48,
         "padding_bottom": 40
       }
@@ -55,23 +100,28 @@
         "impressions": {
           "type": "card",
           "settings": {
-            "background": "#F4ECDD",
+            "background": "#f4ecdd",
+            "logo_width": 210,
             "heading": "Dossier Impressions",
             "text": "Designer-inspired, premium-quality favorites.",
-            "logo_width": 210
+            "link": ""
           }
         },
         "originals": {
           "type": "card",
           "settings": {
-            "background": "#D6E4C2",
+            "background": "#d6e4c2",
+            "logo_width": 210,
             "heading": "Dossier Originals",
             "text": "Exclusive fragrances crafted in France.",
-            "logo_width": 210
+            "link": ""
           }
         }
       },
-      "block_order": ["impressions", "originals"],
+      "block_order": [
+        "impressions",
+        "originals"
+      ],
       "settings": {
         "padding_top": 8,
         "padding_bottom": 48
@@ -87,6 +137,7 @@
         "show_rating": true,
         "show_view_all": true,
         "view_all_label": "View all",
+        "view_all_url": "",
         "padding_top": 40,
         "padding_bottom": 48
       }
@@ -94,9 +145,12 @@
     "news_strip": {
       "type": "patelle-news-strip",
       "settings": {
+        "blog": "",
         "heading": "Chill Out, Shop On National Ice Cream Day",
         "subtitle": "Nolita Boutique ONLY",
+        "date": "",
         "button_label": "Learn more",
+        "link": "",
         "padding_top": 24,
         "padding_bottom": 40
       }
@@ -104,10 +158,11 @@
     "brand_banner": {
       "type": "patelle-brand-banner",
       "settings": {
-        "background": "#7FA0C4",
+        "background": "#7fa0c4",
         "heading": "The perfume house for the next generation®",
         "text": "Premium-quality French fragrances. No excessive markups. Crafted with heart, not ego.",
         "link_label": "About us",
+        "link": "",
         "padding_top": 24,
         "padding_bottom": 72
       }

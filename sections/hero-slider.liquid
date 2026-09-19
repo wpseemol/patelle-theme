@@ -1,0 +1,1103 @@
+{%- comment -%}
+  PATÉLLE — Hero slider (GSAP)
+  Five layers per slide, each animated on its own track of one master timeline:
+    1. Background     .pt-hs__bg        crossfade + scale 1.05 → 1
+    2. Display word   .pt-hs__word      slides in from the travel edge, per-letter stagger
+    3. Floating layer .pt-hs__splash / .pt-hs__float   3D-ish drift, scale + rotation entrance
+    4. Hero bottle    .pt-hs__bottle    rotationY -90 → 0, scale 0.85 → 1, settles onto a shadow
+    5. Product card   .pt-hs__card      staggered rise; sizes, price and AJAX add to cart
+  Behaviour lives in assets/patelle-hero-slider.js, styles in assets/patelle-hero-slider.css.
+{%- endcomment -%}
+
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-hero-slider.css' | asset_url | stylesheet_tag }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer="defer"></script>
+<script src="{{ 'patelle-hero-slider.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign slide_count = section.blocks.size
+
+  assign font_query = blank
+  assign display_glyph = '0.56'
+  assign display_tracking = '-0.03em'
+  assign display_variation = 'normal'
+  assign custom_font_face = blank
+  case section.settings.display_font
+    when 'sf_pro_rounded'
+      assign display_family = "ui-rounded, 'SF Pro Rounded', 'SF Pro Display', 'Nunito', system-ui, sans-serif"
+      assign font_query = 'Nunito:wght@400..900'
+      assign display_glyph = '0.58'
+      assign display_tracking = '-0.025em'
+    when 'custom'
+      assign custom_name = section.settings.custom_font_name | default: 'Patelle Display' | remove: "'" | remove: '"' | remove: ';'
+      assign display_family = "'" | append: custom_name | append: "', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif"
+      assign display_glyph = section.settings.custom_font_width | divided_by: 100.0
+      assign display_tracking = '-0.02em'
+      if section.settings.custom_font_url != blank
+        assign custom_font_face = section.settings.custom_font_url
+      endif
+    when 'bodoni_moda'
+      assign display_family = "'Bodoni Moda', 'Didot', 'Bodoni 72', serif"
+      assign font_query = 'Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900'
+      assign display_glyph = '0.57'
+      assign display_tracking = '0em'
+      assign display_variation = "'opsz' 11"
+      if section.settings.display_italic
+        assign display_glyph = '0.53'
+      endif
+    when 'playfair_display'
+      assign display_family = "'Playfair Display', Georgia, serif"
+      assign font_query = 'Playfair+Display:ital,wght@0,400..900;1,400..900'
+      assign display_glyph = '0.5'
+    when 'cormorant_garamond'
+      assign display_family = "'Cormorant Garamond', Garamond, serif"
+      assign font_query = 'Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700'
+      assign display_glyph = '0.42'
+      assign display_tracking = '-0.02em'
+    when 'italiana'
+      assign display_family = "'Italiana', 'Didot', serif"
+      assign font_query = 'Italiana'
+      assign display_glyph = '0.44'
+      assign display_tracking = '-0.01em'
+    when 'dm_serif_display'
+      assign display_family = "'DM Serif Display', Georgia, serif"
+      assign font_query = 'DM+Serif+Display:ital@0;1'
+      assign display_glyph = '0.49'
+    when 'syne'
+      assign display_family = "'Syne', var(--pt-font)"
+      assign font_query = 'Syne:wght@400..800'
+      assign display_glyph = '0.65'
+      assign display_tracking = '-0.05em'
+    when 'heading'
+      assign display_family = 'var(--font-heading-family)'
+      assign display_glyph = '0.58'
+    when 'body'
+      assign display_family = 'var(--font-body-family)'
+      assign display_glyph = '0.58'
+    else
+      assign display_family = 'var(--pt-font)'
+      assign display_tracking = '-0.05em'
+  endcase
+
+  if section.settings.display_italic
+    assign display_style = 'italic'
+  else
+    assign display_style = 'normal'
+  endif
+
+  if section.settings.full_height
+    assign desktop_height = '100svh'
+    assign mobile_height = '100svh'
+  else
+    assign desktop_height = section.settings.desktop_height | append: 'px'
+    assign mobile_height = section.settings.mobile_height | append: 'px'
+  endif
+
+  assign prev_label = 'sections.slideshow.previous_slideshow' | t
+  assign next_label = 'sections.slideshow.next_slideshow' | t
+  assign sold_out_label = 'products.product.sold_out' | t
+  assign unavailable_label = 'products.product.unavailable' | t
+-%}
+
+{%- if font_query != blank -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ font_query }}&display=swap">
+{%- endif -%}
+
+{% style %}
+  {%- if custom_font_face != blank -%}
+    @font-face {
+      font-family: '{{ custom_name }}';
+      src: url('{{ custom_font_face }}');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+
+  #PtHero-{{ section.id }} {
+    --pt-hs-h: {{ desktop_height }};
+    --pt-hs-h-mobile: {{ mobile_height }};
+    --pt-hs-display: {{ display_family }};
+    --pt-hs-display-weight: {{ section.settings.display_weight }};
+    --pt-hs-display-style: {{ display_style }};
+    --pt-hs-glyph: {{ display_glyph }};
+    --pt-hs-tracking: {{ display_tracking }};
+    --pt-hs-variation: {{ display_variation }};
+    --pt-hs-atc-fill: {{ section.settings.atc_fill_color }};
+    --pt-hs-atc-fill-ink: {{ section.settings.atc_fill_text }};
+    --pt-hs-arrow-size: {{ section.settings.arrow_size }}px;
+    --pt-hs-arrow-bg: {{ section.settings.arrow_bg }};
+    --pt-hs-arrow-icon: {{ section.settings.arrow_icon }};
+    --pt-hs-arrow-hover-bg: {{ section.settings.arrow_hover_bg }};
+    --pt-hs-arrow-hover-icon: {{ section.settings.arrow_hover_icon }};
+    --pt-hs-card-alpha: {{ section.settings.card_opacity | divided_by: 100.0 }};
+    --pt-hs-card-blur: {{ section.settings.card_blur }}px;
+    --pt-hs-accent: {{ section.settings.controls_color }};
+  }
+{% endstyle %}
+
+<pt-hero-slider
+  id="PtHero-{{ section.id }}"
+  class="pt-hs pt-section pt-hs--arrows-{{ section.settings.arrow_style }}"
+  data-section-id="{{ section.id }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-interval="{{ section.settings.autoplay_interval }}"
+  data-speed="{{ section.settings.transition_speed }}"
+  data-pause-on-hover="{{ section.settings.pause_on_hover }}"
+  data-parallax="{{ section.settings.enable_parallax }}"
+  data-magnetic="{{ section.settings.enable_magnetic }}"
+  data-magnetic-strength="{{ section.settings.magnetic_strength }}"
+  data-bottle-entrance="{{ section.settings.bottle_entrance }}"
+  data-float-entrance="{{ section.settings.float_entrance }}"
+  data-slide-count="{{ slide_count }}"
+  role="region"
+  aria-roledescription="{{ 'sections.slideshow.carousel' | t }}"
+  aria-label="{{ section.settings.accessible_label | escape }}"
+  tabindex="-1"
+>
+  <div class="pt-hs__stage" id="PtHeroStage-{{ section.id }}">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign s = block.settings
+        assign hero_product = s.product
+        assign current_variant = hero_product.selected_or_first_available_variant
+        assign is_first = forloop.first
+
+        if is_first and section.index <= 2
+          assign img_loading = 'eager'
+          assign img_priority = 'high'
+        else
+          assign img_loading = 'lazy'
+          assign img_priority = 'auto'
+        endif
+
+        assign card_title = s.card_title
+        if card_title == blank and hero_product != blank
+          assign card_title = hero_product.title
+        endif
+
+        assign card_description = s.card_description
+        if card_description == blank and hero_product != blank
+          assign card_description = hero_product.description | strip_html | truncatewords: 16
+        endif
+
+        assign card_image = s.card_image
+        if card_image == blank and hero_product != blank
+          assign card_image = hero_product.featured_image
+        endif
+
+        assign atc_label = s.button_label
+        if atc_label == blank
+          assign atc_label = 'products.product.add_to_cart' | t
+        endif
+
+        assign size_option_index = 0
+        if hero_product != blank
+          for option in hero_product.options_with_values
+            assign option_name = option.name | downcase
+            if option_name contains 'size' or option_name contains 'volume' or option_name contains 'ml'
+              assign size_option_index = forloop.index0
+              break
+            endif
+          endfor
+        endif
+
+        assign word = s.word | strip
+        assign word_chars = word.size | at_least: 3
+        assign float_scale = s.float_size | divided_by: 100.0
+      -%}
+
+      <div
+        class="pt-hs__slide{% if is_first %} is-active{% endif %}"
+        id="PtHeroSlide-{{ block.id }}"
+        data-index="{{ forloop.index0 }}"
+        data-block-id="{{ block.id }}"
+        role="group"
+        aria-roledescription="{{ 'sections.slideshow.slide' | t }}"
+        aria-label="{{ forloop.index }} / {{ slide_count }}"
+        {% unless is_first %}
+          aria-hidden="true" inert
+        {% endunless %}
+        style="
+          --pt-hs-bg-1: {{ s.bg_color_1 }};
+          --pt-hs-bg-2: {{ s.bg_color_2 }};
+          --pt-hs-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
+          --pt-hs-ui: {{ s.ui_color }};
+          --pt-hs-word-color: {{ s.word_color }};
+          --pt-hs-word-alpha: {{ s.word_opacity | divided_by: 100.0 }};
+          --pt-hs-chars: {{ word_chars }};
+          --pt-hs-bottle-w: {{ s.bottle_width }}px;
+          --pt-hs-float-scale: {{ float_scale }};
+        "
+        {{ block.shopify_attributes }}
+      >
+        {%- comment -%} Layer 1 — background {%- endcomment -%}
+        <div class="pt-hs__bg pt-hs__bg--{{ s.gradient_style }}" data-layer="bg">
+          {%- if s.bg_image != blank -%}
+            {{-
+              s.bg_image
+              | image_url: width: 2400
+              | image_tag:
+                widths: '750, 1100, 1500, 1900, 2400',
+                sizes: '100vw',
+                class: 'pt-hs__bg-img',
+                loading: img_loading,
+                fetchpriority: img_priority,
+                alt: ''
+            -}}
+          {%- endif -%}
+          {%- if s.bg_image_mobile != blank -%}
+            {{-
+              s.bg_image_mobile
+              | image_url: width: 1200
+              | image_tag:
+                widths: '600, 900, 1200',
+                sizes: '100vw',
+                class: 'pt-hs__bg-img pt-hs__bg-img--mobile',
+                loading: img_loading,
+                alt: ''
+            -}}
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Layer 2 — oversized display word {%- endcomment -%}
+        {%- if word != blank -%}
+          <div class="pt-hs__word-wrap" data-depth="-0.35" aria-hidden="true">
+            <span class="pt-hs__word pt-hs__word--{{ s.word_style }}" data-layer="word">{{- word | escape -}}</span>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Layer 3 — splash behind the bottle + floating elements {%- endcomment -%}
+        {%- if s.splash_image != blank -%}
+          <div class="pt-hs__splash" data-depth="0.25" aria-hidden="true">
+            <div class="pt-hs__splash-inner" data-layer="splash">
+              {{-
+                s.splash_image
+                | image_url: width: 1600
+                | image_tag:
+                  widths: '800, 1200, 1600',
+                  sizes: '(min-width: 750px) 60vw, 90vw',
+                  loading: img_loading,
+                  alt: ''
+              -}}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- for i in (1..4) -%}
+          {%- liquid
+            assign float_key = 'float_' | append: i
+            assign float_image = s[float_key]
+            case i
+              when 1
+                assign depth = '0.6'
+              when 2
+                assign depth = '0.8'
+              when 3
+                assign depth = '0.45'
+              else
+                assign depth = '1.3'
+            endcase
+          -%}
+          {%- if float_image != blank -%}
+            <div
+              class="pt-hs__float pt-hs__float--{{ i }}{% if i == 4 and s.float_depth_blur %} pt-hs__float--blur{% endif %}"
+              data-depth="{{ depth }}"
+              aria-hidden="true"
+            >
+              <div class="pt-hs__float-inner" data-layer="float">
+                {{-
+                  float_image
+                  | image_url: width: 480
+                  | image_tag: widths: '160, 320, 480', sizes: '200px', loading: img_loading, alt: '', class: 'pt-hs__float-img'
+                -}}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%} Layer 4 — hero bottle {%- endcomment -%}
+        <div class="pt-hs__product" data-depth="0.2">
+          {%- if s.show_shadow -%}
+            <span class="pt-hs__shadow" data-layer="shadow" aria-hidden="true"></span>
+          {%- endif -%}
+          <div class="pt-hs__bottle" data-layer="bottle">
+            {%- if s.bottle_image != blank -%}
+              {%- assign bottle_alt = s.bottle_image.alt | default: card_title | default: word -%}
+              {{-
+                s.bottle_image
+                | image_url: width: 1400
+                | image_tag:
+                  widths: '500, 800, 1100, 1400',
+                  sizes: '(min-width: 750px) 40vw, 70vw',
+                  class: 'pt-hs__bottle-img',
+                  loading: img_loading,
+                  fetchpriority: img_priority,
+                  alt: bottle_alt
+              -}}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'pt-hs__bottle-img pt-hs__placeholder' }}
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- comment -%} Layer 5 — product card {%- endcomment -%}
+        <div class="pt-hs__ui">
+          <div class="pt-hs__card" data-layer="card">
+            {%- if hero_product != blank and s.show_sizes and hero_product.has_only_default_variant == false -%}
+              <div
+                class="pt-hs__sizes"
+                role="group"
+                aria-label="{{ hero_product.options[size_option_index] | escape }}"
+                data-card-item
+              >
+                {%- for variant in hero_product.variants limit: 4 -%}
+                  {%- liquid
+                    if hero_product.options.size == 1
+                      assign size_label = variant.options[size_option_index]
+                    else
+                      assign size_label = variant.title
+                    endif
+                  -%}
+                  <button
+                    type="button"
+                    class="pt-hs__size"
+                    data-variant-id="{{ variant.id }}"
+                    aria-pressed="{% if variant.id == current_variant.id %}true{% else %}false{% endif %}"
+                    {% unless variant.available %}
+                      data-unavailable
+                    {% endunless %}
+                  >
+                    {{- size_label | escape -}}
+                    {%- unless variant.available -%}
+                      <span class="visually-hidden">, {{ sold_out_label }}</span>
+                    {%- endunless -%}
+                  </button>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+
+            {%- if card_image != blank -%}
+              <div class="pt-hs__thumb" data-card-item>
+                {{-
+                  card_image
+                  | image_url: width: 240
+                  | image_tag: widths: '120, 240', sizes: '64px', loading: 'lazy', alt: ''
+                -}}
+              </div>
+            {%- endif -%}
+
+            <div class="pt-hs__info">
+              {%- if card_title != blank -%}
+                <h2 class="pt-hs__title" data-card-item>{{ card_title | escape }}</h2>
+              {%- endif -%}
+              {%- if card_description != blank -%}
+                <p class="pt-hs__desc" data-card-item>{{ card_description | escape }}</p>
+              {%- endif -%}
+
+              {%- if hero_product != blank -%}
+                <div class="pt-hs__buy" data-card-item>
+                  {%- if s.show_price -%}
+                    <p class="pt-hs__price">
+                      <span data-price>{{ current_variant.price | money }}</span>
+                      <s data-compare-price {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
+                        {{- current_variant.compare_at_price | money -}}
+                      </s>
+                    </p>
+                  {%- endif -%}
+
+                  {%- form 'product', hero_product, class: 'pt-hs__form', data-hero-form: '', novalidate: 'novalidate' -%}
+                    <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-input>
+                    <input type="hidden" name="quantity" value="1">
+                    <button
+                      type="submit"
+                      class="pt-hs__atc pt-flair"
+                      data-atc
+                      data-flair
+                      data-label-add="{{ atc_label | escape }}"
+                      data-label-added="{{ s.added_label | escape }}"
+                      data-label-sold-out="{{ sold_out_label | escape }}"
+                      data-label-unavailable="{{ unavailable_label | escape }}"
+                      {% unless current_variant.available %}
+                        disabled
+                      {% endunless %}
+                    >
+                      <span class="button__flair" aria-hidden="true"></span>
+                      <span class="button__label" data-atc-label>
+                        {%- if current_variant.available -%}
+                          {{- atc_label | escape -}}
+                        {%- else -%}
+                          {{- sold_out_label -}}
+                        {%- endif -%}
+                      </span>
+                      <span class="pt-hs__spinner" aria-hidden="true"></span>
+                    </button>
+                  {%- endform -%}
+                </div>
+                <p class="pt-hs__error" role="alert" data-error hidden></p>
+
+                <script type="application/json" data-variants>
+                  [
+                    {%- for variant in hero_product.variants -%}
+                      {
+                        "id": {{ variant.id }},
+                        "available": {{ variant.available | json }},
+                        "price": {{ variant.price | money | json }},
+                        "compare": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %}
+                      }{% unless forloop.last %},{% endunless %}
+                    {%- endfor -%}
+                  ]
+                </script>
+              {%- elsif request.design_mode -%}
+                <p class="pt-hs__hint" data-card-item>Choose a product in this slide's settings to enable sizes, price and add to cart.</p>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="pt-hs__empty">
+        <p>Add a slide to start building the hero.</p>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <div class="pt-hs__controls">
+    {%- if section.settings.secondary_label != blank -%}
+      <a
+        class="pt-hs__explore pt-flair"
+        data-flair
+        {% if section.settings.secondary_link != blank %}
+          href="{{ section.settings.secondary_link }}"
+        {% else %}
+          role="link" aria-disabled="true"
+        {% endif %}
+      >
+        <span class="button__flair" aria-hidden="true"></span>
+        <span class="button__label">{{- section.settings.secondary_label | escape -}}</span>
+      </a>
+    {%- endif -%}
+
+    {%- if slide_count > 1 -%}
+      {%- if section.settings.show_counter -%}
+        <div class="pt-hs__progress" aria-hidden="true">
+          <span class="pt-hs__count"><span data-current>1</span> / {{ slide_count }}</span>
+          <span class="pt-hs__bar"><span class="pt-hs__bar-fill" data-bar></span></span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_arrows -%}
+        <div class="pt-hs__arrows">
+          <button
+            type="button"
+            class="pt-hs__arrow pt-flair"
+            data-flair
+            data-prev
+            aria-controls="PtHeroStage-{{ section.id }}"
+            aria-label="{{ prev_label | escape }}"
+          >
+            <span class="button__flair" aria-hidden="true"></span>
+            <span class="pt-hs__arrow-icon button__label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 17.5L9 12l5.5-5.5"/></svg>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="pt-hs__arrow pt-flair"
+            data-flair
+            data-next
+            aria-controls="PtHeroStage-{{ section.id }}"
+            aria-label="{{ next_label | escape }}"
+          >
+            <span class="button__flair" aria-hidden="true"></span>
+            <span class="pt-hs__arrow-icon button__label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9.5 17.5L15 12 9.5 6.5"/></svg>
+            </span>
+          </button>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+
+  <span class="visually-hidden" aria-live="polite" aria-atomic="true" data-live></span>
+</pt-hero-slider>
+
+{% schema %}
+{
+  "name": "Hero slider (GSAP)",
+  "class": "section section-pt-hero-slider",
+  "max_blocks": 8,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 560,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "default": 840
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 560,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 740
+    },
+    {
+      "type": "checkbox",
+      "id": "full_height",
+      "label": "Fill the screen height",
+      "info": "Overrides the heights above.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Slideshow"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "info": "Autoplay stays off for visitors who prefer reduced motion.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "label": "Time per slide",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Transition length",
+      "info": "Longer feels slower and more cinematic.",
+      "min": 0.6,
+      "max": 2.4,
+      "step": 0.1,
+      "unit": "s",
+      "default": 1.4
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause while hovering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show previous and next buttons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_counter",
+      "label": "Show slide counter and timer",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Motion"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Pointer parallax on layers",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_magnetic",
+      "label": "Magnetic navigation buttons",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "bottle_entrance",
+      "label": "Bottle entrance",
+      "info": "From the background starts the bottle behind the word and zooms it up from the bottom.",
+      "options": [
+        { "value": "depth", "label": "From the background" },
+        { "value": "rise", "label": "Rise and settle" },
+        { "value": "glide", "label": "Glide in with a tilt" },
+        { "value": "reveal", "label": "Unveil from below" }
+      ],
+      "default": "depth"
+    },
+    {
+      "type": "select",
+      "id": "float_entrance",
+      "label": "Floating elements entrance",
+      "options": [
+        { "value": "center", "label": "Zoom out from the center" },
+        { "value": "scatter", "label": "Drift in from the edges" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "magnetic_strength",
+      "label": "Magnetic pull",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "display_font",
+      "label": "Display word font",
+      "info": "Google Fonts load only for the font you pick.",
+      "options": [
+        { "value": "sf_pro_rounded", "label": "SF Pro Rounded" },
+        { "value": "custom", "label": "Custom font file" },
+        { "value": "bodoni_moda", "label": "Bodoni Moda" },
+        { "value": "playfair_display", "label": "Playfair Display" },
+        { "value": "cormorant_garamond", "label": "Cormorant Garamond" },
+        { "value": "italiana", "label": "Italiana (light)" },
+        { "value": "dm_serif_display", "label": "DM Serif Display" },
+        { "value": "syne", "label": "Syne (modern sans)" },
+        { "value": "patelle", "label": "Inter (Patélle body)" },
+        { "value": "heading", "label": "Theme heading font" },
+        { "value": "body", "label": "Theme body font" }
+      ],
+      "default": "sf_pro_rounded"
+    },
+    {
+      "type": "paragraph",
+      "content": "SF Pro Rounded shows on Apple devices. Other devices get Nunito, the closest free rounded face. To use your own licensed font file everywhere, choose Custom font file."
+    },
+    {
+      "type": "text",
+      "id": "custom_font_name",
+      "label": "Custom font name",
+      "default": "SF Pro Rounded Web"
+    },
+    {
+      "type": "text",
+      "id": "custom_font_url",
+      "label": "Custom font file URL",
+      "info": "Upload a .woff2 file in Content > Files and paste its link."
+    },
+    {
+      "type": "range",
+      "id": "custom_font_width",
+      "label": "Custom font letter width",
+      "info": "Lower it if the word runs off the edges.",
+      "min": 40,
+      "max": 70,
+      "step": 1,
+      "unit": "%",
+      "default": 58
+    },
+    {
+      "type": "checkbox",
+      "id": "display_italic",
+      "label": "Italic display word",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "display_weight",
+      "label": "Display word weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "info": "Italiana and DM Serif Display have one weight only.",
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "controls_color",
+      "label": "Explore button and timer color",
+      "default": "#f5ebde"
+    },
+    {
+      "type": "header",
+      "content": "Previous and next buttons"
+    },
+    {
+      "type": "select",
+      "id": "arrow_style",
+      "label": "Style",
+      "options": [
+        { "value": "solid", "label": "Solid circle" },
+        { "value": "outline", "label": "Outline circle" },
+        { "value": "glass", "label": "Glass circle" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "range",
+      "id": "arrow_size",
+      "label": "Size",
+      "min": 36,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "arrow_bg",
+      "label": "Button color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrow_icon",
+      "label": "Arrow color",
+      "default": "#1d1d1f"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_bg",
+      "label": "Hover fill",
+      "default": "#1d1d1f"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_icon",
+      "label": "Hover arrow color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "range",
+      "id": "card_opacity",
+      "label": "Card glass opacity",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "%",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "card_blur",
+      "label": "Card blur",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "color",
+      "id": "atc_fill_color",
+      "label": "Add to cart hover fill",
+      "default": "#1d1d1f"
+    },
+    {
+      "type": "color",
+      "id": "atc_fill_text",
+      "label": "Add to cart hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Label",
+      "info": "Leave blank to hide.",
+      "default": "Explore all fragrances"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "accessible_label",
+      "label": "Slider name for screen readers",
+      "default": "Featured fragrances"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Layer 1: Background"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image",
+          "label": "Background image",
+          "info": "Texture or gradient artwork. Colors below show when empty."
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image_mobile",
+          "label": "Mobile background image"
+        },
+        {
+          "type": "color",
+          "id": "bg_color_1",
+          "label": "Base color",
+          "default": "#8e4f8d"
+        },
+        {
+          "type": "color",
+          "id": "bg_color_2",
+          "label": "Glow color",
+          "default": "#c98bc6"
+        },
+        {
+          "type": "select",
+          "id": "gradient_style",
+          "label": "Color treatment",
+          "options": [
+            { "value": "radial", "label": "Center glow" },
+            { "value": "linear", "label": "Diagonal wash" },
+            { "value": "solid", "label": "Solid" }
+          ],
+          "default": "radial"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Darken background",
+          "min": 0,
+          "max": 60,
+          "step": 5,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "color",
+          "id": "ui_color",
+          "label": "Card text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Layer 2: Display word"
+        },
+        {
+          "type": "text",
+          "id": "word",
+          "label": "Word",
+          "info": "One short word reads best. It scales to fit the width.",
+          "default": "Jasmine"
+        },
+        {
+          "type": "select",
+          "id": "word_style",
+          "label": "Word style",
+          "options": [
+            { "value": "solid", "label": "Solid" },
+            { "value": "outline", "label": "Outline" }
+          ],
+          "default": "solid"
+        },
+        {
+          "type": "color",
+          "id": "word_color",
+          "label": "Word color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "range",
+          "id": "word_opacity",
+          "label": "Word opacity",
+          "min": 10,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 95
+        },
+        {
+          "type": "header",
+          "content": "Layer 3: Splash and floating elements"
+        },
+        {
+          "type": "image_picker",
+          "id": "splash_image",
+          "label": "Splash behind bottle",
+          "info": "Transparent PNG or WebP, such as a liquid splash."
+        },
+        {
+          "type": "image_picker",
+          "id": "float_1",
+          "label": "Floating element, top left"
+        },
+        {
+          "type": "image_picker",
+          "id": "float_2",
+          "label": "Floating element, top right"
+        },
+        {
+          "type": "image_picker",
+          "id": "float_3",
+          "label": "Floating element, lower left"
+        },
+        {
+          "type": "image_picker",
+          "id": "float_4",
+          "label": "Floating element, foreground right"
+        },
+        {
+          "type": "range",
+          "id": "float_size",
+          "label": "Floating element size",
+          "min": 60,
+          "max": 160,
+          "step": 10,
+          "unit": "%",
+          "default": 100
+        },
+        {
+          "type": "checkbox",
+          "id": "float_depth_blur",
+          "label": "Soften the foreground element",
+          "info": "A light blur that adds depth of field.",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layer 4: Hero bottle"
+        },
+        {
+          "type": "image_picker",
+          "id": "bottle_image",
+          "label": "Bottle image",
+          "info": "Transparent PNG or WebP, cropped close to the bottle."
+        },
+        {
+          "type": "range",
+          "id": "bottle_width",
+          "label": "Bottle width",
+          "min": 240,
+          "max": 640,
+          "step": 20,
+          "unit": "px",
+          "default": 440
+        },
+        {
+          "type": "checkbox",
+          "id": "show_shadow",
+          "label": "Show ground shadow",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layer 5: Product card"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_sizes",
+          "label": "Show size buttons",
+          "info": "Uses the product's Size option, or its variants.",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_price",
+          "label": "Show price",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card thumbnail",
+          "info": "Uses the product image when empty."
+        },
+        {
+          "type": "text",
+          "id": "card_title",
+          "label": "Card title",
+          "info": "Uses the product title when empty."
+        },
+        {
+          "type": "textarea",
+          "id": "card_description",
+          "label": "Card description",
+          "info": "Uses the start of the product description when empty."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Add to cart label",
+          "info": "Uses the theme's translation when empty."
+        },
+        {
+          "type": "text",
+          "id": "added_label",
+          "label": "Confirmation label",
+          "default": "Added to cart"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero slider (GSAP)",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "word": "Jasmine",
+            "bg_color_1": "#8e4f8d",
+            "bg_color_2": "#c98bc6"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "word": "Pineapple",
+            "bg_color_1": "#5d8a2c",
+            "bg_color_2": "#a9cf6a"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

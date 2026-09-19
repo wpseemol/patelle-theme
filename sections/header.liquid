@@ -1,163 +1,750 @@
-{{ 'header.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  PATÉLLE — Glass header
+  Apple-style frosted navigation: a thin glass bar (or floating capsule),
+  full-width flyout panels that blur the page behind them, a glass search
+  panel, and a full-screen mobile sheet whose two-line icon morphs into a
+  close mark. Behaviour: assets/patelle-header.js. Styles: assets/patelle-header.css.
+  Setting ids from the previous header (logo, menu, show_*) are kept.
+{%- endcomment -%}
 
-<header class="site-header-wrapper {% if template.name != 'index' %}header-inner-page{% endif %}" id="site-header">
-  <div class="header-inner">
-    <!-- Brand Logo -->
-    <div class="header-logo-col">
-      <a href="{{ routes.root_url }}" class="header-logo-link">
-        {%- if section.settings.logo != blank -%}
-          <img 
-            src="{{ section.settings.logo | image_url: width: section.settings.logo_width }}" 
-            alt="{{ section.settings.logo.alt | default: shop.name }}" 
-            width="{{ section.settings.logo_width }}"
-            height="{{ section.settings.logo_height }}"
-            style="width: {{ section.settings.logo_width }}px; height: {{ section.settings.logo_height }}px; object-fit: contain;"
-            class="logo-image" 
-            loading="eager"
-          >
-        {%- else -%}
-          <div class="logo-fallback">
-            <span class="logo-symbol">&#9776;</span>
-            <span class="logo-text">{{ section.settings.logo_text | default: shop.name }}</span>
-          </div>
-        {%- endif -%}
-      </a>
-    </div>
+{{ 'patelle-header.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'patelle-header.js' | asset_url }}" defer="defer"></script>
 
-    <!-- Dynamic Menu Navigation -->
-    <nav class="header-nav-col">
-      <div class="nav-glass-capsule">
-        <ul class="nav-list">
-          {%- assign main_menu = linklists[section.settings.menu] -%}
-          {%- if main_menu != blank and main_menu.links.size > 0 -%}
-            {%- for link in main_menu.links -%}
-              <li class="nav-item {% if link.links.size > 0 %}has-dropdown{% endif %}">
-                <a 
-                  href="{{ link.url }}" 
-                  class="nav-link {% if link.current or link.active or forloop.first and template.name == 'index' %}is-active{% endif %}"
-                >
-                  <span>{{ link.title }}</span>
-                  {%- if link.links.size > 0 -%}
-                    <svg class="chevron-down" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="1 1 5 5 9 1"></polyline>
-                    </svg>
+{%- if settings.cart_type == 'notification' -%}
+  {{ 'component-cart-notification.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- liquid
+  assign s = section.settings
+  assign main_menu = linklists[s.menu]
+  assign search_menu = linklists[s.search_menu]
+
+  case s.overlay_mode
+    when 'home'
+      if template.name == 'index'
+        assign overlay = true
+      else
+        assign overlay = false
+      endif
+    when 'all'
+      assign overlay = true
+    else
+      assign overlay = false
+  endcase
+
+  if overlay
+    assign glass_color = s.overlay_glass_color
+    assign text_color = s.overlay_text_color
+  else
+    assign glass_color = s.solid_glass_color
+    assign text_color = s.solid_text_color
+  endif
+
+  if s.header_style == 'capsule'
+    assign header_offset = s.capsule_top_gap | plus: s.bar_height
+  else
+    assign header_offset = s.bar_height
+  endif
+
+  case s.nav_font
+    when 'inter'
+      assign nav_family = 'var(--pt-font)'
+    when 'body'
+      assign nav_family = 'var(--font-body-family)'
+    when 'heading'
+      assign nav_family = 'var(--font-heading-family)'
+    else
+      assign nav_family = "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', 'Inter', Arial, sans-serif"
+  endcase
+
+  assign menu_label = 'sections.header.menu' | t
+  assign search_label = 'general.search.search' | t
+  assign close_label = 'accessibility.close' | t
+  assign cart_label = 'templates.cart.cart' | t
+  assign account_label = 'customer.account.title' | t
+  assign login_label = 'customer.log_in' | t
+-%}
+
+{% style %}
+  :root {
+    --pt-header-overlay-h: {% if overlay %}{{ header_offset }}px{% else %}0px{% endif %};
+  }
+
+  #PtHeader {
+    --ph-bar-h: {{ s.bar_height }}px;
+    --ph-max: {{ s.max_width }}px;
+    --ph-gap-top: {% if s.header_style == 'capsule' %}{{ s.capsule_top_gap }}px{% else %}0px{% endif %};
+    --ph-glass: {{ glass_color.red }}, {{ glass_color.green }}, {{ glass_color.blue }};
+    --ph-glass-alpha: {{ s.glass_opacity | divided_by: 100.0 }};
+    --ph-glass-alpha-top: {% if s.clear_at_top and overlay %}0{% else %}{{ s.glass_opacity | divided_by: 100.0 }}{% endif %};
+    --ph-blur: {{ s.glass_blur }}px;
+    --ph-saturate: {{ s.glass_saturation }}%;
+    --ph-border-alpha: {{ s.border_opacity | divided_by: 100.0 }};
+    --ph-text: {{ text_color }};
+    --ph-accent: {{ s.accent_color }};
+    --ph-scrim: {{ s.scrim_color.red }}, {{ s.scrim_color.green }}, {{ s.scrim_color.blue }};
+    --ph-scrim-alpha: {{ s.scrim_opacity | divided_by: 100.0 }};
+    --ph-scrim-blur: {{ s.scrim_blur }}px;
+    --ph-font: {{ nav_family }};
+    --ph-font-size: {{ s.nav_font_size }}px;
+    --ph-font-weight: {{ s.nav_font_weight }};
+    --ph-flyout-size: {{ s.flyout_font_size }}px;
+    --ph-logo-h: {{ s.logo_max_height }}px;
+    --ph-logo-w: {{ s.logo_width }}px;
+    --ph-speed: {{ s.animation_speed }}ms;
+  }
+{% endstyle %}
+
+<pt-header
+  id="PtHeader"
+  class="pt-header pt-header--{{ s.header_style }} pt-header--align-{{ s.menu_alignment }} pt-header--active-{{ s.active_style }}{% if overlay %} pt-header--overlay{% else %} pt-header--solid{% endif %}{% if s.invert_logo and overlay %} pt-header--invert-logo{% endif %}"
+  data-sticky="{{ s.sticky_mode }}"
+  data-flyouts="{{ s.enable_flyouts }}"
+  data-blur-page="{{ s.blur_page }}"
+  data-search-style="{{ s.search_style }}"
+>
+  <div class="pt-header__scrim" data-scrim aria-hidden="true"></div>
+
+  <div class="pt-header__shell" data-shell>
+    <div class="pt-header__frame">
+      <div class="pt-header__bg" data-bg aria-hidden="true"></div>
+
+      <div class="pt-header__bar">
+        <a href="{{ routes.root_url }}" class="pt-header__logo" aria-label="{{ shop.name | escape }}">
+          {%- if s.logo != blank -%}
+            {{-
+              s.logo
+              | image_url: width: 600
+              | image_tag:
+                widths: '150, 300, 450, 600',
+                sizes: '160px',
+                class: 'pt-header__logo-img',
+                loading: 'eager',
+                alt: ''
+            -}}
+          {%- else -%}
+            <span class="pt-header__logo-text">{{ s.logo_text | default: shop.name | escape }}</span>
+          {%- endif -%}
+        </a>
+
+        <nav class="pt-header__nav" aria-label="{{ menu_label | escape }}">
+          <ul class="pt-header__menu" role="list">
+            {%- if main_menu != blank and main_menu.links.size > 0 -%}
+              {%- for link in main_menu.links -%}
+                {%- liquid
+                  assign has_children = false
+                  if link.links.size > 0 and s.enable_flyouts
+                    assign has_children = true
+                  endif
+                -%}
+                <li class="pt-header__item" {% if has_children %}data-flyout-item="{{ forloop.index }}"{% endif %}>
+                  <a
+                    href="{{ link.url }}"
+                    class="pt-header__link"
+                    {% if link.current or link.child_current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{- link.title | escape -}}
+                  </a>
+                  {%- if has_children -%}
+                    <button
+                      type="button"
+                      class="pt-header__disclose"
+                      aria-expanded="false"
+                      aria-controls="PtFlyout-{{ forloop.index }}"
+                      data-flyout-toggle="{{ forloop.index }}"
+                    >
+                      <span class="visually-hidden">{{ link.title | escape }}</span>
+                      <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                   {%- endif -%}
-                </a>
+                </li>
+              {%- endfor -%}
+            {%- elsif request.design_mode -%}
+              <li class="pt-header__item"><span class="pt-header__link">Choose a menu in the header settings</span></li>
+            {%- endif -%}
+          </ul>
+        </nav>
 
-                {%- if link.links.size > 0 -%}
-                  <ul class="nav-dropdown glass-card">
-                    {%- for childlink in link.links -%}
-                      <li>
-                        <a href="{{ childlink.url }}" class="nav-dropdown-link">{{ childlink.title }}</a>
+        <div class="pt-header__actions">
+          {%- if s.show_search -%}
+            {%- if s.search_style == 'flyout' -%}
+              <button
+                type="button"
+                class="pt-header__icon"
+                aria-expanded="false"
+                aria-controls="PtFlyout-search"
+                data-flyout-toggle="search"
+              >
+                <span class="visually-hidden">{{ search_label }}</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15.8 15.8L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </button>
+            {%- else -%}
+              <a href="{{ routes.search_url }}" class="pt-header__icon">
+                <span class="visually-hidden">{{ search_label }}</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15.8 15.8L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </a>
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if s.show_account and shop.customer_accounts_enabled -%}
+            <a href="{{ routes.account_url }}" class="pt-header__icon pt-header__icon--account">
+              <span class="visually-hidden">{% if customer %}{{ account_label }}{% else %}{{ login_label }}{% endif %}</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8.5" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </a>
+          {%- endif -%}
+
+          {%- if s.show_cart -%}
+            <a href="{{ routes.cart_url }}" class="pt-header__icon pt-header__icon--cart" data-cart-link>
+              <span class="visually-hidden">{{ cart_label }}</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12.2a1 1 0 0 1-1 .8H7a1 1 0 0 1-1-.8L5 8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+              <span class="pt-header__count" data-cart-count aria-hidden="true" {% if cart.item_count == 0 %}hidden{% endif %}>
+                {%- if cart.item_count < 100 -%}{{ cart.item_count }}{%- else -%}99+{%- endif -%}
+              </span>
+              <span class="visually-hidden" data-cart-count-label>{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+            </a>
+          {%- endif -%}
+
+          <button
+            type="button"
+            class="pt-header__icon pt-header__toggle"
+            aria-expanded="false"
+            aria-controls="PtHeaderSheet"
+            data-sheet-toggle
+          >
+            <span class="visually-hidden" data-toggle-label data-open="{{ menu_label | escape }}" data-close="{{ close_label | escape }}">{{ menu_label }}</span>
+            <span class="pt-header__lines" aria-hidden="true"><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+
+      {%- comment -%} Desktop flyouts {%- endcomment -%}
+      <div class="pt-header__flyouts" data-flyouts-wrap>
+        {%- if s.enable_flyouts -%}
+          {%- for link in main_menu.links -%}
+            {%- if link.links.size > 0 -%}
+              <div class="pt-header__flyout" id="PtFlyout-{{ forloop.index }}" data-flyout="{{ forloop.index }}" aria-hidden="true" inert>
+                <div class="pt-header__flyout-inner">
+                  <div class="pt-header__col pt-header__col--primary">
+                    <p class="pt-header__col-title">{{ s.flyout_prefix | append: ' ' | append: link.title | strip | escape }}</p>
+                    <ul role="list">
+                      {%- for child in link.links -%}
+                        <li style="--i: {{ forloop.index }}">
+                          <a href="{{ child.url }}" class="pt-header__flyout-link pt-header__flyout-link--lg" {% if child.current %}aria-current="page"{% endif %}>
+                            {{- child.title | escape -}}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                  {%- assign col_index = 0 -%}
+                  {%- for child in link.links -%}
+                    {%- if child.links.size > 0 -%}
+                      {%- assign col_index = col_index | plus: 1 -%}
+                      <div class="pt-header__col">
+                        <p class="pt-header__col-title">{{ child.title | escape }}</p>
+                        <ul role="list">
+                          {%- for grandchild in child.links -%}
+                            <li style="--i: {{ forloop.index | plus: col_index }}">
+                              <a href="{{ grandchild.url }}" class="pt-header__flyout-link" {% if grandchild.current %}aria-current="page"{% endif %}>
+                                {{- grandchild.title | escape -}}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- if s.show_search and s.search_style == 'flyout' -%}
+          <div class="pt-header__flyout pt-header__flyout--search" id="PtFlyout-search" data-flyout="search" aria-hidden="true" inert>
+            <div class="pt-header__flyout-inner">
+              <form action="{{ routes.search_url }}" method="get" role="search" class="pt-header__search">
+                <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15.8 15.8L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <label class="visually-hidden" for="PtHeaderSearch">{{ search_label }}</label>
+                <input
+                  id="PtHeaderSearch"
+                  class="pt-header__search-input"
+                  type="search"
+                  name="q"
+                  autocomplete="off"
+                  placeholder="{{ s.search_placeholder | escape }}"
+                  data-search-input
+                >
+                <input type="hidden" name="options[prefix]" value="last">
+              </form>
+              {%- if search_menu != blank and search_menu.links.size > 0 -%}
+                <div class="pt-header__col">
+                  <p class="pt-header__col-title">{{ s.search_links_title | escape }}</p>
+                  <ul role="list">
+                    {%- for link in search_menu.links -%}
+                      <li style="--i: {{ forloop.index }}">
+                        <a href="{{ link.url }}" class="pt-header__flyout-link pt-header__flyout-link--arrow">{{ link.title | escape }}</a>
                       </li>
                     {%- endfor -%}
                   </ul>
-                {%- endif -%}
-              </li>
-            {%- endfor -%}
-          {%- else -%}
-            <li class="nav-item"><a href="/" class="nav-link is-active"><span>Home</span></a></li>
-            <li class="nav-item"><a href="/collections/all" class="nav-link"><span>Shop</span></a></li>
-            <li class="nav-item"><a href="/collections" class="nav-link"><span>Collections</span></a></li>
-          {%- endif -%}
-        </ul>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
       </div>
-    </nav>
 
-    <!-- Header Actions -->
-    <div class="header-actions-col">
-      {%- if section.settings.show_search -%}
-        <a href="{{ routes.search_url }}" class="action-circle-btn" aria-label="Search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </a>
+      {%- if settings.cart_type == 'notification' -%}
+        {%- render 'cart-notification', desktop_menu_type: 'dropdown', color_scheme: s.notification_color_scheme -%}
       {%- endif -%}
-
-      {%- if section.settings.show_cart -%}
-        <a href="{{ routes.cart_url }}" class="action-circle-btn" aria-label="Cart">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
-          </svg>
-          {%- if cart.item_count > 0 -%}
-            <span class="cart-pill-count">{{ cart.item_count }}</span>
-          {%- endif -%}
-        </a>
-      {%- endif -%}
-
-      {%- if section.settings.show_account -%}
-        <a href="{{ routes.account_url }}" class="action-circle-btn" aria-label="Account">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-        </a>
-      {%- endif -%}
+      {%- comment -%} Dawn's cart scripts refresh an element with this id after an add. {%- endcomment -%}
+      <span id="cart-icon-bubble" hidden></span>
     </div>
   </div>
-</header>
+
+  {%- comment -%} Mobile sheet {%- endcomment -%}
+  <div class="pt-header__sheet" id="PtHeaderSheet" data-sheet aria-hidden="true" inert>
+    <div class="pt-header__sheet-track">
+      <div class="pt-header__panel is-current" data-panel="root">
+        <ul role="list">
+          {%- for link in main_menu.links -%}
+            <li style="--i: {{ forloop.index }}">
+              {%- if link.links.size > 0 -%}
+                <button type="button" class="pt-header__sheet-link" data-drill="{{ forloop.index }}" aria-controls="PtPanel-{{ forloop.index }}" aria-expanded="false">
+                  <span>{{ link.title | escape }}</span>
+                  <svg width="9" height="15" viewBox="0 0 9 15" aria-hidden="true" focusable="false"><path d="M1.5 1.5l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              {%- else -%}
+                <a href="{{ link.url }}" class="pt-header__sheet-link" {% if link.current %}aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {%- if s.show_account and shop.customer_accounts_enabled -%}
+          <a href="{{ routes.account_url }}" class="pt-header__sheet-meta" style="--i: {{ main_menu.links.size | plus: 1 }}">
+            {%- if customer -%}{{ account_label }}{%- else -%}{{ login_label }}{%- endif -%}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- for link in main_menu.links -%}
+        {%- if link.links.size > 0 -%}
+          <div class="pt-header__panel" id="PtPanel-{{ forloop.index }}" data-panel="{{ forloop.index }}" aria-hidden="true" inert>
+            <button type="button" class="pt-header__back" data-back>
+              <svg width="9" height="15" viewBox="0 0 9 15" aria-hidden="true" focusable="false"><path d="M7.5 1.5l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="visually-hidden">{{ menu_label }}</span>
+            </button>
+            <p class="pt-header__col-title" style="--i: 1">{{ link.title | escape }}</p>
+            <ul role="list">
+              {%- for child in link.links -%}
+                <li style="--i: {{ forloop.index | plus: 1 }}">
+                  <a href="{{ child.url }}" class="pt-header__sheet-link">{{ child.title | escape }}</a>
+                  {%- if child.links.size > 0 -%}
+                    <ul role="list" class="pt-header__sheet-sub">
+                      {%- for grandchild in child.links -%}
+                        <li><a href="{{ grandchild.url }}" class="pt-header__sheet-meta">{{ grandchild.title | escape }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</pt-header>
 
 {% schema %}
 {
-  "name": "Header Navigation",
+  "name": "Glass header",
+  "class": "section-pt-header",
+  "enabled_on": {
+    "groups": ["header"]
+  },
   "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
     {
       "type": "image_picker",
       "id": "logo",
       "label": "Logo image"
     },
     {
-      "type": "range",
-      "id": "logo_width",
-      "min": 80,
-      "max": 300,
-      "step": 10,
-      "default": 160,
-      "unit": "px",
-      "label": "Logo Width"
-    },
-    {
-      "type": "range",
-      "id": "logo_height",
-      "min": 40,
-      "max": 160,
-      "step": 5,
-      "default": 80,
-      "unit": "px",
-      "label": "Logo Height"
-    },
-    {
       "type": "text",
       "id": "logo_text",
-      "label": "Logo Fallback Text",
+      "label": "Logo text",
+      "info": "Shown when there's no logo image.",
       "default": "PATÉLLE"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_height",
+      "label": "Logo height",
+      "min": 12,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo max width",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 160
+    },
+    {
+      "type": "checkbox",
+      "id": "invert_logo",
+      "label": "Show logo in white over the hero",
+      "info": "For dark logos on a transparent header.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Style",
+      "options": [
+        { "value": "bar", "label": "Glass bar (Apple)" },
+        { "value": "capsule", "label": "Floating glass capsule" }
+      ],
+      "default": "bar"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "label": "Bar height",
+      "min": 40,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "capsule_top_gap",
+      "label": "Capsule distance from top",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content width",
+      "min": 900,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "default": 1100
+    },
+    {
+      "type": "select",
+      "id": "menu_alignment",
+      "label": "Menu position",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "left", "label": "After logo" },
+        { "value": "right", "label": "Before icons" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "overlay_mode",
+      "label": "Sit on top of the page",
+      "info": "An overlaid header lets the hero run under the glass.",
+      "options": [
+        { "value": "home", "label": "Homepage only" },
+        { "value": "all", "label": "All pages" },
+        { "value": "none", "label": "Never" }
+      ],
+      "default": "home"
+    },
+    {
+      "type": "select",
+      "id": "sticky_mode",
+      "label": "When scrolling",
+      "options": [
+        { "value": "always", "label": "Stay visible" },
+        { "value": "reveal", "label": "Hide going down, show going up" },
+        { "value": "none", "label": "Scroll away" }
+      ],
+      "default": "reveal"
+    },
+    {
+      "type": "header",
+      "content": "Glass"
+    },
+    {
+      "type": "color",
+      "id": "overlay_glass_color",
+      "label": "Glass tint over the hero",
+      "default": "#161617"
+    },
+    {
+      "type": "color",
+      "id": "overlay_text_color",
+      "label": "Text over the hero",
+      "default": "#f5f5f7"
+    },
+    {
+      "type": "color",
+      "id": "solid_glass_color",
+      "label": "Glass tint on other pages",
+      "default": "#fbfbfd"
+    },
+    {
+      "type": "color",
+      "id": "solid_text_color",
+      "label": "Text on other pages",
+      "default": "#1d1d1f"
+    },
+    {
+      "type": "range",
+      "id": "glass_opacity",
+      "label": "Glass opacity",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "default": 62
+    },
+    {
+      "type": "checkbox",
+      "id": "clear_at_top",
+      "label": "Clear over the hero until scrolled",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "glass_blur",
+      "label": "Blur",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "glass_saturation",
+      "label": "Color saturation behind glass",
+      "min": 100,
+      "max": 200,
+      "step": 10,
+      "unit": "%",
+      "default": 180
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Edge highlight",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "%",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Menu"
     },
     {
       "type": "link_list",
       "id": "menu",
-      "label": "Navigation Menu",
+      "label": "Menu",
       "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "nav_font",
+      "label": "Font",
+      "options": [
+        { "value": "apple", "label": "SF Pro (Apple system)" },
+        { "value": "inter", "label": "Inter" },
+        { "value": "body", "label": "Theme body font" },
+        { "value": "heading", "label": "Theme heading font" }
+      ],
+      "default": "apple"
+    },
+    {
+      "type": "range",
+      "id": "nav_font_size",
+      "label": "Text size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "nav_font_weight",
+      "label": "Text weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "active_style",
+      "label": "Current page marker",
+      "options": [
+        { "value": "dim", "label": "Dim other links" },
+        { "value": "dot", "label": "Dot" },
+        { "value": "pill", "label": "Glass pill" }
+      ],
+      "default": "dim"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Cart count and marker color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Dropdown panels"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_flyouts",
+      "label": "Open submenus as full-width glass panels",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "flyout_prefix",
+      "label": "Panel title prefix",
+      "info": "Appears before the menu item name, like 'Explore Women'.",
+      "default": "Explore"
+    },
+    {
+      "type": "range",
+      "id": "flyout_font_size",
+      "label": "Panel link size",
+      "min": 16,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "blur_page",
+      "label": "Blur the page behind open panels",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "scrim_color",
+      "label": "Page dim color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "scrim_opacity",
+      "label": "Page dim",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "scrim_blur",
+      "label": "Page blur",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "label": "Open and close speed",
+      "min": 200,
+      "max": 800,
+      "step": 20,
+      "unit": "ms",
+      "default": 420
+    },
+    {
+      "type": "header",
+      "content": "Icons"
     },
     {
       "type": "checkbox",
       "id": "show_search",
-      "label": "Show search icon",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "search_style",
+      "label": "Search opens",
+      "options": [
+        { "value": "flyout", "label": "Glass panel" },
+        { "value": "page", "label": "Search page" }
+      ],
+      "default": "flyout"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search fragrances"
+    },
+    {
+      "type": "link_list",
+      "id": "search_menu",
+      "label": "Quick links in search panel"
+    },
+    {
+      "type": "text",
+      "id": "search_links_title",
+      "label": "Quick links title",
+      "default": "Quick links"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "show_cart",
-      "label": "Show cart icon",
+      "label": "Show cart",
       "default": true
     },
     {
-      "type": "checkbox",
-      "id": "show_account",
-      "label": "Show account icon",
-      "default": true
+      "type": "color_scheme",
+      "id": "notification_color_scheme",
+      "label": "Added-to-cart popup colors",
+      "default": "scheme-1"
     }
   ]
 }

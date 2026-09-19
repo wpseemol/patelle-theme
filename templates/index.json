@@ -9,6 +9,119 @@
  */
 {
   "sections": {
+    "hero_slider": {
+      "type": "hero-slider",
+      "blocks": {
+        "hs_REgbaA": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/7108405ae347c6fb93fe8040cdd0ce2599846791.png",
+            "bg_image_mobile": "shopify://shop_images/7108405ae347c6fb93fe8040cdd0ce2599846791.png",
+            "bg_color_1": "#ae63ad",
+            "bg_color_2": "#d39bd2",
+            "gradient_style": "radial",
+            "overlay_opacity": 30,
+            "ui_color": "#ffffff",
+            "word": "Jasmine",
+            "word_style": "solid",
+            "word_color": "#ffffff",
+            "word_opacity": 95,
+            "splash_image": "shopify://shop_images/9819940b01e83910f5f25c545164dd7d1d1bd013.png",
+            "float_1": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "float_2": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "float_3": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "float_4": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "float_size": 100,
+            "float_depth_blur": true,
+            "bottle_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "bottle_width": 640,
+            "show_shadow": true,
+            "product": "jasmine",
+            "show_sizes": true,
+            "show_price": true,
+            "card_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "card_title": "Rose Oud Amber",
+            "card_description": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "button_label": "Add to Cart",
+            "added_label": "Added to cart"
+          }
+        },
+        "hs_fQFeKe": {
+          "type": "slide",
+          "settings": {
+            "bg_image": "shopify://shop_images/7d49f184a3bca9a909d8698559dd5f1bb429cd60.png",
+            "bg_image_mobile": "shopify://shop_images/7d49f184a3bca9a909d8698559dd5f1bb429cd60.png",
+            "bg_color_1": "#78ab3b",
+            "bg_color_2": "#b3d97a",
+            "gradient_style": "radial",
+            "overlay_opacity": 15,
+            "ui_color": "#ffffff",
+            "word": "Pineapple",
+            "word_style": "solid",
+            "word_color": "#ffffff",
+            "word_opacity": 100,
+            "splash_image": "shopify://shop_images/4e77e9bfa1201b8e9fe944a8adbb3e56d7a31f83.png",
+            "float_1": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_2": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_3": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_4": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_size": 100,
+            "float_depth_blur": true,
+            "bottle_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "bottle_width": 640,
+            "show_shadow": true,
+            "product": "jasmine",
+            "show_sizes": true,
+            "show_price": true,
+            "card_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "card_title": "Rose Oud Amber",
+            "card_description": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "button_label": "Add to Cart",
+            "added_label": "Added to cart"
+          }
+        }
+      },
+      "block_order": [
+        "hs_REgbaA",
+        "hs_fQFeKe"
+      ],
+      "settings": {
+        "desktop_height": 840,
+        "mobile_height": 740,
+        "full_height": false,
+        "autoplay": true,
+        "autoplay_interval": 6,
+        "transition_speed": 1.4,
+        "pause_on_hover": true,
+        "show_arrows": true,
+        "show_counter": true,
+        "enable_parallax": true,
+        "enable_magnetic": true,
+        "bottle_entrance": "depth",
+        "float_entrance": "center",
+        "magnetic_strength": 35,
+        "display_font": "sf_pro_rounded",
+        "custom_font_name": "SF Pro Rounded Web",
+        "custom_font_url": "",
+        "custom_font_width": 58,
+        "display_italic": false,
+        "display_weight": "700",
+        "controls_color": "#f5ebde",
+        "arrow_style": "solid",
+        "arrow_size": 50,
+        "arrow_bg": "#ffffff",
+        "arrow_icon": "#1d1d1f",
+        "arrow_hover_bg": "#1d1d1f",
+        "arrow_hover_icon": "#ffffff",
+        "card_opacity": 18,
+        "card_blur": 22,
+        "atc_fill_color": "#1d1d1f",
+        "atc_fill_text": "#ffffff",
+        "secondary_label": "Explore all fragrances",
+        "secondary_link": "",
+        "accessible_label": "Featured fragrances"
+      }
+    },
     "hero_banner": {
       "type": "hero-banner",
       "blocks": {
@@ -32,7 +145,7 @@
         "slide_fQFeKe": {
           "type": "slide",
           "settings": {
-            "bg_color": "#78AB3B",
+            "bg_color": "#78ab3b",
             "hero_title": "Pineapple",
             "main_product_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
             "flower_top_left": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
@@ -51,6 +164,7 @@
         "slide_REgbaA",
         "slide_fQFeKe"
       ],
+      "disabled": true,
       "settings": {}
     },
     "shop_all": {
@@ -169,6 +283,7 @@
     }
   },
   "order": [
+    "hero_slider",
     "hero_banner",
     "shop_all",
     "dossier_collage",

@@ -29,12 +29,16 @@
           }
         }
       },
-      "block_order": ["quick_links", "support"],
+      "block_order": [
+        "quick_links",
+        "support"
+      ],
       "settings": {
-        "background": "#FAF6F0",
+        "background": "#faf6f0",
+        "logo_width": 210,
         "brand_name": "PATELLE",
         "brand_text": "Luxury fragrances crafted to elevate your presence and leave a lasting impression.",
-        "logo_width": 180,
+        "whatsapp_link": "",
         "newsletter_enable": true,
         "newsletter_heading": "Join the PATELLE club",
         "newsletter_text": "Sign up for exclusive offers, new arrivals and scent inspiration.",

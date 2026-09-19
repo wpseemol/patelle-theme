@@ -1,14 +1,28 @@
 {%- comment -%}
-  PATÉLLE — Glass header
-  Apple-style frosted navigation: a thin glass bar (or floating capsule),
-  full-width flyout panels that blur the page behind them, a glass search
-  panel, and a full-screen mobile sheet whose two-line icon morphs into a
-  close mark. Behaviour: assets/patelle-header.js. Styles: assets/patelle-header.css.
+  PATÉLLE — Floating glass header
+  The bar itself is transparent and floats over the hero: logo left, one
+  frosted nav pill centred on the viewport mid-line, circular frost buttons on
+  the right. Pill and buttons share the hero card's glass (rim light, bright
+  top edge), and a glass lens slides under the links to the hovered item,
+  resting on the current page. Full-width
+  flyout panels blur the page behind them, the search panel is glass, and the
+  mobile sheet's two-line icon morphs into a close mark.
+  Behaviour: assets/patelle-header.js. Styles: assets/patelle-header.css.
   Setting ids from the previous header (logo, menu, show_*) are kept.
 {%- endcomment -%}
 
 {{ 'patelle-header.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'patelle-header.js' | asset_url }}" defer="defer"></script>
+
+{%- comment -%}
+  Geist is the Figma typeface for the nav. It is only fetched when it is the
+  selected font; otherwise the stack falls back to the system UI face.
+{%- endcomment -%}
+{%- if section.settings.nav_font == 'geist' -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+{%- endif -%}
 
 {%- if settings.cart_type == 'notification' -%}
   {{ 'component-cart-notification.css' | asset_url | stylesheet_tag }}
@@ -41,13 +55,11 @@
     assign text_color = s.solid_text_color
   endif
 
-  if s.header_style == 'capsule'
-    assign header_offset = s.capsule_top_gap | plus: s.bar_height
-  else
-    assign header_offset = s.bar_height
-  endif
+  assign header_offset = s.capsule_top_gap | plus: s.bar_height
 
   case s.nav_font
+    when 'geist'
+      assign nav_family = "'Geist', -apple-system, BlinkMacSystemFont, sans-serif"
     when 'inter'
       assign nav_family = 'var(--pt-font)'
     when 'body'
@@ -74,10 +86,9 @@
   #PtHeader {
     --ph-bar-h: {{ s.bar_height }}px;
     --ph-max: {{ s.max_width }}px;
-    --ph-gap-top: {% if s.header_style == 'capsule' %}{{ s.capsule_top_gap }}px{% else %}0px{% endif %};
+    --ph-gap-top: {{ s.capsule_top_gap }}px;
     --ph-glass: {{ glass_color.red }}, {{ glass_color.green }}, {{ glass_color.blue }};
     --ph-glass-alpha: {{ s.glass_opacity | divided_by: 100.0 }};
-    --ph-glass-alpha-top: {% if s.clear_at_top and overlay %}0{% else %}{{ s.glass_opacity | divided_by: 100.0 }}{% endif %};
     --ph-blur: {{ s.glass_blur }}px;
     --ph-saturate: {{ s.glass_saturation }}%;
     --ph-border-alpha: {{ s.border_opacity | divided_by: 100.0 }};
@@ -103,6 +114,7 @@
   data-flyouts="{{ s.enable_flyouts }}"
   data-blur-page="{{ s.blur_page }}"
   data-search-style="{{ s.search_style }}"
+  data-lens="{{ s.enable_lens }}"
 >
   <div class="pt-header__scrim" data-scrim aria-hidden="true"></div>
 
@@ -113,12 +125,17 @@
       <div class="pt-header__bar">
         <a href="{{ routes.root_url }}" class="pt-header__logo" aria-label="{{ shop.name | escape }}">
           {%- if s.logo != blank -%}
+            {%- comment -%}
+              sizes must track the Logo max width setting, otherwise the browser
+              under-picks from the srcset and the mark renders soft.
+            {%- endcomment -%}
+            {%- assign logo_size = s.logo_width | default: 160 | append: 'px' -%}
             {{-
               s.logo
               | image_url: width: 600
               | image_tag:
                 widths: '150, 300, 450, 600',
-                sizes: '160px',
+                sizes: logo_size,
                 class: 'pt-header__logo-img',
                 loading: 'eager',
                 alt: ''
@@ -189,13 +206,7 @@
             {%- endif -%}
           {%- endif -%}
 
-          {%- if s.show_account and shop.customer_accounts_enabled -%}
-            <a href="{{ routes.account_url }}" class="pt-header__icon pt-header__icon--account">
-              <span class="visually-hidden">{% if customer %}{{ account_label }}{% else %}{{ login_label }}{% endif %}</span>
-              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8.5" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </a>
-          {%- endif -%}
-
+          {%- comment -%} Reference order: search, bag, profile. {%- endcomment -%}
           {%- if s.show_cart -%}
             <a href="{{ routes.cart_url }}" class="pt-header__icon pt-header__icon--cart" data-cart-link>
               <span class="visually-hidden">{{ cart_label }}</span>
@@ -204,6 +215,13 @@
                 {%- if cart.item_count < 100 -%}{{ cart.item_count }}{%- else -%}99+{%- endif -%}
               </span>
               <span class="visually-hidden" data-cart-count-label>{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+            </a>
+          {%- endif -%}
+
+          {%- if s.show_account and shop.customer_accounts_enabled -%}
+            <a href="{{ routes.account_url }}" class="pt-header__icon pt-header__icon--account">
+              <span class="visually-hidden">{% if customer %}{{ account_label }}{% else %}{{ login_label }}{% endif %}</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8.5" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             </a>
           {%- endif -%}
 
@@ -364,7 +382,9 @@
   "name": "Glass header",
   "class": "section-pt-header",
   "enabled_on": {
-    "groups": ["header"]
+    "groups": [
+      "header"
+    ]
   },
   "settings": [
     {
@@ -387,6 +407,7 @@
       "type": "range",
       "id": "logo_max_height",
       "label": "Logo height",
+      "info": "Figma lockup is 160 x 48.",
       "min": 12,
       "max": 48,
       "step": 1,
@@ -419,8 +440,14 @@
       "id": "header_style",
       "label": "Style",
       "options": [
-        { "value": "bar", "label": "Glass bar (Apple)" },
-        { "value": "capsule", "label": "Floating glass capsule" }
+        {
+          "value": "bar",
+          "label": "Glass bar (Apple)"
+        },
+        {
+          "value": "capsule",
+          "label": "Floating glass capsule"
+        }
       ],
       "default": "bar"
     },
@@ -432,36 +459,46 @@
       "max": 80,
       "step": 2,
       "unit": "px",
-      "default": 52
+      "default": 48
     },
     {
       "type": "range",
       "id": "capsule_top_gap",
-      "label": "Capsule distance from top",
+      "label": "Distance from the top",
+      "info": "Figma puts the bar 36px below the top of the page.",
       "min": 0,
       "max": 40,
       "step": 2,
       "unit": "px",
-      "default": 14
+      "default": 36
     },
     {
       "type": "range",
       "id": "max_width",
       "label": "Content width",
       "min": 900,
-      "max": 1600,
+      "max": 1800,
       "step": 20,
       "unit": "px",
-      "default": 1100
+      "default": 1440
     },
     {
       "type": "select",
       "id": "menu_alignment",
       "label": "Menu position",
       "options": [
-        { "value": "center", "label": "Center" },
-        { "value": "left", "label": "After logo" },
-        { "value": "right", "label": "Before icons" }
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "After logo"
+        },
+        {
+          "value": "right",
+          "label": "Before icons"
+        }
       ],
       "default": "center"
     },
@@ -471,9 +508,18 @@
       "label": "Sit on top of the page",
       "info": "An overlaid header lets the hero run under the glass.",
       "options": [
-        { "value": "home", "label": "Homepage only" },
-        { "value": "all", "label": "All pages" },
-        { "value": "none", "label": "Never" }
+        {
+          "value": "home",
+          "label": "Homepage only"
+        },
+        {
+          "value": "all",
+          "label": "All pages"
+        },
+        {
+          "value": "none",
+          "label": "Never"
+        }
       ],
       "default": "home"
     },
@@ -482,9 +528,18 @@
       "id": "sticky_mode",
       "label": "When scrolling",
       "options": [
-        { "value": "always", "label": "Stay visible" },
-        { "value": "reveal", "label": "Hide going down, show going up" },
-        { "value": "none", "label": "Scroll away" }
+        {
+          "value": "always",
+          "label": "Stay visible"
+        },
+        {
+          "value": "reveal",
+          "label": "Hide going down, show going up"
+        },
+        {
+          "value": "none",
+          "label": "Scroll away"
+        }
       ],
       "default": "reveal"
     },
@@ -527,15 +582,10 @@
       "default": 62
     },
     {
-      "type": "checkbox",
-      "id": "clear_at_top",
-      "label": "Clear over the hero until scrolled",
-      "default": false
-    },
-    {
       "type": "range",
       "id": "glass_blur",
       "label": "Blur",
+      "info": "Applies to the open panels and the mobile sheet; the pill and buttons keep their own fixed frost.",
       "min": 0,
       "max": 40,
       "step": 2,
@@ -577,44 +627,85 @@
       "id": "nav_font",
       "label": "Font",
       "options": [
-        { "value": "apple", "label": "SF Pro (Apple system)" },
-        { "value": "inter", "label": "Inter" },
-        { "value": "body", "label": "Theme body font" },
-        { "value": "heading", "label": "Theme heading font" }
+        {
+          "value": "geist",
+          "label": "Geist (Figma)"
+        },
+        {
+          "value": "apple",
+          "label": "SF Pro (Apple system)"
+        },
+        {
+          "value": "inter",
+          "label": "Inter"
+        },
+        {
+          "value": "body",
+          "label": "Theme body font"
+        },
+        {
+          "value": "heading",
+          "label": "Theme heading font"
+        }
       ],
-      "default": "apple"
+      "default": "geist"
     },
     {
       "type": "range",
       "id": "nav_font_size",
       "label": "Text size",
       "min": 11,
-      "max": 18,
+      "max": 20,
       "step": 1,
       "unit": "px",
-      "default": 13
+      "default": 16
     },
     {
       "type": "select",
       "id": "nav_font_weight",
       "label": "Text weight",
       "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" }
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        }
       ],
-      "default": "400"
+      "default": "500"
     },
     {
       "type": "select",
       "id": "active_style",
       "label": "Current page marker",
       "options": [
-        { "value": "dim", "label": "Dim other links" },
-        { "value": "dot", "label": "Dot" },
-        { "value": "pill", "label": "Glass pill" }
+        {
+          "value": "dim",
+          "label": "Dim other links"
+        },
+        {
+          "value": "dot",
+          "label": "Dot"
+        },
+        {
+          "value": "pill",
+          "label": "Glass pill"
+        }
       ],
-      "default": "dim"
+      "default": "pill"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_lens",
+      "label": "Sliding glass lens on hover",
+      "info": "A glass highlight glides under the links and rests on the current page. Replaces the static pill marker while it runs.",
+      "default": true
     },
     {
       "type": "color",
@@ -706,8 +797,14 @@
       "id": "search_style",
       "label": "Search opens",
       "options": [
-        { "value": "flyout", "label": "Glass panel" },
-        { "value": "page", "label": "Search page" }
+        {
+          "value": "flyout",
+          "label": "Glass panel"
+        },
+        {
+          "value": "page",
+          "label": "Search page"
+        }
       ],
       "default": "flyout"
     },

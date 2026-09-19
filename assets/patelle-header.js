@@ -1,7 +1,8 @@
 /* ==========================================================================
    PATÉLLE — Glass header
    <pt-header>: scroll states, Apple-style flyouts, search panel, mobile
-   sheet with drill-in panels, and a live cart count. No dependencies.
+   sheet with drill-in panels, a live cart count, and the sliding glass lens
+   in the nav pill. No dependencies.
    ========================================================================== */
 
 (() => {
@@ -32,6 +33,7 @@
       this.bindSheet(signal);
       this.bindCart(signal);
       this.bindEditor(signal);
+      this.bindLens(signal);
 
       document.addEventListener(
         'keydown',
@@ -57,9 +59,89 @@
       this.initialized = false;
       this.abort?.abort();
       this.unsubscribeCart?.();
+      this.lensObserver?.disconnect();
       clearTimeout(this.openTimer);
       clearTimeout(this.closeTimer);
       document.documentElement.classList.remove('pt-header-locked');
+    }
+
+    /* Glass lens ---------------------------------------------------------- */
+
+    // One glass lens slides under the nav links: to whichever item the pointer
+    // or keyboard focus is on, and back to the open panel's item or the
+    // current page when it leaves. All the drawing is CSS; this only measures
+    // the item and writes --lens-x / --lens-w / --lens-o on the pill.
+    bindLens(signal) {
+      if (this.dataset.lens === 'false') return;
+      const menu = this.querySelector('.pt-header__menu');
+      if (!menu) return;
+      const items = Array.from(menu.querySelectorAll('.pt-header__item'));
+      if (!items.length) return;
+
+      let target = null;
+
+      const restingItem = () =>
+        items.find((item) => item.classList.contains('is-active')) ||
+        items.find((item) => item.querySelector('.pt-header__link[aria-current]')) ||
+        null;
+
+      const place = (item, { instant = false } = {}) => {
+        target = item;
+        if (!item || !item.offsetWidth) {
+          menu.style.setProperty('--lens-o', '0');
+          return;
+        }
+        // Coming out of hidden, appear in place instead of sliding across.
+        const hidden = menu.style.getPropertyValue('--lens-o') !== '1';
+        if (instant || hidden) menu.classList.add('is-lens-instant');
+        menu.style.setProperty('--lens-x', `${item.offsetLeft}px`);
+        menu.style.setProperty('--lens-w', `${item.offsetWidth}px`);
+        menu.style.setProperty('--lens-o', '1');
+        if (instant || hidden) {
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => menu.classList.remove('is-lens-instant'))
+          );
+        }
+      };
+
+      items.forEach((item) => {
+        item.addEventListener(
+          'pointerenter',
+          (event) => event.pointerType === 'mouse' && place(item),
+          { signal }
+        );
+        item.addEventListener('focusin', () => place(item), { signal });
+      });
+
+      menu.addEventListener('pointerleave', () => place(restingItem()), { signal });
+      menu.addEventListener(
+        'focusout',
+        (event) => {
+          if (!menu.contains(event.relatedTarget)) place(restingItem());
+        },
+        { signal }
+      );
+      // A panel closing elsewhere (Escape, scrim, scroll) sends the lens home.
+      this.addEventListener(
+        'transitionend',
+        (event) => {
+          if (event.target === this.bg && !this.activeKey && !menu.matches(':hover')) {
+            place(restingItem());
+          }
+        },
+        { signal }
+      );
+
+      // Items change width when a panel opens (the active badge adds padding),
+      // when web fonts land, and on resize, so keep the lens measured.
+      if ('ResizeObserver' in window) {
+        this.lensObserver = new ResizeObserver(() => place(target));
+        items.forEach((item) => this.lensObserver.observe(item));
+      }
+      document.fonts?.ready.then(() => this.isConnected && place(target, { instant: true }));
+
+      this.classList.add('has-lens');
+      place(restingItem(), { instant: true });
     }
 
     /* Scroll -------------------------------------------------------------- */

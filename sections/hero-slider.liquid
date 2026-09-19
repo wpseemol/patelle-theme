@@ -1,11 +1,16 @@
 {%- comment -%}
-  PATÉLLE — Hero slider (GSAP)
-  Five layers per slide, each animated on its own track of one master timeline:
-    1. Background     .pt-hs__bg        crossfade + scale 1.05 → 1
-    2. Display word   .pt-hs__word      slides in from the travel edge, per-letter stagger
-    3. Floating layer .pt-hs__splash / .pt-hs__float   3D-ish drift, scale + rotation entrance
-    4. Hero bottle    .pt-hs__bottle    rotationY -90 → 0, scale 0.85 → 1, settles onto a shadow
-    5. Product card   .pt-hs__card      staggered rise; sizes, price and AJAX add to cart
+  PATÉLLE — Hero slider (GSAP), six depth layers
+  Every layer enters on its own track of one master gsap.timeline(), and each
+  one picks its entrance from its own section setting. The layers that sit on a
+  cursor-driven 2.5D parallax plane say so below:
+
+    1. Atmosphere    .pt-hs__bg          bg_entrance      · parallax: barely moves, counter to the pointer
+    2. Display word  .pt-hs__word        word_entrance    · parallax: slow drift with the pointer
+    3. Splash        .pt-hs__splash      splash_entrance  · no parallax, anchored to bottom: 0
+    4. Hero bottle   .pt-hs__bottle      bottle_entrance  · no parallax, drops in from the top by default
+    5. Foreground    .pt-hs__float       float_entrance   · parallax: largest travel
+    6. Glass card    .pt-hs__card        card_entrance    · stays still so it is easy to use
+
   Behaviour lives in assets/patelle-hero-slider.js, styles in assets/patelle-hero-slider.css.
 {%- endcomment -%}
 
@@ -147,10 +152,15 @@
   data-speed="{{ section.settings.transition_speed }}"
   data-pause-on-hover="{{ section.settings.pause_on_hover }}"
   data-parallax="{{ section.settings.enable_parallax }}"
+  data-parallax-strength="{{ section.settings.parallax_strength }}"
   data-magnetic="{{ section.settings.enable_magnetic }}"
   data-magnetic-strength="{{ section.settings.magnetic_strength }}"
+  data-bg-entrance="{{ section.settings.bg_entrance }}"
+  data-word-entrance="{{ section.settings.word_entrance }}"
+  data-splash-entrance="{{ section.settings.splash_entrance }}"
   data-bottle-entrance="{{ section.settings.bottle_entrance }}"
   data-float-entrance="{{ section.settings.float_entrance }}"
+  data-card-entrance="{{ section.settings.card_entrance }}"
   data-slide-count="{{ slide_count }}"
   role="region"
   aria-roledescription="{{ 'sections.slideshow.carousel' | t }}"
@@ -233,45 +243,62 @@
         "
         {{ block.shopify_attributes }}
       >
-        {%- comment -%} Layer 1 — background {%- endcomment -%}
-        <div class="pt-hs__bg pt-hs__bg--{{ s.gradient_style }}" data-layer="bg">
-          {%- if s.bg_image != blank -%}
-            {{-
-              s.bg_image
-              | image_url: width: 2400
-              | image_tag:
-                widths: '750, 1100, 1500, 1900, 2400',
-                sizes: '100vw',
-                class: 'pt-hs__bg-img',
-                loading: img_loading,
-                fetchpriority: img_priority,
-                alt: ''
-            -}}
-          {%- endif -%}
-          {%- if s.bg_image_mobile != blank -%}
-            {{-
-              s.bg_image_mobile
-              | image_url: width: 1200
-              | image_tag:
-                widths: '600, 900, 1200',
-                sizes: '100vw',
-                class: 'pt-hs__bg-img pt-hs__bg-img--mobile',
-                loading: img_loading,
-                alt: ''
-            -}}
-          {%- endif -%}
+        {%- comment -%}
+          Layer 1 — atmosphere. The plane wrapper bleeds past the slide edge so
+          its parallax drift never uncovers the dark section background; the
+          inner .pt-hs__bg is what the entrance timeline animates.
+        {%- endcomment -%}
+        <div class="pt-hs__bg-plane" data-parallax-plane="bg" aria-hidden="true">
+          <div class="pt-hs__bg pt-hs__bg--{{ s.gradient_style }}" data-layer="bg">
+            {%- if s.bg_image != blank -%}
+              {{-
+                s.bg_image
+                | image_url: width: 2400
+                | image_tag:
+                  widths: '750, 1100, 1500, 1900, 2400',
+                  sizes: '100vw',
+                  class: 'pt-hs__bg-img',
+                  loading: img_loading,
+                  fetchpriority: img_priority,
+                  alt: ''
+              -}}
+            {%- endif -%}
+            {%- if s.bg_image_mobile != blank -%}
+              {{-
+                s.bg_image_mobile
+                | image_url: width: 1200
+                | image_tag:
+                  widths: '600, 900, 1200',
+                  sizes: '100vw',
+                  class: 'pt-hs__bg-img pt-hs__bg-img--mobile',
+                  loading: img_loading,
+                  alt: ''
+              -}}
+            {%- endif -%}
+          </div>
         </div>
 
-        {%- comment -%} Layer 2 — oversized display word {%- endcomment -%}
+        {%- comment -%}
+          Layer 2 — oversized display word. data-parallax-plane selects the plane
+          in PARALLAX_PROFILE (assets/patelle-hero-slider.js). The wrapper is what
+          moves, so the per-letter entrance stagger below is left untouched.
+        {%- endcomment -%}
         {%- if word != blank -%}
-          <div class="pt-hs__word-wrap" data-depth="-0.35" aria-hidden="true">
+          <div class="pt-hs__word-wrap" data-parallax-plane="word" aria-hidden="true">
             <span class="pt-hs__word pt-hs__word--{{ s.word_style }}" data-layer="word">{{- word | escape -}}</span>
           </div>
         {%- endif -%}
 
-        {%- comment -%} Layer 3 — splash behind the bottle + floating elements {%- endcomment -%}
+        {%- comment -%}
+          Layer 3 — splash, anchored to the bottom of the slide and sitting behind
+          the bottle. It carries no parallax plane, so it never moves with the
+          pointer. Layer 5 — foreground petals and droplets. Source order keeps the
+          markup stable; z-index puts the petals in front of the bottle. On the
+          petals data-depth is a weight against the shared foreground plane, so all
+          four keep their own reach.
+        {%- endcomment -%}
         {%- if s.splash_image != blank -%}
-          <div class="pt-hs__splash" data-depth="0.25" aria-hidden="true">
+          <div class="pt-hs__splash" aria-hidden="true">
             <div class="pt-hs__splash-inner" data-layer="splash">
               {{-
                 s.splash_image
@@ -292,18 +319,19 @@
             assign float_image = s[float_key]
             case i
               when 1
-                assign depth = '0.6'
+                assign depth = '0.75'
               when 2
-                assign depth = '0.8'
+                assign depth = '1'
               when 3
-                assign depth = '0.45'
+                assign depth = '0.55'
               else
-                assign depth = '1.3'
+                assign depth = '1.6'
             endcase
           -%}
           {%- if float_image != blank -%}
             <div
               class="pt-hs__float pt-hs__float--{{ i }}{% if i == 4 and s.float_depth_blur %} pt-hs__float--blur{% endif %}"
+              data-parallax-plane="float"
               data-depth="{{ depth }}"
               aria-hidden="true"
             >
@@ -318,8 +346,8 @@
           {%- endif -%}
         {%- endfor -%}
 
-        {%- comment -%} Layer 4 — hero bottle {%- endcomment -%}
-        <div class="pt-hs__product" data-depth="0.2">
+        {%- comment -%} Layer 4 — hero bottle, tilted in 3D by the pointer {%- endcomment -%}
+        <div class="pt-hs__product" data-parallax-plane="bottle">
           {%- if s.show_shadow -%}
             <span class="pt-hs__shadow" data-layer="shadow" aria-hidden="true"></span>
           {%- endif -%}
@@ -343,9 +371,9 @@
           </div>
         </div>
 
-        {%- comment -%} Layer 5 — product card {%- endcomment -%}
+        {%- comment -%} Layer 6 — glass product card. data-glass drives the pointer sheen. {%- endcomment -%}
         <div class="pt-hs__ui">
-          <div class="pt-hs__card" data-layer="card">
+          <div class="pt-hs__card pt-hs-glass" data-layer="card" data-glass>
             {%- if hero_product != blank and s.show_sizes and hero_product.has_only_default_variant == false -%}
               <div
                 class="pt-hs__sizes"
@@ -467,8 +495,9 @@
   <div class="pt-hs__controls">
     {%- if section.settings.secondary_label != blank -%}
       <a
-        class="pt-hs__explore pt-flair"
+        class="pt-hs__explore pt-hs-glass pt-flair"
         data-flair
+        data-glass
         {% if section.settings.secondary_link != blank %}
           href="{{ section.settings.secondary_link }}"
         {% else %}
@@ -530,7 +559,10 @@
   "class": "section section-pt-hero-slider",
   "max_blocks": 8,
   "disabled_on": {
-    "groups": ["header", "footer"]
+    "groups": [
+      "header",
+      "footer"
+    ]
   },
   "settings": [
     {
@@ -621,37 +653,25 @@
     {
       "type": "checkbox",
       "id": "enable_parallax",
-      "label": "Pointer parallax on layers",
-      "default": true
+      "label": "Cursor parallax on layers",
+      "default": true,
+      "info": "Mouse and trackpad only. Touch screens and reduced-motion visitors see the layers still."
+    },
+    {
+      "type": "range",
+      "id": "parallax_strength",
+      "label": "Parallax depth",
+      "min": 40,
+      "max": 160,
+      "step": 10,
+      "unit": "%",
+      "default": 100
     },
     {
       "type": "checkbox",
       "id": "enable_magnetic",
       "label": "Magnetic navigation buttons",
       "default": true
-    },
-    {
-      "type": "select",
-      "id": "bottle_entrance",
-      "label": "Bottle entrance",
-      "info": "From the background starts the bottle behind the word and zooms it up from the bottom.",
-      "options": [
-        { "value": "depth", "label": "From the background" },
-        { "value": "rise", "label": "Rise and settle" },
-        { "value": "glide", "label": "Glide in with a tilt" },
-        { "value": "reveal", "label": "Unveil from below" }
-      ],
-      "default": "depth"
-    },
-    {
-      "type": "select",
-      "id": "float_entrance",
-      "label": "Floating elements entrance",
-      "options": [
-        { "value": "center", "label": "Zoom out from the center" },
-        { "value": "scatter", "label": "Drift in from the edges" }
-      ],
-      "default": "center"
     },
     {
       "type": "range",
@@ -665,6 +685,189 @@
     },
     {
       "type": "header",
+      "content": "Layer entrances",
+      "info": "Every layer of the hero animates in on its own. Each one has its own entrance below, so the atmosphere, the word, the splash, the bottle, the petals and the product card can all arrive a different way. \"Cut — no animation\" makes a layer appear instantly, with nothing to distract from the layers around it."
+    },
+    {
+      "type": "select",
+      "id": "bg_entrance",
+      "label": "1. Atmosphere",
+      "info": "Sits behind everything. On a slide change this is the transition the visitor actually sees: the new slide is already stacked on top of the old one, so a cut swaps the whole scene instantly.",
+      "options": [
+        {
+          "value": "bloom",
+          "label": "Colour bloom"
+        },
+        {
+          "value": "fade",
+          "label": "Soft fade"
+        },
+        {
+          "value": "drift",
+          "label": "Slide in from the side"
+        },
+        {
+          "value": "zoom",
+          "label": "Zoom punch"
+        },
+        {
+          "value": "cut",
+          "label": "Cut — no animation"
+        }
+      ],
+      "default": "bloom"
+    },
+    {
+      "type": "select",
+      "id": "word_entrance",
+      "label": "2. Display word",
+      "info": "The oversized headline. Letter-based presets animate each glyph in turn; Rise out of a mask clips every letter to its own window and lifts it into place.",
+      "options": [
+        {
+          "value": "mask",
+          "label": "Rise out of a mask"
+        },
+        {
+          "value": "right",
+          "label": "Slide in from the right"
+        },
+        {
+          "value": "flip",
+          "label": "Letters tip up"
+        },
+        {
+          "value": "scatter",
+          "label": "Letters gather from a scatter"
+        },
+        {
+          "value": "cut",
+          "label": "Cut — no animation"
+        }
+      ],
+      "default": "mask"
+    },
+    {
+      "type": "select",
+      "id": "splash_entrance",
+      "label": "3. Splash",
+      "info": "The liquid bloom anchored to the bottom edge, behind the bottle. It never moves with the pointer.",
+      "options": [
+        {
+          "value": "burst",
+          "label": "Squash and burst"
+        },
+        {
+          "value": "rise",
+          "label": "Rise into place"
+        },
+        {
+          "value": "wipe",
+          "label": "Wipe up from the base"
+        },
+        {
+          "value": "pulse",
+          "label": "Pulse out"
+        },
+        {
+          "value": "cut",
+          "label": "Cut — no animation"
+        }
+      ],
+      "default": "burst"
+    },
+    {
+      "type": "select",
+      "id": "bottle_entrance",
+      "label": "4. Bottle",
+      "info": "The hero product. Drop in from the top is the default: the bottle falls in from above the hero, leaning back, and straightens up as it lands. Still — no animation keeps the product completely static instead. From the background starts it small and soft behind the word and zooms it up from the bottom.",
+      "options": [
+        {
+          "value": "drop",
+          "label": "Drop in from the top"
+        },
+        {
+          "value": "still",
+          "label": "Still — no animation"
+        },
+        {
+          "value": "depth",
+          "label": "From the background"
+        },
+        {
+          "value": "rise",
+          "label": "Rise and settle"
+        },
+        {
+          "value": "glide",
+          "label": "Glide in with a tilt"
+        },
+        {
+          "value": "reveal",
+          "label": "Unveil from below"
+        }
+      ],
+      "default": "drop"
+    },
+    {
+      "type": "select",
+      "id": "float_entrance",
+      "label": "5. Floating elements",
+      "info": "The petals and droplets in front of the bottle. They are the one layer that keeps drifting after the entrance.",
+      "options": [
+        {
+          "value": "center",
+          "label": "Zoom out from the center"
+        },
+        {
+          "value": "scatter",
+          "label": "Drift in from the edges"
+        },
+        {
+          "value": "drop",
+          "label": "Fall in from above"
+        },
+        {
+          "value": "swirl",
+          "label": "Swirl into place"
+        },
+        {
+          "value": "cut",
+          "label": "Cut — no animation"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "card_entrance",
+      "label": "6. Product card",
+      "info": "The glass card with sizes, price and Add to cart, plus its contents. It arrives last, after the scene behind it has settled.",
+      "options": [
+        {
+          "value": "wipe",
+          "label": "Glass wipe from the left"
+        },
+        {
+          "value": "rise",
+          "label": "Rise and fade"
+        },
+        {
+          "value": "grow",
+          "label": "Grow from the corner"
+        },
+        {
+          "value": "drop",
+          "label": "Drop in from the top"
+        },
+        {
+          "value": "cut",
+          "label": "Cut — no animation"
+        }
+      ],
+      "default": "wipe"
+    },
+    {
+      "type": "header",
       "content": "Style"
     },
     {
@@ -673,17 +876,50 @@
       "label": "Display word font",
       "info": "Google Fonts load only for the font you pick.",
       "options": [
-        { "value": "sf_pro_rounded", "label": "SF Pro Rounded" },
-        { "value": "custom", "label": "Custom font file" },
-        { "value": "bodoni_moda", "label": "Bodoni Moda" },
-        { "value": "playfair_display", "label": "Playfair Display" },
-        { "value": "cormorant_garamond", "label": "Cormorant Garamond" },
-        { "value": "italiana", "label": "Italiana (light)" },
-        { "value": "dm_serif_display", "label": "DM Serif Display" },
-        { "value": "syne", "label": "Syne (modern sans)" },
-        { "value": "patelle", "label": "Inter (Patélle body)" },
-        { "value": "heading", "label": "Theme heading font" },
-        { "value": "body", "label": "Theme body font" }
+        {
+          "value": "sf_pro_rounded",
+          "label": "SF Pro Rounded"
+        },
+        {
+          "value": "custom",
+          "label": "Custom font file"
+        },
+        {
+          "value": "bodoni_moda",
+          "label": "Bodoni Moda"
+        },
+        {
+          "value": "playfair_display",
+          "label": "Playfair Display"
+        },
+        {
+          "value": "cormorant_garamond",
+          "label": "Cormorant Garamond"
+        },
+        {
+          "value": "italiana",
+          "label": "Italiana (light)"
+        },
+        {
+          "value": "dm_serif_display",
+          "label": "DM Serif Display"
+        },
+        {
+          "value": "syne",
+          "label": "Syne (modern sans)"
+        },
+        {
+          "value": "patelle",
+          "label": "Inter (Patélle body)"
+        },
+        {
+          "value": "heading",
+          "label": "Theme heading font"
+        },
+        {
+          "value": "body",
+          "label": "Theme body font"
+        }
       ],
       "default": "sf_pro_rounded"
     },
@@ -725,11 +961,26 @@
       "id": "display_weight",
       "label": "Display word weight",
       "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" },
-        { "value": "800", "label": "Extra bold" }
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        },
+        {
+          "value": "800",
+          "label": "Extra bold"
+        }
       ],
       "info": "Italiana and DM Serif Display have one weight only.",
       "default": "700"
@@ -749,9 +1000,18 @@
       "id": "arrow_style",
       "label": "Style",
       "options": [
-        { "value": "solid", "label": "Solid circle" },
-        { "value": "outline", "label": "Outline circle" },
-        { "value": "glass", "label": "Glass circle" }
+        {
+          "value": "solid",
+          "label": "Solid circle"
+        },
+        {
+          "value": "outline",
+          "label": "Outline circle"
+        },
+        {
+          "value": "glass",
+          "label": "Glass circle"
+        }
       ],
       "default": "solid"
     },
@@ -859,7 +1119,7 @@
       "settings": [
         {
           "type": "header",
-          "content": "Layer 1: Background"
+          "content": "Layer 1: Atmosphere"
         },
         {
           "type": "image_picker",
@@ -889,9 +1149,18 @@
           "id": "gradient_style",
           "label": "Color treatment",
           "options": [
-            { "value": "radial", "label": "Center glow" },
-            { "value": "linear", "label": "Diagonal wash" },
-            { "value": "solid", "label": "Solid" }
+            {
+              "value": "radial",
+              "label": "Center glow"
+            },
+            {
+              "value": "linear",
+              "label": "Diagonal wash"
+            },
+            {
+              "value": "solid",
+              "label": "Solid"
+            }
           ],
           "default": "radial"
         },
@@ -927,8 +1196,14 @@
           "id": "word_style",
           "label": "Word style",
           "options": [
-            { "value": "solid", "label": "Solid" },
-            { "value": "outline", "label": "Outline" }
+            {
+              "value": "solid",
+              "label": "Solid"
+            },
+            {
+              "value": "outline",
+              "label": "Outline"
+            }
           ],
           "default": "solid"
         },
@@ -950,13 +1225,43 @@
         },
         {
           "type": "header",
-          "content": "Layer 3: Splash and floating elements"
+          "content": "Layer 3: Splash"
         },
         {
           "type": "image_picker",
           "id": "splash_image",
           "label": "Splash behind bottle",
           "info": "Transparent PNG or WebP, such as a liquid splash."
+        },
+        {
+          "type": "header",
+          "content": "Layer 4: Hero bottle"
+        },
+        {
+          "type": "image_picker",
+          "id": "bottle_image",
+          "label": "Bottle image",
+          "info": "Transparent PNG or WebP, cropped close to the bottle."
+        },
+        {
+          "type": "range",
+          "id": "bottle_width",
+          "label": "Bottle width",
+          "min": 240,
+          "max": 640,
+          "step": 20,
+          "unit": "px",
+          "default": 440
+        },
+        {
+          "type": "checkbox",
+          "id": "show_shadow",
+          "label": "Show ground shadow",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Layer 5: Foreground petals and droplets"
         },
         {
           "type": "image_picker",
@@ -997,33 +1302,7 @@
         },
         {
           "type": "header",
-          "content": "Layer 4: Hero bottle"
-        },
-        {
-          "type": "image_picker",
-          "id": "bottle_image",
-          "label": "Bottle image",
-          "info": "Transparent PNG or WebP, cropped close to the bottle."
-        },
-        {
-          "type": "range",
-          "id": "bottle_width",
-          "label": "Bottle width",
-          "min": 240,
-          "max": 640,
-          "step": 20,
-          "unit": "px",
-          "default": 440
-        },
-        {
-          "type": "checkbox",
-          "id": "show_shadow",
-          "label": "Show ground shadow",
-          "default": true
-        },
-        {
-          "type": "header",
-          "content": "Layer 5: Product card"
+          "content": "Layer 6: Glass product card"
         },
         {
           "type": "product",

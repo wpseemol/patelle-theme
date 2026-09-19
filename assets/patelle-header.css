@@ -15,28 +15,31 @@
         transparent
     );
 
-    /* Floating glass palette. The bar itself is transparent — the glass lives
-       on the nav pill and the action buttons. Over the hero those are white;
-       on solid pages they fall back to the theme's tint and text colour so
-       nothing disappears against a light background. */
+    /* Liquid-glass palette (iOS Control Center / water frost). The bar itself
+       stays transparent — glass lives on the nav pill and action buttons.
+       Over the hero those are bright frost; solid pages use the theme tint. */
     --ph-nav-ink: #ffffff;
-    --ph-glass-bg: rgba(255, 255, 255, 0.12);
-    --ph-glass-edge: rgba(255, 255, 255, 0.28);
-    --ph-glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    --ph-active-bg: rgba(255, 255, 255, 0.22);
-    --ph-active-shadow: inset 0 0 6px rgba(255, 255, 255, 0.2);
+    --ph-glass-bg: rgba(255, 255, 255, 0.14);
+    --ph-glass-edge: rgba(255, 255, 255, 0.36);
+    --ph-glass-shadow:
+        0 8px 28px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+    --ph-active-bg: rgba(255, 255, 255, 0.28);
+    --ph-active-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 0 10px rgba(255, 255, 255, 0.18);
 
-    /* Glass material, shared with the hero card (patelle-hero-slider.css):
-       a body brighter at the top, a rim strongest on the top-left edge, and
-       a sliding lens that marks the hovered or current link. */
-    --ph-glass-top: rgba(255, 255, 255, 0.22);
-    --ph-rim-hi: rgba(255, 255, 255, 0.8);
-    --ph-rim-mid: rgba(255, 255, 255, 0.2);
-    --ph-rim-lo: rgba(255, 255, 255, 0.05);
-    --ph-rim-end: rgba(255, 255, 255, 0.36);
-    --ph-lens-top: rgba(255, 255, 255, 0.34);
-    --ph-lens-bottom: rgba(255, 255, 255, 0.12);
+    /* Shared with the hero card: brighter top body, rim strongest top-left,
+       and a sliding lens under the hovered / current link. */
+    --ph-glass-top: rgba(255, 255, 255, 0.32);
+    --ph-rim-hi: rgba(255, 255, 255, 0.88);
+    --ph-rim-mid: rgba(255, 255, 255, 0.28);
+    --ph-rim-lo: rgba(255, 255, 255, 0.06);
+    --ph-rim-end: rgba(255, 255, 255, 0.42);
+    --ph-lens-top: rgba(255, 255, 255, 0.4);
+    --ph-lens-bottom: rgba(255, 255, 255, 0.14);
     --ph-lens-ease: cubic-bezier(0.34, 1.32, 0.5, 1);
+    --ph-frost: saturate(var(--ph-saturate)) blur(var(--ph-blur)) brightness(1.06);
 
     position: relative;
     z-index: 50;
@@ -82,6 +85,45 @@
 
 .pt-header--overlay {
     height: 0;
+    /* Glass opacity / edge settings drive the visible frost over the hero. */
+    --ph-glass-bg: rgba(
+        255,
+        255,
+        255,
+        calc(0.06 + var(--ph-glass-alpha) * 0.22)
+    );
+    --ph-glass-top: rgba(
+        255,
+        255,
+        255,
+        calc(0.14 + var(--ph-glass-alpha) * 0.36)
+    );
+    --ph-active-bg: rgba(
+        255,
+        255,
+        255,
+        calc(0.16 + var(--ph-glass-alpha) * 0.28)
+    );
+    --ph-rim-hi: rgba(
+        255,
+        255,
+        255,
+        calc(0.45 + var(--ph-border-alpha) * 1.2)
+    );
+    --ph-rim-mid: rgba(255, 255, 255, calc(0.12 + var(--ph-border-alpha)));
+    --ph-rim-end: rgba(255, 255, 255, calc(0.2 + var(--ph-border-alpha)));
+    --ph-lens-top: rgba(
+        255,
+        255,
+        255,
+        calc(0.22 + var(--ph-glass-alpha) * 0.28)
+    );
+    --ph-lens-bottom: rgba(
+        255,
+        255,
+        255,
+        calc(0.08 + var(--ph-glass-alpha) * 0.14)
+    );
 }
 
 .pt-header *,
@@ -154,8 +196,8 @@
         var(--ph-glass),
         min(0.94, calc(var(--ph-glass-alpha) + 0.28))
     );
-    -webkit-backdrop-filter: saturate(var(--ph-saturate)) blur(var(--ph-blur));
-    backdrop-filter: saturate(var(--ph-saturate)) blur(var(--ph-blur));
+    -webkit-backdrop-filter: var(--ph-frost);
+    backdrop-filter: var(--ph-frost);
     box-shadow:
         inset 0 -1px 0 rgba(255, 255, 255, 0.22),
         0 30px 60px -30px rgba(0, 0, 0, 0.35);
@@ -191,13 +233,11 @@
     text-decoration: none;
 }
 
-/* Figma lockup: a fixed box sized by the Logo max width and Logo height
-   settings. The image is contained inside it rather than sized by its own
-   aspect ratio, and the invert filter is what keeps the mark crisp white
-   over the hero. */
+/* Logo fills height first so the wordmark reads at the Logo height setting;
+   max-width only caps wide marks. */
 .pt-header__logo-img {
     display: block;
-    width: var(--ph-logo-w);
+    width: auto;
     height: var(--ph-logo-h);
     max-width: var(--ph-logo-w);
     max-height: var(--ph-logo-h);
@@ -210,7 +250,7 @@
 }
 
 .pt-header__logo-text {
-    font-size: calc(var(--ph-font-size) + 4px);
+    font-size: clamp(18px, calc(var(--ph-logo-h) * 0.55), 28px);
     font-weight: 600;
     letter-spacing: 0.08em;
     white-space: nowrap;
@@ -253,14 +293,15 @@
     background: linear-gradient(
         180deg,
         var(--ph-glass-top) 0%,
-        var(--ph-glass-bg) 60%
+        var(--ph-glass-bg) 55%,
+        rgba(255, 255, 255, 0.08) 100%
     );
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -8px 18px -14px rgba(255, 255, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -10px 22px -14px rgba(255, 255, 255, 0.35),
         var(--ph-glass-shadow);
-    -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.04);
-    backdrop-filter: blur(18px) saturate(180%) brightness(1.04);
+    -webkit-backdrop-filter: var(--ph-frost);
+    backdrop-filter: var(--ph-frost);
 }
 
 /* Rim light on the pill and the round buttons: a 1px ring cut out of a
@@ -485,15 +526,20 @@
     border: 0;
     border-radius: 100px;
     background-color: var(--ph-glass-bg);
-    background-image: linear-gradient(180deg, var(--ph-glass-top), transparent 70%);
+    background-image: linear-gradient(
+        180deg,
+        var(--ph-glass-top),
+        transparent 72%
+    );
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -8px 16px -12px rgba(255, 255, 255, 0.3),
         var(--ph-glass-shadow);
     color: var(--ph-nav-ink);
     text-decoration: none;
     cursor: pointer;
-    -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(1.04);
-    backdrop-filter: blur(16px) saturate(180%) brightness(1.04);
+    -webkit-backdrop-filter: var(--ph-frost);
+    backdrop-filter: var(--ph-frost);
     transition:
         background-color 0.2s var(--ph-ease),
         transform 0.35s var(--ph-lens-ease);
@@ -987,12 +1033,10 @@ html.pt-header-locked {
     }
 
     /* The bar is space-between with non-shrinking children, so an uncapped
-       lockup pushes the search/cart/toggle buttons off a phone screen. 220px is
-       the 40px of bar padding plus three 48px buttons and their 18px gaps, so
-       this only bites below a ~380px viewport and leaves the lockup at the
-       Figma 160px on every phone it actually fits on. */
+       lockup pushes the search/cart/toggle buttons off a phone screen. */
     .pt-header__logo-img {
-        width: min(var(--ph-logo-w), calc(100vw - 220px));
+        height: min(var(--ph-logo-h), 44px);
+        max-height: min(var(--ph-logo-h), 44px);
         max-width: min(var(--ph-logo-w), calc(100vw - 220px));
     }
 

@@ -34,6 +34,19 @@
   assign main_menu = linklists[s.menu]
   assign search_menu = linklists[s.search_menu]
 
+  # Prefer the header logo; fall back to Theme settings → Logo so the mark
+  # still shows when the merchant only uploaded it in site settings.
+  assign header_logo = s.logo
+  if header_logo == blank
+    assign header_logo = settings.logo
+  endif
+
+  assign logo_w = s.logo_width | default: 240
+  assign logo_h = s.logo_max_height | default: 56
+  if s.logo == blank and settings.logo != blank and settings.logo_width > logo_w
+    assign logo_w = settings.logo_width
+  endif
+
   case s.overlay_mode
     when 'home'
       if template.name == 'index'
@@ -101,8 +114,8 @@
     --ph-font-size: {{ s.nav_font_size }}px;
     --ph-font-weight: {{ s.nav_font_weight }};
     --ph-flyout-size: {{ s.flyout_font_size }}px;
-    --ph-logo-h: {{ s.logo_max_height }}px;
-    --ph-logo-w: {{ s.logo_width }}px;
+    --ph-logo-h: {{ logo_h }}px;
+    --ph-logo-w: {{ logo_w }}px;
     --ph-speed: {{ s.animation_speed }}ms;
   }
 {% endstyle %}
@@ -124,17 +137,17 @@
 
       <div class="pt-header__bar">
         <a href="{{ routes.root_url }}" class="pt-header__logo" aria-label="{{ shop.name | escape }}">
-          {%- if s.logo != blank -%}
+          {%- if header_logo != blank -%}
             {%- comment -%}
               sizes must track the Logo max width setting, otherwise the browser
               under-picks from the srcset and the mark renders soft.
             {%- endcomment -%}
-            {%- assign logo_size = s.logo_width | default: 160 | append: 'px' -%}
+            {%- assign logo_size = logo_w | append: 'px' -%}
             {{-
-              s.logo
-              | image_url: width: 600
+              header_logo
+              | image_url: width: 800
               | image_tag:
-                widths: '150, 300, 450, 600',
+                widths: '200, 400, 600, 800',
                 sizes: logo_size,
                 class: 'pt-header__logo-img',
                 loading: 'eager',
@@ -394,7 +407,8 @@
     {
       "type": "image_picker",
       "id": "logo",
-      "label": "Logo image"
+      "label": "Logo image",
+      "info": "Leave empty to use Theme settings → Logo."
     },
     {
       "type": "text",
@@ -407,22 +421,22 @@
       "type": "range",
       "id": "logo_max_height",
       "label": "Logo height",
-      "info": "Figma lockup is 160 x 48.",
-      "min": 12,
-      "max": 48,
-      "step": 1,
+      "info": "Raised so the wordmark can match the glass bar. Falls back to Theme settings → Logo when this section has no image.",
+      "min": 24,
+      "max": 72,
+      "step": 2,
       "unit": "px",
-      "default": 20
+      "default": 56
     },
     {
       "type": "range",
       "id": "logo_width",
       "label": "Logo max width",
-      "min": 60,
-      "max": 300,
+      "min": 80,
+      "max": 360,
       "step": 10,
       "unit": "px",
-      "default": 160
+      "default": 240
     },
     {
       "type": "checkbox",
@@ -455,11 +469,11 @@
       "type": "range",
       "id": "bar_height",
       "label": "Bar height",
-      "min": 40,
-      "max": 80,
+      "min": 48,
+      "max": 88,
       "step": 2,
       "unit": "px",
-      "default": 48
+      "default": 56
     },
     {
       "type": "range",
@@ -585,19 +599,19 @@
       "type": "range",
       "id": "glass_blur",
       "label": "Blur",
-      "info": "Applies to the open panels and the mobile sheet; the pill and buttons keep their own fixed frost.",
-      "min": 0,
-      "max": 40,
+      "info": "Frost on the nav pill, icon buttons, open panels, and mobile sheet — like iOS liquid glass.",
+      "min": 8,
+      "max": 48,
       "step": 2,
       "unit": "px",
-      "default": 20
+      "default": 28
     },
     {
       "type": "range",
       "id": "glass_saturation",
       "label": "Color saturation behind glass",
       "min": 100,
-      "max": 200,
+      "max": 220,
       "step": 10,
       "unit": "%",
       "default": 180
@@ -607,10 +621,10 @@
       "id": "border_opacity",
       "label": "Edge highlight",
       "min": 0,
-      "max": 40,
+      "max": 50,
       "step": 2,
       "unit": "%",
-      "default": 12
+      "default": 22
     },
     {
       "type": "header",

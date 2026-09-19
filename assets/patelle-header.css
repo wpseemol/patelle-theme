@@ -1035,8 +1035,8 @@ html.pt-header-locked {
     /* The bar is space-between with non-shrinking children, so an uncapped
        lockup pushes the search/cart/toggle buttons off a phone screen. */
     .pt-header__logo-img {
-        height: min(var(--ph-logo-h), 44px);
-        max-height: min(var(--ph-logo-h), 44px);
+        height: min(var(--ph-logo-h), 52px);
+        max-height: min(var(--ph-logo-h), 52px);
         max-width: min(var(--ph-logo-w), calc(100vw - 220px));
     }
 

@@ -41,8 +41,8 @@
     assign header_logo = settings.logo
   endif
 
-  assign logo_w = s.logo_width | default: 240
-  assign logo_h = s.logo_max_height | default: 56
+  assign logo_w = s.logo_width | default: 300
+  assign logo_h = s.logo_max_height | default: 64
   if s.logo == blank and settings.logo != blank and settings.logo_width > logo_w
     assign logo_w = settings.logo_width
   endif
@@ -422,21 +422,21 @@
       "id": "logo_max_height",
       "label": "Logo height",
       "info": "Raised so the wordmark can match the glass bar. Falls back to Theme settings → Logo when this section has no image.",
-      "min": 24,
-      "max": 72,
+      "min": 28,
+      "max": 80,
       "step": 2,
       "unit": "px",
-      "default": 56
+      "default": 64
     },
     {
       "type": "range",
       "id": "logo_width",
       "label": "Logo max width",
-      "min": 80,
-      "max": 360,
+      "min": 100,
+      "max": 400,
       "step": 10,
       "unit": "px",
-      "default": 240
+      "default": 300
     },
     {
       "type": "checkbox",
@@ -470,10 +470,10 @@
       "id": "bar_height",
       "label": "Bar height",
       "min": 48,
-      "max": 88,
+      "max": 96,
       "step": 2,
       "unit": "px",
-      "default": 56
+      "default": 64
     },
     {
       "type": "range",

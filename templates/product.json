@@ -1,6 +1,10 @@
 /*
  * ------------------------------------------------------------
- * PATÉLLE — Product detail page (Figma single product layout)
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
 {
@@ -32,18 +36,21 @@
         "reel_1": {
           "type": "reel",
           "settings": {
+            "video_url": "",
             "label": "Customer reel 1"
           }
         },
         "reel_2": {
           "type": "reel",
           "settings": {
+            "video_url": "",
             "label": "Customer reel 2"
           }
         },
         "reel_3": {
           "type": "reel",
           "settings": {
+            "video_url": "",
             "label": "Customer reel 3"
           }
         },
@@ -57,37 +64,43 @@
         "accord_2": {
           "type": "accord",
           "settings": {
-            "label": "Floral"
+            "label": "Floral",
+            "highlight": false
           }
         },
         "accord_3": {
           "type": "accord",
           "settings": {
-            "label": "Sweet"
+            "label": "Sweet",
+            "highlight": false
           }
         },
         "accord_4": {
           "type": "accord",
           "settings": {
-            "label": "Patchouli"
+            "label": "Patchouli",
+            "highlight": false
           }
         },
         "accord_5": {
           "type": "accord",
           "settings": {
-            "label": "Musky"
+            "label": "Musky",
+            "highlight": false
           }
         },
         "accord_6": {
           "type": "accord",
           "settings": {
-            "label": "Woody"
+            "label": "Woody",
+            "highlight": false
           }
         },
         "accord_7": {
           "type": "accord",
           "settings": {
-            "label": "Warm Spicy"
+            "label": "Warm Spicy",
+            "highlight": false
           }
         },
         "note_1": {
@@ -167,8 +180,6 @@
         "detail_4"
       ],
       "settings": {
-        "reels_heading": "Real Results",
-        "notes_heading": "Key Notes",
         "short_description": "Visibly firms and smooths skin to reduce early signs of aging.",
         "fallback_rating": "4.7",
         "fallback_review_count": "1,634",
@@ -180,16 +191,25 @@
         "intensity_level": 3,
         "intensity_help": "How strong the fragrance projects and lasts on skin.",
         "quantity_note": "Up to 3 Save 20%",
+        "reels_heading": "Real Results",
+        "notes_heading": "Key Notes",
+        "spacing_mode": "padding",
         "padding_top": 24,
-        "padding_bottom": 40
+        "padding_bottom": 40,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     },
     "product_video": {
       "type": "patelle-product-video",
       "settings": {
+        "video_url": "",
         "loop": true,
+        "spacing_mode": "padding",
         "padding_top": 32,
-        "padding_bottom": 48
+        "padding_bottom": 48,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     },
     "product_reviews": {
@@ -236,9 +256,15 @@
           }
         }
       },
-      "block_order": ["review_1", "review_2", "review_3", "review_4"],
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4"
+      ],
       "settings": {
         "heading": "Rating & Reviews",
+        "show_summary": true,
         "score": "4.5",
         "review_count_label": "50 New Reviews",
         "bar_5": 75,
@@ -249,11 +275,15 @@
         "cta_heading": "Review this product",
         "cta_text": "Share your thoughts with other customers",
         "cta_label": "Write a customer review",
+        "cta_link": "",
         "show_load_more": true,
         "reviews_per_page": 2,
         "load_more_label": "Load More",
+        "spacing_mode": "padding",
         "padding_top": 40,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     },
     "product_promise": {
@@ -295,11 +325,21 @@
           }
         }
       },
-      "block_order": ["p1", "p2", "p3", "p4", "p5"],
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5"
+      ],
       "settings": {
         "heading": "Our Quality Promise",
+        "background_image": "shopify://shop_images/c3e40a6bdf03d43937505ffc0f969863340d0c00.png",
+        "spacing_mode": "padding",
         "padding_top": 96,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     },
     "product_related": {
@@ -307,12 +347,17 @@
       "settings": {
         "heading": "You May Also Like",
         "products_to_show": 4,
+        "collection": "",
         "vendor_tagline": "(Luxury. No Markup.)",
         "show_rating": false,
         "show_view_all": true,
         "view_all_label": "View All",
+        "view_all_url": "",
+        "spacing_mode": "padding",
         "padding_top": 64,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     }
   },

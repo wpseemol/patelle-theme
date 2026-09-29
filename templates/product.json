@@ -203,7 +203,8 @@
     "product_video": {
       "type": "patelle-product-video",
       "settings": {
-        "video_url": "",
+        "image": "shopify://shop_images/c3e40a6bdf03d43937505ffc0f969863340d0c00.png",
+        "video_url": "https://youtu.be/hCMD7egiH9Q?si=FfysGR1PcKxTN2q1",
         "loop": true,
         "spacing_mode": "padding",
         "padding_top": 32,

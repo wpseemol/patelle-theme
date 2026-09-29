@@ -73,7 +73,7 @@
                 {{ product.featured_media | image_url: width: 900 }} 900w,
                 {{ product.featured_media | image_url: width: 1200 }} 1200w
               "
-              sizes="(min-width: 990px) 560px, 92vw"
+              sizes="(min-width: 990px) 700px, 92vw"
               alt="{{ product.featured_media.alt | default: product.title | escape }}"
               width="{{ product.featured_media.width }}"
               height="{{ product.featured_media.height }}"
@@ -85,29 +85,32 @@
         </div>
 
         {%- if media_count > 1 -%}
-          <ul class="pt-pdp-gallery__thumbs" role="list">
-            {%- for media in product.media limit: 4 -%}
-              {%- if media.media_type == 'image' -%}
+          <ul class="pt-pdp-gallery__grid" role="list">
+            {%- for media in product.media offset: 1 limit: 4 -%}
+              {%- assign preview = media.preview_image -%}
+              {%- if preview != blank -%}
+                {%- capture thumb_srcset -%}
+                  {{- preview | image_url: width: 600 }} 600w, {{ preview | image_url: width: 900 }} 900w, {{ preview | image_url: width: 1200 }} 1200w
+                {%- endcapture -%}
                 <li>
                   <button
                     type="button"
-                    class="pt-pdp-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                    class="pt-pdp-gallery__thumb"
                     data-pt-gallery-thumb
-                    data-src="{{ media | image_url: width: 1200 }}"
-                    data-srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 900 }} 900w, {{ media | image_url: width: 1200 }} 1200w"
-                    data-alt="{{ media.alt | default: product.title | escape }}"
-                    aria-label="{{ product.title | escape }} — image {{ forloop.index }}"
-                    aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                    data-src="{{ preview | image_url: width: 1200 }}"
+                    data-srcset="{{ thumb_srcset }}"
+                    data-alt="{{ preview.alt | default: product.title | escape }}"
+                    aria-label="Show this image larger"
                   >
-                    {{
-                      media
-                      | image_url: width: 240
-                      | image_tag:
-                        loading: 'lazy',
-                        widths: '120, 180, 240',
-                        sizes: '90px',
-                        alt: media.alt | default: product.title
-                    }}
+                    <img
+                      src="{{ preview | image_url: width: 900 }}"
+                      srcset="{{ thumb_srcset }}"
+                      sizes="(min-width: 990px) 330px, 46vw"
+                      alt="{{ preview.alt | default: product.title | escape }}"
+                      width="{{ preview.width }}"
+                      height="{{ preview.height }}"
+                      loading="lazy"
+                    >
                   </button>
                 </li>
               {%- endif -%}
@@ -350,6 +353,98 @@
             {%- endfor -%}
           </div>
         {%- endif -%}
+
+        {%- assign reel_blocks = section.blocks | where: 'type', 'reel' -%}
+        {%- if reel_blocks.size > 0 -%}
+          <div class="pt-pdp-reels pt-pdp-reels--inline">
+            <div class="pt-pdp-reels__head">
+              {%- if section.settings.reels_heading != blank -%}
+                <h2 class="pt-pdp-info__subhead">{{ section.settings.reels_heading }}</h2>
+              {%- endif -%}
+              {%- if reel_blocks.size > 3 -%}
+                <div class="pt-pdp-reels__nav">
+                  <button type="button" class="pt-pdp-reels__arrow" data-pt-reels-prev aria-label="Previous reels">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                      <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <button type="button" class="pt-pdp-reels__arrow" data-pt-reels-next aria-label="Next reels">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                      <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+              {%- endif -%}
+            </div>
+            <div class="pt-pdp-reels__track" data-pt-reels-track>
+              {%- for block in reel_blocks -%}
+                {% render 'patelle-product-reel',
+                  block: block,
+                  sizes: '(min-width: 990px) 200px, 30vw',
+                  fallback_alt: product.title,
+                  show_label: false
+                %}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- assign accord_blocks = section.blocks | where: 'type', 'accord' -%}
+        {%- if accord_blocks.size > 0 -%}
+          <ul class="pt-pdp-accords" role="list">
+            {%- for block in accord_blocks -%}
+              <li
+                class="pt-pdp-accord{% if block.settings.highlight %} is-highlight{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.label }}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- assign note_blocks = section.blocks | where: 'type', 'note' -%}
+        {%- if note_blocks.size > 0 -%}
+          <div class="pt-pdp-notes">
+            {%- if section.settings.notes_heading != blank -%}
+              <h2 class="pt-pdp-info__subhead">{{ section.settings.notes_heading }}</h2>
+            {%- endif -%}
+            <ul class="pt-pdp-notes__list" role="list">
+              {%- for block in note_blocks -%}
+                <li class="pt-pdp-note" {{ block.shopify_attributes }}>
+                  <span class="pt-pdp-note__img">
+                    {%- if block.settings.image != blank -%}
+                      {{
+                        block.settings.image
+                        | image_url: width: 160
+                        | image_tag:
+                          loading: 'lazy',
+                          widths: '80, 120, 160',
+                          sizes: '64px',
+                          alt: block.settings.label
+                      }}
+                    {%- endif -%}
+                  </span>
+                  {%- if block.settings.label != blank -%}
+                    <span class="pt-pdp-note__label">{{ block.settings.label }}</span>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- assign detail_blocks = section.blocks | where: 'type', 'detail' -%}
+        {%- if detail_blocks.size > 0 -%}
+          <dl class="pt-pdp-details">
+            {%- for block in detail_blocks -%}
+              <div class="pt-pdp-details__item" {{ block.shopify_attributes }}>
+                <dt>{{ block.settings.label }}</dt>
+                <dd>{{ block.settings.value }}</dd>
+              </div>
+            {%- endfor -%}
+          </dl>
+        {%- endif -%}
       </div>
     </div>
   </div>
@@ -451,6 +546,22 @@
     },
     {
       "type": "header",
+      "content": "Reels & notes"
+    },
+    {
+      "type": "text",
+      "id": "reels_heading",
+      "label": "Reels heading",
+      "default": "Real Results"
+    },
+    {
+      "type": "text",
+      "id": "notes_heading",
+      "label": "Key notes heading",
+      "default": "Key Notes"
+    },
+    {
+      "type": "header",
       "content": "Spacing"
     },
     {
@@ -535,6 +646,82 @@
           "default": "Premium Quality"
         }
       ]
+    },
+    {
+      "type": "reel",
+      "name": "Reel",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Poster image"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video link"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "info": "Used as the image description for screen readers.",
+          "default": "Customer reel"
+        }
+      ]
+    },
+    {
+      "type": "accord",
+      "name": "Scent accord",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Fruity"
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Highlight",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "name": "Key note",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Strawberry"
+        }
+      ]
+    },
+    {
+      "type": "detail",
+      "name": "Detail",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Top Notes"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "Strawberry, Pear, Mandarin"
+        }
+      ]
     }
   ],
   "presets": [
@@ -543,7 +730,10 @@
       "blocks": [
         { "type": "trust", "settings": { "icon": "diamond", "label": "Premium Quality" } },
         { "type": "trust", "settings": { "icon": "clock", "label": "Long Lasting" } },
-        { "type": "trust", "settings": { "icon": "leaf", "label": "Clean Ingredients" } }
+        { "type": "trust", "settings": { "icon": "leaf", "label": "Clean Ingredients" } },
+        { "type": "reel", "settings": { "label": "Reel 1" } },
+        { "type": "reel", "settings": { "label": "Reel 2" } },
+        { "type": "reel", "settings": { "label": "Reel 3" } }
       ]
     }
   ]

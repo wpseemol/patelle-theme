@@ -5,7 +5,19 @@
 
 {%- liquid
   assign products_to_show = section.settings.products_to_show
+  assign view_all_href = section.settings.view_all_url | default: section.settings.collection.url | default: routes.all_products_collection_url
 -%}
+
+{%- capture related_head -%}
+  <div class="pt-pdp-related__head">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pt-pdp-related__title">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.show_view_all -%}
+      <a class="pt-pill pt-pdp-related__all" href="{{ view_all_href }}">{{ section.settings.view_all_label }}</a>
+    {%- endif -%}
+  </div>
+{%- endcapture -%}
 
 <div
   class="pt-section pt-product-page pt-pdp-related"
@@ -18,17 +30,16 @@
     data-product-id="{{ product.id }}"
   >
     {%- if recommendations.performed and recommendations.products_count > 0 -%}
-      {%- if section.settings.heading != blank -%}
-        <h2 class="pt-pdp-related__title">{{ section.settings.heading }}</h2>
-      {%- endif -%}
+      {{ related_head }}
 
       <ul class="pt-pdp-related__list" role="list">
         {%- for recommendation in recommendations.products limit: products_to_show -%}
           <li class="pt-pdp-related__item">
             {% render 'patelle-card',
               card_product: recommendation,
-              card_style: 'catalog',
+              card_style: 'overlay',
               section_id: section.id,
+              tagline: section.settings.vendor_tagline,
               show_rating: section.settings.show_rating,
               index: forloop.index
             %}
@@ -44,9 +55,7 @@
         assign shown = 0
       -%}
       {%- if fallback_collection != blank and fallback_collection.products_count > 0 -%}
-        {%- if section.settings.heading != blank -%}
-          <h2 class="pt-pdp-related__title">{{ section.settings.heading }}</h2>
-        {%- endif -%}
+        {{ related_head }}
 
         <ul class="pt-pdp-related__list" role="list">
           {%- for related_product in fallback_collection.products -%}
@@ -54,8 +63,9 @@
               <li class="pt-pdp-related__item">
                 {% render 'patelle-card',
                   card_product: related_product,
-                  card_style: 'catalog',
+                  card_style: 'overlay',
                   section_id: section.id,
+                  tagline: section.settings.vendor_tagline,
                   show_rating: section.settings.show_rating,
                   index: forloop.index
                 %}
@@ -97,10 +107,34 @@
       "info": "Used when Shopify recommendations are empty"
     },
     {
+      "type": "text",
+      "id": "vendor_tagline",
+      "label": "Vendor tagline",
+      "default": "(Luxury. No Markup.)"
+    },
+    {
       "type": "checkbox",
       "id": "show_rating",
-      "label": "Show rating badge",
+      "label": "Show rating stars",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show View all button",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "Button label",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "Button link",
+      "info": "Defaults to the fallback collection, then All products."
     },
     {
       "type": "header",

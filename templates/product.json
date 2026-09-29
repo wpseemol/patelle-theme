@@ -28,10 +28,147 @@
             "icon": "leaf",
             "label": "Clean Ingredients"
           }
+        },
+        "reel_1": {
+          "type": "reel",
+          "settings": {
+            "label": "Customer reel 1"
+          }
+        },
+        "reel_2": {
+          "type": "reel",
+          "settings": {
+            "label": "Customer reel 2"
+          }
+        },
+        "reel_3": {
+          "type": "reel",
+          "settings": {
+            "label": "Customer reel 3"
+          }
+        },
+        "accord_1": {
+          "type": "accord",
+          "settings": {
+            "label": "Fruity",
+            "highlight": true
+          }
+        },
+        "accord_2": {
+          "type": "accord",
+          "settings": {
+            "label": "Floral"
+          }
+        },
+        "accord_3": {
+          "type": "accord",
+          "settings": {
+            "label": "Sweet"
+          }
+        },
+        "accord_4": {
+          "type": "accord",
+          "settings": {
+            "label": "Patchouli"
+          }
+        },
+        "accord_5": {
+          "type": "accord",
+          "settings": {
+            "label": "Musky"
+          }
+        },
+        "accord_6": {
+          "type": "accord",
+          "settings": {
+            "label": "Woody"
+          }
+        },
+        "accord_7": {
+          "type": "accord",
+          "settings": {
+            "label": "Warm Spicy"
+          }
+        },
+        "note_1": {
+          "type": "note",
+          "settings": {
+            "label": "Strawberry"
+          }
+        },
+        "note_2": {
+          "type": "note",
+          "settings": {
+            "label": "Pear"
+          }
+        },
+        "note_3": {
+          "type": "note",
+          "settings": {
+            "label": "Peony"
+          }
+        },
+        "note_4": {
+          "type": "note",
+          "settings": {
+            "label": "Patchouli"
+          }
+        },
+        "detail_1": {
+          "type": "detail",
+          "settings": {
+            "label": "Top Notes",
+            "value": "Strawberry, Pear, Mandarin"
+          }
+        },
+        "detail_2": {
+          "type": "detail",
+          "settings": {
+            "label": "Heart Notes",
+            "value": "Peony, Jasmine, Rose"
+          }
+        },
+        "detail_3": {
+          "type": "detail",
+          "settings": {
+            "label": "Base Notes",
+            "value": "Patchouli, Vanilla, White Musk"
+          }
+        },
+        "detail_4": {
+          "type": "detail",
+          "settings": {
+            "label": "Longevity",
+            "value": "8–10 hours"
+          }
         }
       },
-      "block_order": ["trust_1", "trust_2", "trust_3"],
+      "block_order": [
+        "trust_1",
+        "trust_2",
+        "trust_3",
+        "reel_1",
+        "reel_2",
+        "reel_3",
+        "accord_1",
+        "accord_2",
+        "accord_3",
+        "accord_4",
+        "accord_5",
+        "accord_6",
+        "accord_7",
+        "note_1",
+        "note_2",
+        "note_3",
+        "note_4",
+        "detail_1",
+        "detail_2",
+        "detail_3",
+        "detail_4"
+      ],
       "settings": {
+        "reels_heading": "Real Results",
+        "notes_heading": "Key Notes",
         "short_description": "Visibly firms and smooths skin to reduce early signs of aging.",
         "fallback_rating": "4.7",
         "fallback_review_count": "1,634",
@@ -47,40 +184,11 @@
         "padding_bottom": 40
       }
     },
-    "product_reels": {
-      "type": "patelle-product-reels",
-      "blocks": {
-        "reel_1": {
-          "type": "reel",
-          "settings": {
-            "label": "Reel 1"
-          }
-        },
-        "reel_2": {
-          "type": "reel",
-          "settings": {
-            "label": "Reel 2"
-          }
-        },
-        "reel_3": {
-          "type": "reel",
-          "settings": {
-            "label": "Reel 3"
-          }
-        }
-      },
-      "block_order": ["reel_1", "reel_2", "reel_3"],
-      "settings": {
-        "heading": "Product reels",
-        "padding_top": 16,
-        "padding_bottom": 48
-      }
-    },
     "product_video": {
       "type": "patelle-product-video",
       "settings": {
         "loop": true,
-        "padding_top": 24,
+        "padding_top": 32,
         "padding_bottom": 48
       }
     },
@@ -106,9 +214,29 @@
             "rating": 5,
             "text": "Smells expensive without the markup. The peony note is soft and the patchouli keeps it interesting all day."
           }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "name": "Sofia Rahman",
+            "role": "Verified buyer",
+            "when": "1 month ago",
+            "rating": 5,
+            "text": "The strawberry opening is juicy without being sugary. Lasts through a full work day on my skin."
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "name": "Ava Thompson",
+            "role": "Verified buyer",
+            "when": "2 months ago",
+            "rating": 4,
+            "text": "Beautiful bottle and a gorgeous dry-down. I wish the 100 ml size was in stock, but I will reorder."
+          }
         }
       },
-      "block_order": ["review_1", "review_2"],
+      "block_order": ["review_1", "review_2", "review_3", "review_4"],
       "settings": {
         "heading": "Rating & Reviews",
         "score": "4.5",
@@ -122,6 +250,7 @@
         "cta_text": "Share your thoughts with other customers",
         "cta_label": "Write a customer review",
         "show_load_more": true,
+        "reviews_per_page": 2,
         "load_more_label": "Load More",
         "padding_top": 40,
         "padding_bottom": 64
@@ -133,37 +262,44 @@
         "p1": {
           "type": "item",
           "settings": {
-            "icon": "natural",
-            "label": "Natural Ingredients"
+            "icon": "lasting",
+            "label": "Long Lasting"
           }
         },
         "p2": {
           "type": "item",
           "settings": {
-            "icon": "cruelty",
-            "label": "Cruelty Free"
+            "icon": "natural",
+            "label": "Premium Ingredients"
           }
         },
         "p3": {
           "type": "item",
           "settings": {
-            "icon": "lasting",
-            "label": "Long Lasting"
+            "icon": "cruelty",
+            "label": "Cruelty Free & Vegan"
           }
         },
         "p4": {
           "type": "item",
           "settings": {
             "icon": "eco",
-            "label": "Eco-Friendly"
+            "label": "Eco-Friendly Packaging"
+          }
+        },
+        "p5": {
+          "type": "item",
+          "settings": {
+            "icon": "drop",
+            "label": "Skin Safe"
           }
         }
       },
-      "block_order": ["p1", "p2", "p3", "p4"],
+      "block_order": ["p1", "p2", "p3", "p4", "p5"],
       "settings": {
         "heading": "Our Quality Promise",
-        "padding_top": 72,
-        "padding_bottom": 72
+        "padding_top": 96,
+        "padding_bottom": 96
       }
     },
     "product_related": {
@@ -171,7 +307,10 @@
       "settings": {
         "heading": "You May Also Like",
         "products_to_show": 4,
-        "show_rating": true,
+        "vendor_tagline": "(Luxury. No Markup.)",
+        "show_rating": false,
+        "show_view_all": true,
+        "view_all_label": "View All",
         "padding_top": 64,
         "padding_bottom": 80
       }
@@ -179,7 +318,6 @@
   },
   "order": [
     "main",
-    "product_reels",
     "product_video",
     "product_reviews",
     "product_promise",

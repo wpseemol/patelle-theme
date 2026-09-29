@@ -2,6 +2,9 @@
  * PATÉLLE product detail — gallery + variant selection
  */
 (() => {
+  if (window.ptProductScriptLoaded) return;
+  window.ptProductScriptLoaded = true;
+
   class PatelleProductMain extends HTMLElement {
     connectedCallback() {
       this.mainImage = this.querySelector('[data-pt-gallery-main]');
@@ -22,7 +25,7 @@
       }
 
       this.thumbs.forEach((thumb) => {
-        thumb.addEventListener('click', () => this.setActiveMedia(thumb));
+        thumb.addEventListener('click', () => this.swapMedia(thumb));
       });
 
       this.optionInputs.forEach((input) => {
@@ -32,20 +35,34 @@
       this.updateVariant({ silent: true });
     }
 
-    setActiveMedia(thumb) {
-      const src = thumb.getAttribute('data-src');
-      const srcset = thumb.getAttribute('data-srcset');
-      if (!this.mainImage || !src) return;
+    swapMedia(thumb) {
+      const main = this.mainImage;
+      const next = {
+        src: thumb.dataset.src,
+        srcset: thumb.dataset.srcset || '',
+        alt: thumb.dataset.alt || '',
+      };
+      if (!main || !next.src) return;
 
-      this.mainImage.src = src;
-      if (srcset) this.mainImage.srcset = srcset;
-      const alt = thumb.getAttribute('data-alt');
-      if (alt) this.mainImage.alt = alt;
+      const prev = {
+        src: main.getAttribute('src'),
+        srcset: main.getAttribute('srcset') || '',
+        alt: main.getAttribute('alt') || '',
+      };
 
-      this.thumbs.forEach((t) => {
-        t.classList.toggle('is-active', t === thumb);
-        t.setAttribute('aria-pressed', t === thumb ? 'true' : 'false');
-      });
+      main.src = next.src;
+      main.srcset = next.srcset;
+      main.alt = next.alt;
+
+      thumb.dataset.src = prev.src;
+      thumb.dataset.srcset = prev.srcset;
+      thumb.dataset.alt = prev.alt;
+      const thumbImg = thumb.querySelector('img');
+      if (thumbImg) {
+        thumbImg.src = prev.src;
+        thumbImg.srcset = prev.srcset;
+        thumbImg.alt = prev.alt;
+      }
     }
 
     selectedOptions() {
@@ -164,31 +181,53 @@
     video.play();
   });
 
-  if (!window.ptReviewsMoreBound) {
-    window.ptReviewsMoreBound = true;
-    document.addEventListener('click', (event) => {
-      const more = event.target.closest('[data-pt-reviews-more]');
-      if (!more) return;
-      const list = more.closest('.pt-pdp-reviews')?.querySelector('[data-pt-reviews-list]');
-      if (!list) return;
-      const step = Number(more.dataset.step) || 4;
-      const hidden = [...list.querySelectorAll('.pt-pdp-review[hidden]')];
-      hidden.slice(0, step).forEach((item) => {
-        item.hidden = false;
-      });
-      if (hidden.length <= step) more.closest('.pt-pdp-reviews__more')?.remove();
-    });
-  }
+  document.addEventListener('click', (event) => {
+    const control = event.target.closest(
+      '[data-pt-reviews-more], [data-pt-reviews-prev], [data-pt-reviews-next]'
+    );
+    if (!control) return;
+    const root = control.closest('.pt-pdp-reviews');
+    const list = root?.querySelector('[data-pt-reviews-list]');
+    if (!list) return;
 
-  document.querySelectorAll('.pt-pdp-reels').forEach((root) => {
-    const track = root.querySelector('[data-pt-reels-track]');
+    const items = [...list.querySelectorAll('.pt-pdp-review')];
+    const step = Number(list.dataset.step) || 2;
+    let start = Number(list.dataset.start) || 0;
+    let count = Number(list.dataset.count) || step;
+
+    if (control.hasAttribute('data-pt-reviews-more')) {
+      count += step;
+    } else if (control.hasAttribute('data-pt-reviews-next')) {
+      if (start + count >= items.length) return;
+      start += count;
+      count = step;
+    } else {
+      start = Math.max(0, start - step);
+      count = step;
+    }
+
+    list.dataset.start = String(start);
+    list.dataset.count = String(count);
+    items.forEach((item, i) => {
+      item.hidden = i < start || i >= start + count;
+    });
+
+    const atEnd = start + count >= items.length;
+    const prev = root.querySelector('[data-pt-reviews-prev]');
+    const next = root.querySelector('[data-pt-reviews-next]');
+    const more = root.querySelector('[data-pt-reviews-more]');
+    if (prev) prev.disabled = start === 0;
+    if (next) next.disabled = atEnd;
+    if (more) more.disabled = atEnd;
+  });
+
+  document.addEventListener('click', (event) => {
+    const arrow = event.target.closest('[data-pt-reels-prev], [data-pt-reels-next]');
+    if (!arrow) return;
+    const track = arrow.closest('.pt-pdp-reels')?.querySelector('[data-pt-reels-track]');
     if (!track) return;
-    const step = () => Math.min(track.clientWidth * 0.7, 280);
-    root.querySelector('[data-pt-reels-prev]')?.addEventListener('click', () => {
-      track.scrollBy({ left: -step(), behavior: 'smooth' });
-    });
-    root.querySelector('[data-pt-reels-next]')?.addEventListener('click', () => {
-      track.scrollBy({ left: step(), behavior: 'smooth' });
-    });
+    const step = Math.min(track.clientWidth * 0.7, 280);
+    const dir = arrow.hasAttribute('data-pt-reels-prev') ? -1 : 1;
+    track.scrollBy({ left: dir * step, behavior: 'smooth' });
   });
 })();

@@ -38,7 +38,7 @@
         <p class="pt-pdp-reviews__score-num">
           {{ score }}<span>/5</span>
         </p>
-        <p class="pt-pdp-reviews__score-meta">( {{ rating_count }} )</p>
+        <p class="pt-pdp-reviews__score-meta">({{ rating_count }})</p>
       </div>
 
       <div class="pt-pdp-bars" aria-hidden="true">
@@ -57,10 +57,10 @@
           {%- assign star_n = 6 | minus: forloop.index -%}
           <div class="pt-pdp-bar">
             <span class="pt-pdp-bar__label">
-              {{ star_n }}
               <svg viewBox="0 0 20 19" aria-hidden="true" focusable="false">
                 <path d="M10 0l2.7 6.2 6.7.6-5.1 4.4 1.5 6.6L10 14.3 4.2 17.8l1.5-6.6L.6 6.8l6.7-.6L10 0z" fill="currentColor"/>
               </svg>
+              {{ star_n }}
             </span>
             <div class="pt-pdp-bar__track">
               <span class="pt-pdp-bar__fill" style="width: {{ bar }}%;"></span>
@@ -101,7 +101,14 @@
         {%- endfor -%}
       </div>
     {%- elsif review_blocks.size > 0 -%}
-      <ul class="pt-pdp-reviews__list" role="list" data-pt-reviews-list>
+      <ul
+        class="pt-pdp-reviews__list"
+        role="list"
+        data-pt-reviews-list
+        data-step="{{ per_page }}"
+        data-start="0"
+        data-count="{{ per_page }}"
+      >
         {%- for block in review_blocks -%}
             <li
               class="pt-pdp-review"
@@ -159,19 +166,21 @@
                 <p class="pt-pdp-review__text">{{ block.settings.text }}</p>
               {%- endif -%}
 
+              {%- assign photos_shown = 0 -%}
               {%- capture photo_markup -%}
                 {%- for i in (1..4) -%}
                   {%- assign photo_key = 'photo_' | append: i -%}
                   {%- assign photo = block.settings[photo_key] -%}
-                  {%- if photo != blank -%}
+                  {%- if photo != blank and photos_shown < 3 -%}
+                    {%- assign photos_shown = photos_shown | plus: 1 -%}
                     <li>
                       {{
                         photo
-                        | image_url: width: 200
+                        | image_url: width: 400
                         | image_tag:
                           loading: 'lazy',
-                          widths: '100, 160, 200',
-                          sizes: '72px',
+                          widths: '200, 300, 400',
+                          sizes: '(min-width: 750px) 190px, 30vw',
                           alt: block.settings.name
                       }}
                     </li>
@@ -188,14 +197,30 @@
       </ul>
 
       {%- if section.settings.show_load_more and review_blocks.size > per_page -%}
-        <div class="pt-pdp-reviews__more">
+        <div class="pt-pdp-reviews__pager">
           <button
             type="button"
-            class="pt-pdp-reviews__more-btn"
-            data-pt-reviews-more
-            data-step="{{ per_page }}"
+            class="pt-pdp-reviews__arrow"
+            data-pt-reviews-prev
+            aria-label="Previous reviews"
+            disabled
           >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+              <path d="M19 12H5m6-6l-6 6 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button type="button" class="pt-pdp-reviews__more-btn" data-pt-reviews-more>
             {{ section.settings.load_more_label }}
+          </button>
+          <button
+            type="button"
+            class="pt-pdp-reviews__arrow"
+            data-pt-reviews-next
+            aria-label="Next reviews"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+              <path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
         </div>
       {%- endif -%}
@@ -315,7 +340,7 @@
     {
       "type": "checkbox",
       "id": "show_load_more",
-      "label": "Show load more button",
+      "label": "Show load more and page arrows",
       "default": true
     },
     {
@@ -324,8 +349,8 @@
       "min": 2,
       "max": 12,
       "step": 2,
-      "label": "Reviews shown before load more",
-      "default": 4
+      "label": "Reviews per page",
+      "default": 2
     },
     {
       "type": "text",
@@ -457,7 +482,8 @@
         {
           "type": "image_picker",
           "id": "photo_4",
-          "label": "Photo 4"
+          "label": "Photo 4",
+          "info": "Up to 3 photos are shown per review."
         }
       ]
     }

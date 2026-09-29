@@ -30,50 +30,12 @@
     {%- if section.blocks.size > 0 -%}
       <div class="pt-pdp-reels__track" data-pt-reels-track>
         {%- for block in section.blocks -%}
-          <article class="pt-pdp-reel" {{ block.shopify_attributes }}>
-            <div class="pt-pdp-reel__media">
-              {%- if block.settings.image != blank -%}
-                {{
-                  block.settings.image
-                  | image_url: width: 600
-                  | image_tag:
-                    loading: 'lazy',
-                    widths: '240, 360, 480, 600',
-                    sizes: '(min-width: 990px) 220px, 42vw',
-                    alt: block.settings.label | default: section.settings.heading
-                }}
-              {%- else -%}
-                <div class="pt-pdp-reel__ph" aria-hidden="true">Reel</div>
-              {%- endif -%}
-
-              {%- if block.settings.video_url != blank -%}
-                <a
-                  class="pt-pdp-reel__play"
-                  href="{{ block.settings.video_url }}"
-                  target="_blank"
-                  rel="noopener"
-                  aria-label="Play reel{% if block.settings.label != blank %} — {{ block.settings.label | escape }}{% endif %}"
-                >
-                  <span class="pt-pdp-reel__play-icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-                      <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
-                    </svg>
-                  </span>
-                </a>
-              {%- else -%}
-                <span class="pt-pdp-reel__play" aria-hidden="true">
-                  <span class="pt-pdp-reel__play-icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor" focusable="false">
-                      <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
-                    </svg>
-                  </span>
-                </span>
-              {%- endif -%}
-            </div>
-            {%- if block.settings.label != blank -%}
-              <p class="pt-pdp-reel__label">{{ block.settings.label }}</p>
-            {%- endif -%}
-          </article>
+          {% render 'patelle-product-reel',
+            block: block,
+            sizes: '(min-width: 990px) 220px, 42vw',
+            fallback_alt: section.settings.heading,
+            show_label: true
+          %}
         {%- endfor -%}
       </div>
     {%- endif -%}

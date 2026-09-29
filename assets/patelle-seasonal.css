@@ -1,0 +1,340 @@
+/* ==========================================================================
+   PATÉLLE — Seasonal
+   Figma 82:567 media card · 82:571 product card
+   Two equal-height cards · swap left/right
+   ========================================================================== */
+
+.pt-seasonal {
+  background: var(--pt-white);
+}
+
+/* Row — two cards, shared height ---------------------------------------- */
+
+.pt-seasonal__row {
+  display: flex;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: center;
+  width: 100%;
+}
+
+.pt-seasonal__row--v-start {
+  align-items: start;
+}
+
+.pt-seasonal__row--v-center {
+  align-items: center;
+}
+
+.pt-seasonal__row--v-end {
+  align-items: end;
+}
+
+.pt-seasonal__card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pt-seasonal__card--pos-left {
+  order: 1;
+}
+
+.pt-seasonal__card--pos-right {
+  order: 2;
+}
+
+/* Media card (82:567) ---------------------------------------------------- */
+
+.pt-seasonal__card--media {
+  flex: 1.05 1 0;
+  gap: 16px;
+}
+
+.pt-seasonal__media-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pt-seasonal__promo {
+  margin: 0;
+  max-width: 12ch;
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: clamp(34px, 3.8vw, 48px);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--pt-ink);
+}
+
+.pt-seasonal__media {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 620 / 520;
+  border-radius: var(--pt-r-lg);
+  background: var(--pt-seasonal-media-bg, #f5f1ea);
+}
+
+.pt-seasonal__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pt-seasonal__media--empty {
+  display: grid;
+  place-items: center;
+  border: 1.5px dashed rgba(33, 33, 33, 0.18);
+  color: var(--pt-muted);
+  font-size: 14px;
+}
+
+.pt-seasonal__media-placeholder {
+  opacity: 0.7;
+}
+
+/* Product card (82:571) -------------------------------------------------- */
+
+.pt-seasonal__card--info {
+  flex: 0.95 1 0;
+  justify-content: center;
+  padding: var(--pt-seasonal-info-pt, 0) var(--pt-seasonal-info-pr, 0) var(--pt-seasonal-info-pb, 0) var(--pt-seasonal-info-pl, 0);
+}
+
+.pt-seasonal__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.pt-seasonal__card--h-start .pt-seasonal__promo,
+.pt-seasonal__card--h-start .pt-seasonal__info {
+  align-items: flex-start;
+  text-align: left;
+  margin-inline: 0 auto;
+}
+
+.pt-seasonal__card--h-center .pt-seasonal__promo {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.pt-seasonal__card--h-center .pt-seasonal__info {
+  align-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.pt-seasonal__card--h-center .pt-seasonal__actions {
+  justify-content: center;
+}
+
+.pt-seasonal__card--h-end .pt-seasonal__promo {
+  margin-inline: auto 0;
+  text-align: right;
+}
+
+.pt-seasonal__card--h-end .pt-seasonal__info {
+  align-items: flex-end;
+  margin-inline: auto 0;
+  text-align: right;
+}
+
+.pt-seasonal__card--h-end .pt-seasonal__actions {
+  justify-content: flex-end;
+}
+
+/* Lens — dashed stadium + horizontal oval (82:571) ----------------------- */
+
+.pt-seasonal__lens {
+  position: relative;
+  width: 168px;
+  height: 200px;
+  flex: none;
+  margin-bottom: 4px;
+}
+
+.pt-seasonal__lens-frame {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 148px;
+  height: 100%;
+  border: 1.5px dashed rgba(33, 33, 33, 0.28);
+  border-radius: 999px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.pt-seasonal__lens-frame::before,
+.pt-seasonal__lens-frame::after {
+  content: "";
+  position: absolute;
+  top: -18px;
+  width: 0;
+  height: 22px;
+  border-left: 1.5px dashed rgba(33, 33, 33, 0.28);
+}
+
+.pt-seasonal__lens-frame::before {
+  left: 28%;
+}
+
+.pt-seasonal__lens-frame::after {
+  right: 28%;
+}
+
+.pt-seasonal__lens-oval {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 148px;
+  height: 88px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--pt-sand-2);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 10px 28px rgba(24, 20, 16, 0.12);
+}
+
+.pt-seasonal__lens-oval img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pt-seasonal__title {
+  margin: 0;
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--pt-ink);
+}
+
+.pt-seasonal__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pt-seasonal__title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pt-seasonal__text {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--pt-font);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--pt-muted);
+}
+
+.pt-seasonal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.pt-seasonal__form {
+  margin: 0;
+}
+
+.pt-seasonal__btn {
+  min-height: 50px;
+  padding: 13px 30px;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 500;
+  border-radius: var(--pt-r-pill);
+}
+
+.pt-seasonal__btn--ghost {
+  background: var(--pt-white);
+}
+
+.pt-seasonal__btn--ghost:hover,
+.pt-seasonal__btn--ghost:focus-visible {
+  background: var(--pt-ink);
+  color: var(--pt-white);
+}
+
+.pt-seasonal__btn--solid {
+  gap: 10px;
+}
+
+.pt-seasonal__btn-arrow {
+  display: inline-flex;
+  font-size: 1.05em;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media screen and (max-width: 989px) {
+  .pt-seasonal__row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 36px;
+  }
+
+  .pt-seasonal__card--media,
+  .pt-seasonal__card--info {
+    flex: none;
+  }
+
+  .pt-seasonal__promo {
+    max-width: 16ch;
+  }
+
+  .pt-seasonal__info {
+    max-width: none;
+  }
+
+  .pt-seasonal__media {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .pt-seasonal__promo {
+    max-width: none;
+    font-size: 30px;
+  }
+
+  .pt-seasonal__lens {
+    width: 140px;
+    height: 170px;
+  }
+
+  .pt-seasonal__lens-frame {
+    width: 124px;
+  }
+
+  .pt-seasonal__lens-oval {
+    width: 124px;
+    height: 74px;
+  }
+
+  .pt-seasonal__actions {
+    width: 100%;
+  }
+
+  .pt-seasonal__btn {
+    flex: 1 1 calc(50% - 6px);
+    justify-content: center;
+    padding-inline: 16px;
+  }
+}

@@ -1,0 +1,53 @@
+/* ==========================================================================
+   PATÉLLE — More to Love
+   ========================================================================== */
+
+.pt-more {
+  background: var(--pt-white);
+}
+
+.pt-more__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.pt-more__head .pt-pill {
+  flex: 0 0 auto;
+  padding: 11px 24px;
+  font-size: 17px;
+  line-height: 21px;
+}
+
+/* Three across is wider than the Shop All tile, so a shorter frame keeps the
+   row close to its old height. */
+.pt-more--cols-3 .pt-card--overlay {
+  aspect-ratio: 4 / 5;
+}
+
+@media screen and (max-width: 749px) {
+  .pt-more--cols-3 .pt-card--overlay,
+  .pt-more--cols-4 .pt-card--overlay {
+    aspect-ratio: 350 / 563;
+  }
+
+  .pt-more .pt-card--fit {
+    aspect-ratio: auto;
+  }
+
+  .pt-more .pt-card--fit .pt-card__media-wrap {
+    flex: none;
+    aspect-ratio: 4 / 5;
+  }
+
+  .pt-more__head {
+    margin-bottom: 16px;
+  }
+
+  .pt-more__head .pt-pill {
+    padding: 9px 18px;
+    font-size: 14px;
+  }
+}

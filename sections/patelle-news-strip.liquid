@@ -1,0 +1,523 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-news-strip.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign article = blank
+  for block in section.blocks
+    if block.type == 'content' and block.settings.blog != blank
+      assign article = blogs[block.settings.blog].articles.first
+      break
+    endif
+  endfor
+
+  assign h_align = section.settings.horizontal_align | default: 'between'
+  assign v_align = section.settings.vertical_align | default: 'top'
+
+  assign border_width = 0
+  if section.settings.show_border
+    assign border_width = section.settings.border_width
+  endif
+-%}
+
+<section
+  class="pt-section pt-news"
+  style="padding-top:{{ section.settings.padding_top }}px;padding-bottom:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="pt-wrap">
+    <div
+      class="pt-news__strip pt-news__strip--h-{{ h_align }} pt-news__strip--v-{{ v_align }}"
+      style="
+        --pt-news-min-h:{{ section.settings.min_height }}px;
+        --pt-news-gap:{{ section.settings.gap }}px;
+        --pt-news-bg:{{ section.settings.background | default: '#faf6f0' }};
+        --pt-news-border-w:{{ border_width }}px;
+        --pt-news-border-c:{{ section.settings.border_color | default: '#e6ded2' }};
+      "
+    >
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'image' -%}
+            {%- liquid
+              assign strip_image = block.settings.image
+              if strip_image == blank and article != blank
+                assign strip_image = article.image
+              endif
+              assign height_mode = block.settings.height_mode | default: 'fill'
+
+              assign image_position = block.settings.image_position | default: 'focal'
+              if image_position == 'focal'
+                assign image_position = 'center center'
+                if strip_image != blank and strip_image.presentation.focal_point != blank
+                  assign image_position = strip_image.presentation.focal_point
+                endif
+              endif
+            -%}
+            <div
+              class="pt-news__media pt-news__media--h-{{ height_mode }} pt-news__block--pos-{{ block.settings.position | default: 'right' }}{% if strip_image == blank %} pt-news__media--empty{% endif %}"
+              style="
+                --pt-news-media-w:{{ block.settings.width }}px;
+                --pt-news-media-h:{{ block.settings.height }}px;
+                --pt-news-media-h-mobile:{{ block.settings.height_mobile }}px;
+                --pt-news-media-fit:{{ block.settings.image_fit | default: 'cover' }};
+                --pt-news-media-pos:{{ image_position }};
+              "
+              {{ block.shopify_attributes }}
+            >
+              {%- if strip_image != blank -%}
+                <img
+                  src="{{ strip_image | image_url: width: 760 }}"
+                  srcset="
+                    {{ strip_image | image_url: width: 380 }} 380w,
+                    {{ strip_image | image_url: width: 760 }} 760w,
+                    {{ strip_image | image_url: width: 1200 }} 1200w
+                  "
+                  sizes="(min-width: 750px) {{ block.settings.width }}px, 100vw"
+                  alt="{{ strip_image.alt | escape }}"
+                  width="{{ strip_image.width }}"
+                  height="{{ strip_image.height }}"
+                  loading="lazy"
+                >
+              {%- endif -%}
+            </div>
+
+          {%- when 'content' -%}
+            {%- liquid
+              assign heading = block.settings.heading
+              if heading == blank and article != blank
+                assign heading = article.title
+              endif
+
+              assign strip_url = block.settings.link
+              if strip_url == blank and article != blank
+                assign strip_url = article.url
+              endif
+
+              assign strip_date = block.settings.date
+              if strip_date == blank and article != blank
+                assign strip_date = article.published_at | date: format: 'date'
+              endif
+
+              assign text_align = block.settings.text_align | default: 'start'
+            -%}
+            <div
+              class="pt-news__content pt-news__content--{{ text_align }} pt-news__block--pos-{{ block.settings.position | default: 'left' }}"
+              style="
+                --pt-news-pt:{{ block.settings.padding_top }}px;
+                --pt-news-pr:{{ block.settings.padding_right }}px;
+                --pt-news-pb:{{ block.settings.padding_bottom }}px;
+                --pt-news-pl:{{ block.settings.padding_left }}px;
+                --pt-news-item-gap:{{ block.settings.item_gap }}px;
+                --pt-news-cta-gap:{{ block.settings.button_gap }}px;
+              "
+              {{ block.shopify_attributes }}
+            >
+              {%- if heading != blank -%}
+                <h2 class="pt-news__heading">{{ heading }}</h2>
+              {%- endif -%}
+
+              {%- if block.settings.subtitle != blank -%}
+                <p class="pt-news__meta">{{ block.settings.subtitle }}</p>
+              {%- endif -%}
+
+              {%- if strip_date != blank -%}
+                <p class="pt-news__meta">{{ strip_date }}</p>
+              {%- endif -%}
+
+              {%- if block.settings.button_label != blank -%}
+                <a class="pt-pill pt-pill--solid pt-news__cta" href="{{ strip_url | default: '#' }}">
+                  {{ block.settings.button_label }}
+                </a>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — News strip",
+  "tag": "section",
+  "class": "section-patelle-news",
+  "max_blocks": 2,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Add one Image block and one Content block. Set each block's left or right position inside the block."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "horizontal_align",
+      "label": "Horizontal layout",
+      "options": [
+        { "value": "start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Right" },
+        { "value": "between", "label": "Space between" }
+      ],
+      "default": "between"
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Content vertical align",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between blocks",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 100,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "label": "Strip minimum height",
+      "default": 180
+    },
+    {
+      "type": "header",
+      "content": "Background & border"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background color",
+      "default": "#FAF6F0"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "visible_if": "{{ section.settings.show_border }}",
+      "label": "Border color",
+      "default": "#E6DED2"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "visible_if": "{{ section.settings.show_border }}",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image block",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Block position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "right"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Falls back to the newest article image from the Content block's blog."
+        },
+        {
+          "type": "range",
+          "id": "width",
+          "min": 160,
+          "max": 700,
+          "step": 10,
+          "unit": "px",
+          "label": "Image width on desktop",
+          "default": 330
+        },
+        {
+          "type": "select",
+          "id": "height_mode",
+          "label": "Image height",
+          "options": [
+            { "value": "fill", "label": "Fill strip height" },
+            { "value": "custom", "label": "Custom height" }
+          ],
+          "default": "fill"
+        },
+        {
+          "type": "range",
+          "id": "height",
+          "visible_if": "{{ block.settings.height_mode == 'custom' }}",
+          "min": 100,
+          "max": 700,
+          "step": 10,
+          "unit": "px",
+          "label": "Image height on desktop",
+          "default": 180
+        },
+        {
+          "type": "range",
+          "id": "height_mobile",
+          "visible_if": "{{ block.settings.height_mode == 'custom' }}",
+          "min": 100,
+          "max": 600,
+          "step": 10,
+          "unit": "px",
+          "label": "Image height on mobile",
+          "default": 200
+        },
+        {
+          "type": "select",
+          "id": "image_fit",
+          "label": "Image fit",
+          "options": [
+            { "value": "cover", "label": "Fill (crop)" },
+            { "value": "contain", "label": "Fit (no crop)" }
+          ],
+          "default": "cover"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image position",
+          "info": "Choose which part of the image stays visible when it is cropped. \"Focal point\" uses the point you set on the image in the image picker.",
+          "options": [
+            { "value": "focal", "label": "Focal point" },
+            { "value": "left top", "label": "Top left" },
+            { "value": "center top", "label": "Top center" },
+            { "value": "right top", "label": "Top right" },
+            { "value": "left center", "label": "Middle left" },
+            { "value": "center center", "label": "Middle center" },
+            { "value": "right center", "label": "Middle right" },
+            { "value": "left bottom", "label": "Bottom left" },
+            { "value": "center bottom", "label": "Bottom center" },
+            { "value": "right bottom", "label": "Bottom right" }
+          ],
+          "default": "focal"
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "Content block",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Block position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "blog",
+          "id": "blog",
+          "label": "Blog",
+          "info": "The newest article fills any field left empty below."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Chill Out, Shop On National Ice Cream Day"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Nolita Boutique ONLY"
+        },
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Learn more"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Text align",
+          "options": [
+            { "value": "start", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "end", "label": "Right" }
+          ],
+          "default": "start"
+        },
+        {
+          "type": "header",
+          "content": "Content spacing"
+        },
+        {
+          "type": "range",
+          "id": "item_gap",
+          "min": 0,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "label": "Space between lines",
+          "default": 6
+        },
+        {
+          "type": "range",
+          "id": "button_gap",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "label": "Space above button",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 120,
+          "step": 2,
+          "unit": "px",
+          "label": "Top padding",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 120,
+          "step": 2,
+          "unit": "px",
+          "label": "Bottom padding",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "padding_left",
+          "min": 0,
+          "max": 120,
+          "step": 2,
+          "unit": "px",
+          "label": "Left padding",
+          "default": 22
+        },
+        {
+          "type": "range",
+          "id": "padding_right",
+          "min": 0,
+          "max": 120,
+          "step": 2,
+          "unit": "px",
+          "label": "Right padding",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — News strip",
+      "blocks": [
+        { "type": "content" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,103 @@
+/*
+ * ------------------------------------------------------------
+ * PATÉLLE — About page template (Figma About Us)
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "about_hero": {
+      "type": "patelle-about-hero",
+      "settings": {
+        "heading": "About Us",
+        "text": "Learn about our journey, values, and commitment to creating exceptional digital experiences for modern businesses.",
+        "padding_top": 48,
+        "padding_bottom": 80
+      }
+    },
+    "about_story": {
+      "type": "patelle-about-story",
+      "settings": {
+        "hook": "Patelle was not born in a boardroom. It was born from a bottle that ran out by lunch.",
+        "heading": "Luxury Fragrance, Made for Everyone",
+        "text": "<p>We believe everyone deserves to smell extraordinary — without paying designer markups. Patelle brings premium French-inspired fragrances to your everyday ritual.</p>",
+        "feature_title": "Inspired by Iconic Scents",
+        "feature_text": "Our compositions echo the character of legendary fragrances — reimagined with honesty and clarity.",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "about_values": {
+      "type": "patelle-about-values",
+      "blocks": {
+        "value_1": {
+          "type": "value",
+          "settings": {
+            "title": "QUALITY FIRST",
+            "text": "We use only premium fragrance oils carefully selected for longevity, complexity, and a refined finish."
+          }
+        },
+        "value_2": {
+          "type": "value",
+          "settings": {
+            "title": "CRAFTSMANSHIP",
+            "text": "Every scent is blended with intention — creativity and expertise in every bottle."
+          }
+        },
+        "value_3": {
+          "type": "value",
+          "settings": {
+            "title": "CUSTOMER CENTRIC",
+            "text": "Your experience comes first: clear pricing, honest notes, and support that listens."
+          }
+        },
+        "value_4": {
+          "type": "value",
+          "settings": {
+            "title": "SUSTAINABILITY",
+            "text": "Thoughtful packaging and responsible choices for the next generation."
+          }
+        }
+      },
+      "block_order": ["value_1", "value_2", "value_3", "value_4"],
+      "settings": {
+        "heading": "Our Vision and Value",
+        "background": "#f3f3f3",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "about_banner": {
+      "type": "patelle-about-banner",
+      "settings": {
+        "heading": "The perfume house for the next generation®",
+        "text": "Premium-quality French fragrances. No excessive markups. Crafted with heart, not ego.",
+        "link_label": "About us",
+        "background": "#7FA0C4",
+        "padding_top": 24,
+        "padding_bottom": 40
+      }
+    },
+    "about_trust": {
+      "type": "patelle-about-trust",
+      "blocks": {
+        "t1": { "type": "item", "settings": { "icon": "lasting", "label": "Long Lasting" } },
+        "t2": { "type": "item", "settings": { "icon": "quality", "label": "Premium Quality" } },
+        "t3": { "type": "item", "settings": { "icon": "guarantee", "label": "15-Day Satisfaction Guarantee" } },
+        "t4": { "type": "item", "settings": { "icon": "packaging", "label": "Luxury Packaging" } },
+        "t5": { "type": "item", "settings": { "icon": "shipping", "label": "USA Shipping" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4", "t5"],
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    }
+  },
+  "order": [
+    "about_hero",
+    "about_story",
+    "about_values",
+    "about_banner",
+    "about_trust"
+  ]
+}

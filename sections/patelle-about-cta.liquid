@@ -1,0 +1,161 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign show_about = false
+  if page.handle == 'about' or template.suffix == 'about'
+    assign show_about = true
+  endif
+-%}
+
+{%- if show_about -%}
+  <section
+    class="pt-section pt-about-cta"
+    style="
+      --pt-about-cta-bg: {{ section.settings.background }};
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    "
+  >
+    <div class="pt-wrap">
+      <div class="pt-about-cta__inner">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="pt-about__eyebrow" style="color: inherit; opacity: 0.65;">
+            {{ section.settings.eyebrow }}
+          </p>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="pt-about__display">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <p class="pt-about__lede">{{ section.settings.text }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+          <a
+            class="pt-pill pt-pill--solid"
+            href="{{ section.settings.button_link | default: routes.all_products_collection_url }}"
+          >
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PATÉLLE — About CTA",
+  "tag": "section",
+  "class": "section-patelle-about-cta",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Ready when you are"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find your next signature."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Explore the collection — curated, considered, and priced with clarity."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Label",
+      "default": "Shop all"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — About CTA"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,21 @@
+{%- comment -%}
+  Outside spacing (margin) for a PATÉLLE section.
+
+  Accepts:
+  - id: {String} section.id
+  - top: {Number} margin top in px
+  - bottom: {Number} margin bottom in px
+
+  Applied as padding on the transparent Shopify section wrapper so the
+  spacing of neighbouring sections adds up instead of collapsing.
+{%- endcomment -%}
+{%- assign top = top | default: 0 -%}
+{%- assign bottom = bottom | default: 0 -%}
+{%- if top > 0 or bottom > 0 -%}
+  <style>
+    #shopify-section-{{ id }} {
+      padding-top: {{ top }}px;
+      padding-bottom: {{ bottom }}px;
+    }
+  </style>
+{%- endif -%}

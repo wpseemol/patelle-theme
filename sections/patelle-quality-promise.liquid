@@ -1,0 +1,349 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-quality-promise.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.use_figtree -%}
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap">
+{%- endif -%}
+
+{%- liquid
+  assign bg = section.settings.background_image
+  assign bg_mobile = section.settings.background_image_mobile | default: bg
+
+  assign tint_alpha = section.settings.panel_tint_opacity | divided_by: 100.0
+
+  assign stage_class = 'pt-qp__stage'
+  if section.settings.full_width
+    assign stage_class = stage_class | append: ' pt-qp__stage--full'
+  endif
+-%}
+
+<section
+  class="pt-section pt-qp{% if section.settings.use_figtree %} pt-qp--figtree{% endif %}"
+  style="
+    padding-top:{{ section.settings.padding_top }}px;
+    padding-bottom:{{ section.settings.padding_bottom }}px;
+    --pt-qp-min-h:{{ section.settings.min_height }}px;
+    --pt-qp-min-h-mobile:{{ section.settings.min_height_mobile }}px;
+    --pt-qp-panel-w:{{ section.settings.panel_width }}px;
+    --pt-qp-radius:{{ section.settings.panel_radius }}px;
+    --pt-qp-blur:{{ section.settings.panel_blur }}px;
+    --pt-qp-tint:{{ section.settings.panel_tint | color_modify: 'alpha', tint_alpha }};
+    --pt-qp-text:{{ section.settings.text_color }};
+    --pt-qp-icon:{{ section.settings.icon_size }}px;
+    --pt-qp-img-pos:{{ section.settings.image_position }};
+  "
+>
+  <div class="{% unless section.settings.full_width %}pt-wrap{% endunless %}">
+    <div class="{{ stage_class }}">
+      {%- if bg != blank -%}
+        <picture class="pt-qp__bg">
+          {%- if section.settings.background_image_mobile != blank -%}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ bg_mobile | image_url: width: 750 }} 750w, {{ bg_mobile | image_url: width: 1500 }} 1500w"
+              sizes="100vw"
+            >
+          {%- endif -%}
+          <img
+            src="{{ bg | image_url: width: 2000 }}"
+            srcset="
+              {{ bg | image_url: width: 1000 }} 1000w,
+              {{ bg | image_url: width: 1500 }} 1500w,
+              {{ bg | image_url: width: 2000 }} 2000w,
+              {{ bg | image_url: width: 2880 }} 2880w
+            "
+            sizes="100vw"
+            alt="{{ bg.alt | escape }}"
+            width="{{ bg.width }}"
+            height="{{ bg.height }}"
+            loading="lazy"
+          >
+        </picture>
+      {%- else -%}
+        <div class="pt-qp__bg pt-qp__bg--fallback" aria-hidden="true"></div>
+      {%- endif -%}
+
+      <div class="pt-qp__panel">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="pt-qp__title">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <ul class="pt-qp__items" role="list">
+            {%- for block in section.blocks -%}
+              <li class="pt-qp__item" {{ block.shopify_attributes }}>
+                <span class="pt-qp__icon" aria-hidden="true">
+                  {%- if block.settings.custom_icon != blank -%}
+                    <img
+                      src="{{ block.settings.custom_icon | image_url: width: 160 }}"
+                      alt=""
+                      width="{{ block.settings.custom_icon.width }}"
+                      height="{{ block.settings.custom_icon.height }}"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    {%- render 'patelle-promise-icon', icon: block.settings.icon -%}
+                  {%- endif -%}
+                </span>
+                {%- if block.settings.label != blank -%}
+                  <p class="pt-qp__label">{{ block.settings.label }}</p>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Quality promise",
+  "tag": "section",
+  "class": "section-patelle-quality-promise",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Quality Promise"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_figtree",
+      "label": "Use Figtree font",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text & icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 44
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image_mobile",
+      "label": "Mobile background image",
+      "info": "Optional. Uses the main image when empty."
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "center top", "label": "Top" },
+        { "value": "center center", "label": "Center" },
+        { "value": "center bottom", "label": "Bottom" }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "info": "Off shows the image as a rounded card inside the page width.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 300,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "label": "Height on desktop",
+      "default": 550
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Height on mobile",
+      "default": 420
+    },
+    {
+      "type": "header",
+      "content": "Blur panel"
+    },
+    {
+      "type": "range",
+      "id": "panel_width",
+      "min": 600,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "label": "Panel width",
+      "default": 1190
+    },
+    {
+      "type": "range",
+      "id": "panel_blur",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Blur",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "panel_tint",
+      "label": "Tint color",
+      "default": "#6E3F2E"
+    },
+    {
+      "type": "range",
+      "id": "panel_tint_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "%",
+      "label": "Tint opacity",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "panel_radius",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner radius",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Promise item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "hand", "label": "Hand (long lasting)" },
+            { "value": "leaf", "label": "Leaf (premium quality)" },
+            { "value": "heart", "label": "Heart (satisfaction)" },
+            { "value": "planet", "label": "Planet (packaging)" },
+            { "value": "drop", "label": "Drop (shipping)" },
+            { "value": "star", "label": "Star" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "gift", "label": "Gift" },
+            { "value": "clock", "label": "Clock" }
+          ],
+          "default": "hand"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon",
+          "info": "Optional. Upload a white SVG or PNG to replace the icon above."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Long Lasting"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Quality promise",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "hand", "label": "Long Lasting" } },
+        { "type": "item", "settings": { "icon": "leaf", "label": "Premium Quality" } },
+        { "type": "item", "settings": { "icon": "heart", "label": "15 Days Satisfaction Guarantee" } },
+        { "type": "item", "settings": { "icon": "planet", "label": "Luxury Packaging" } },
+        { "type": "item", "settings": { "icon": "drop", "label": "USA Shipping" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,155 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-product.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="pt-section pt-product-page pt-pdp-video"
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="pt-wrap">
+    <div class="pt-pdp-video__frame" data-pt-video-frame>
+      {%- if section.settings.video != blank -%}
+        {{
+          section.settings.video
+          | video_tag:
+            image_size: '1600x',
+            autoplay: false,
+            loop: section.settings.loop,
+            muted: false,
+            controls: false,
+            class: 'pt-pdp-video__media'
+        }}
+        <button type="button" class="pt-pdp-video__play" data-pt-video-play aria-label="Play video">
+          <span class="pt-pdp-video__play-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+              <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
+            </svg>
+          </span>
+        </button>
+      {%- elsif section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1600
+          | image_tag:
+            loading: 'lazy',
+            widths: '800, 1200, 1600',
+            sizes: '(min-width: 990px) 1180px, 94vw',
+            alt: section.settings.image.alt | default: product.title
+        }}
+        {%- if section.settings.video_url != blank -%}
+          <a
+            class="pt-pdp-video__play"
+            href="{{ section.settings.video_url }}"
+            target="_blank"
+            rel="noopener"
+            aria-label="Play video"
+          >
+            <span class="pt-pdp-video__play-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
+              </svg>
+            </span>
+          </a>
+        {%- endif -%}
+      {%- else -%}
+        <div class="pt-pdp-video__ph" aria-hidden="true">Add lifestyle image or video</div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Product video",
+  "tag": "section",
+  "class": "section-patelle-product-video",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Poster image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Shopify-hosted video"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "External video link",
+      "info": "Used with poster image when no Shopify video is set"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop video",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Product video"
+    }
+  ]
+}
+{% endschema %}

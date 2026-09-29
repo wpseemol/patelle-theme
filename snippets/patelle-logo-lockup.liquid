@@ -1,0 +1,51 @@
+{%- comment -%}
+  PATÉLLE header logo lockup — Figma-style mark + wordmark + tagline.
+  Pass:
+    logo_image   {image}
+    logo_text    {string}
+    logo_tagline {string}
+    logo_alt     {string}
+    widths       {string}
+    sizes        {string}
+    lockup_mode  {string} "image" | "figma"
+{%- endcomment -%}
+
+{%- liquid
+  assign mark_alt = logo_alt | default: shop.name | escape
+  assign wordmark = logo_text | default: 'PATÉLLE' | escape
+  assign tagline = logo_tagline | strip
+  assign mode = lockup_mode | default: 'image'
+  if logo_image == blank
+    assign mode = 'figma'
+  endif
+-%}
+
+<span class="pt-header__lockup">
+  {%- if mode == 'image' -%}
+    {{-
+      logo_image
+      | image_url: width: 800
+      | image_tag:
+        widths: widths,
+        sizes: sizes,
+        class: 'pt-header__logo-img',
+        loading: 'eager',
+        alt: ''
+    -}}
+  {%- else -%}
+    <span class="pt-header__mark" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" focusable="false">
+        <circle cx="32" cy="32" r="30.25" stroke="currentColor" stroke-width="1.5"></circle>
+        <circle cx="32" cy="32" r="26.25" stroke="currentColor" stroke-width="1"></circle>
+        <path fill="currentColor" d="M31.1 17.5H18.4v29h12.7v-4.2H22.7V35h7.4v-4.1H22.7v-5.2h8.4v-4.1H22.7V21.7h8.4v-4.2zm1.8 0h12.7v4.2h-8.4v4.1h8.4v4.1h-8.4v5.2h7.4V42.3h-7.4v4.2H32.9v-29z"></path>
+      </svg>
+    </span>
+    <span class="pt-header__wordmark">
+      <span class="pt-header__brand">{{ wordmark }}</span>
+      {%- if tagline != blank -%}
+        <span class="pt-header__tagline">{{ tagline | escape }}</span>
+      {%- endif -%}
+    </span>
+  {%- endif -%}
+  <span class="visually-hidden">{{ mark_alt }}</span>
+</span>

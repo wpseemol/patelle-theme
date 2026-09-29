@@ -1,0 +1,169 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign show_about = false
+  if page.handle == 'about' or template.suffix == 'about'
+    assign show_about = true
+  endif
+-%}
+
+{%- if show_about -%}
+  <section
+    class="pt-section pt-about-page pt-about-story"
+    style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+  >
+    <div class="pt-wrap">
+      <div class="pt-about-story__grid">
+        <div class="pt-about-story__copy">
+          {%- if section.settings.hook != blank -%}
+            <p class="pt-about-story__hook">{{ section.settings.hook }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.heading != blank -%}
+            <h2 class="pt-about-story__heading">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.text != blank -%}
+            <div class="pt-about-story__body rte">{{ section.settings.text }}</div>
+          {%- endif -%}
+
+          {%- if section.settings.feature_title != blank -%}
+            <div class="pt-about-story__feature">
+              <span class="pt-about-story__diamond" aria-hidden="true"></span>
+              <div class="pt-about-story__feature-text">
+                <p class="pt-about-story__feature-title">{{ section.settings.feature_title }}</p>
+                {%- if section.settings.feature_text != blank -%}
+                  <p class="pt-about-story__feature-desc">{{ section.settings.feature_text }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+
+        <div class="pt-about-story__media">
+          {%- if section.settings.image != blank -%}
+            {%- assign story_alt = section.settings.image.alt | default: section.settings.heading -%}
+            {{
+              section.settings.image
+              | image_url: width: 1400
+              | image_tag:
+                loading: 'lazy',
+                widths: '500, 800, 1100, 1400',
+                sizes: '(min-width: 990px) 45vw, 100vw',
+                alt: story_alt
+            }}
+          {%- else -%}
+            <div class="pt-about-hero__ph" aria-hidden="true">Story image</div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PATÉLLE — About story",
+  "tag": "section",
+  "class": "section-patelle-about-story",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "hook",
+      "label": "Hook line",
+      "default": "Patelle was not born in a boardroom. It was born from a bottle that ran out by lunch."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Luxury Fragrance, Made for Everyone"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>We believe everyone deserves to smell extraordinary — without paying designer markups. Patelle brings premium French-inspired fragrances to your everyday ritual.</p><p>From the first spray to the last whisper of the dry-down, every bottle is crafted for presence, longevity, and joy.</p>"
+    },
+    {
+      "type": "text",
+      "id": "feature_title",
+      "label": "Feature title",
+      "default": "Inspired by Iconic Scents"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_text",
+      "label": "Feature text",
+      "default": "Our compositions echo the character of legendary fragrances — reimagined with honesty and clarity."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "presets": [{ "name": "PATÉLLE — About story" }]
+}
+{% endschema %}

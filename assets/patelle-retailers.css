@@ -1,0 +1,204 @@
+/* ==========================================================================
+   PATÉLLE — Retailers
+   Retailer logo row · plain or card style · heading above or beside
+   ========================================================================== */
+
+.pt-retailers {
+  padding-top: var(--pt-retailers-pt, 48px);
+  padding-bottom: var(--pt-retailers-pb, 48px);
+  background: var(--pt-retailers-bg, var(--pt-cream));
+  color: var(--pt-retailers-ink, var(--pt-ink));
+}
+
+.pt-retailers__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pt-retailers__inner--divider {
+  padding-bottom: 28px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+}
+
+/* Heading ----------------------------------------------------------------- */
+
+.pt-retailers__head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pt-retailers__heading {
+  margin: 0;
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+
+.pt-retailers__text {
+  margin: 0;
+  max-width: 48ch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: inherit;
+  opacity: 0.72;
+}
+
+/* Logo list --------------------------------------------------------------- */
+
+.pt-retailers__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--pt-retailers-gap, 48px) * 0.6) var(--pt-retailers-gap, 48px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pt-retailers__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pt-retailers__link img {
+  display: block;
+  width: auto;
+  height: var(--pt-retailers-logo-h, 28px);
+  max-width: 180px;
+  object-fit: contain;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+a.pt-retailers__link:hover {
+  opacity: 0.75;
+}
+
+.pt-retailers__name {
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: calc(var(--pt-retailers-logo-h, 28px) * 0.7);
+  line-height: var(--pt-retailers-logo-h, 28px);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Grayscale --------------------------------------------------------------- */
+
+.pt-retailers--grayscale .pt-retailers__link img {
+  filter: grayscale(1);
+  opacity: 0.7;
+}
+
+.pt-retailers--grayscale .pt-retailers__link:hover img {
+  filter: none;
+  opacity: 1;
+}
+
+/* Card style -------------------------------------------------------------- */
+
+.pt-retailers--cards .pt-retailers__list {
+  gap: 12px;
+}
+
+.pt-retailers--cards .pt-retailers__link {
+  min-width: 150px;
+  padding: 18px 26px;
+  border: 1px solid rgba(33, 33, 33, 0.08);
+  border-radius: var(--pt-r-card);
+  background: var(--pt-white);
+}
+
+.pt-retailers--cards a.pt-retailers__link:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(24, 20, 16, 0.08);
+}
+
+/* Alignment --------------------------------------------------------------- */
+
+.pt-retailers--align-center .pt-retailers__head {
+  align-items: center;
+  text-align: center;
+}
+
+.pt-retailers--align-center .pt-retailers__list {
+  justify-content: center;
+}
+
+.pt-retailers--align-end .pt-retailers__head {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.pt-retailers--align-end .pt-retailers__list {
+  justify-content: flex-end;
+}
+
+/* Heading beside logos ---------------------------------------------------- */
+
+@media screen and (min-width: 990px) {
+  .pt-retailers--beside .pt-retailers__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  .pt-retailers--beside .pt-retailers__head {
+    flex: 0 0 auto;
+    max-width: 320px;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .pt-retailers--beside .pt-retailers__list {
+    flex: 1 1 auto;
+  }
+
+  .pt-retailers--beside.pt-retailers--align-start .pt-retailers__list {
+    justify-content: flex-start;
+  }
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media screen and (max-width: 749px) {
+  .pt-retailers {
+    padding-top: min(var(--pt-retailers-pt, 48px), 40px);
+    padding-bottom: min(var(--pt-retailers-pb, 48px), 40px);
+  }
+
+  .pt-retailers__heading {
+    font-size: 18px;
+  }
+
+  .pt-retailers__list {
+    gap: calc(var(--pt-retailers-gap, 48px) * 0.4) calc(var(--pt-retailers-gap, 48px) * 0.6);
+  }
+
+  .pt-retailers__link img {
+    height: calc(var(--pt-retailers-logo-h, 28px) * 0.85);
+    max-width: 140px;
+  }
+
+  .pt-retailers--cards .pt-retailers__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pt-retailers--cards .pt-retailers__link {
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+  }
+}

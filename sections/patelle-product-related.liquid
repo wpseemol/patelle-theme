@@ -1,0 +1,171 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-product.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-card.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign products_to_show = section.settings.products_to_show
+-%}
+
+<div
+  class="pt-section pt-product-page pt-pdp-related"
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <product-recommendations
+    class="pt-wrap"
+    data-url="{{ routes.product_recommendations_url }}?limit={{ products_to_show }}&intent=related"
+    data-section-id="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+  >
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pt-pdp-related__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      <ul class="pt-pdp-related__list" role="list">
+        {%- for recommendation in recommendations.products limit: products_to_show -%}
+          <li class="pt-pdp-related__item">
+            {% render 'patelle-card',
+              card_product: recommendation,
+              card_style: 'catalog',
+              section_id: section.id,
+              show_rating: section.settings.show_rating,
+              index: forloop.index
+            %}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      {%- liquid
+        assign fallback_collection = section.settings.collection
+        if fallback_collection == blank
+          assign fallback_collection = collections.all
+        endif
+        assign shown = 0
+      -%}
+      {%- if fallback_collection != blank and fallback_collection.products_count > 0 -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="pt-pdp-related__title">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        <ul class="pt-pdp-related__list" role="list">
+          {%- for related_product in fallback_collection.products -%}
+            {%- if related_product.id != product.id and shown < products_to_show -%}
+              <li class="pt-pdp-related__item">
+                {% render 'patelle-card',
+                  card_product: related_product,
+                  card_style: 'catalog',
+                  section_id: section.id,
+                  show_rating: section.settings.show_rating,
+                  index: forloop.index
+                %}
+              </li>
+              {%- assign shown = shown | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endif -%}
+  </product-recommendations>
+</div>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Product related",
+  "tag": "section",
+  "class": "section-patelle-product-related",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You May Also Like"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "label": "Products to show",
+      "default": 4
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Fallback collection",
+      "info": "Used when Shopify recommendations are empty"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating badge",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Product related"
+    }
+  ]
+}
+{% endschema %}

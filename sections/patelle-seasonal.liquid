@@ -1,0 +1,464 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-seasonal.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign v_align = section.settings.vertical_align | default: 'center'
+-%}
+
+<section
+  class="pt-section pt-seasonal"
+  style="
+    padding-top:{{ section.settings.padding_top }}px;
+    padding-bottom:{{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="pt-wrap">
+    <div class="pt-seasonal__row pt-seasonal__row--v-{{ v_align }}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'image' -%}
+            {%- liquid
+              assign media_image = block.settings.image
+              assign h_align = block.settings.horizontal_align | default: 'start'
+              assign card_bg = block.settings.media_background | default: '#f5f1ea'
+              assign media_alt = block.settings.promo_heading | default: shop.name
+              if media_image != blank and media_image.alt != blank
+                assign media_alt = media_image.alt
+              endif
+            -%}
+            <div
+              class="pt-seasonal__card pt-seasonal__card--media pt-seasonal__card--h-{{ h_align }} pt-seasonal__card--pos-{{ block.settings.position | default: 'left' }}"
+              style="--pt-seasonal-media-bg:{{ card_bg }};"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.promo_heading != blank -%}
+                <h2
+                  class="pt-seasonal__promo"
+                  style="padding-top:{{ block.settings.heading_padding_top }}px;padding-bottom:{{ block.settings.heading_padding_bottom }}px;"
+                >
+                  {{ block.settings.promo_heading }}
+                </h2>
+              {%- endif -%}
+
+              <div class="pt-seasonal__media{% if media_image == blank %} pt-seasonal__media--empty{% endif %}">
+                {%- if media_image != blank -%}
+                  {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}" class="pt-seasonal__media-link">{%- endif -%}
+                  {{
+                    media_image
+                    | image_url: width: 1200
+                    | image_tag:
+                      widths: '600, 900, 1200',
+                      sizes: '(min-width: 990px) 48vw, 100vw',
+                      alt: media_alt,
+                      loading: 'lazy'
+                  }}
+                  {%- if block.settings.link != blank -%}</a>{%- endif -%}
+                {%- else -%}
+                  <span class="pt-seasonal__media-placeholder">Add media image</span>
+                {%- endif -%}
+              </div>
+            </div>
+
+          {%- when 'content' -%}
+            {%- liquid
+              assign featured = block.settings.product
+              assign variant = blank
+              assign product_url = '#'
+              if featured != blank
+                assign variant = featured.selected_or_first_available_variant
+                assign product_url = featured.url
+              endif
+
+              assign title = block.settings.title
+              if title == blank and featured != blank
+                assign title = featured.title
+              endif
+
+              assign description = block.settings.description
+              if description == blank and featured != blank
+                assign description = featured.description | strip_html | truncate: 200
+              endif
+
+              assign lens_image = block.settings.lens_image
+              if lens_image == blank and featured != blank
+                assign lens_image = featured.featured_image
+              endif
+
+              assign lens_alt = title
+              if lens_image != blank and lens_image.alt != blank
+                assign lens_alt = lens_image.alt
+              endif
+
+              assign h_align = block.settings.horizontal_align | default: 'start'
+              assign form_id = 'pt-seasonal-' | append: section.id | append: '-' | append: block.id
+              assign atc_label = block.settings.add_to_cart_label | default: 'Add to Cart'
+              assign buy_label = block.settings.buy_now_label | default: 'Buy Now'
+            -%}
+            <div
+              class="pt-seasonal__card pt-seasonal__card--info pt-seasonal__card--h-{{ h_align }} pt-seasonal__card--pos-{{ block.settings.position | default: 'right' }}"
+              style="
+                --pt-seasonal-info-pt:{{ block.settings.padding_top | default: 0 }}px;
+                --pt-seasonal-info-pb:{{ block.settings.padding_bottom | default: 0 }}px;
+                --pt-seasonal-info-pl:{{ block.settings.padding_left | default: 0 }}px;
+                --pt-seasonal-info-pr:{{ block.settings.padding_right | default: 0 }}px;
+              "
+              {{ block.shopify_attributes }}
+            >
+              <div class="pt-seasonal__info">
+                {%- if block.settings.show_lens -%}
+                  <div class="pt-seasonal__lens" aria-hidden="{% if lens_image == blank %}true{% else %}false{% endif %}">
+                    <span class="pt-seasonal__lens-frame" aria-hidden="true"></span>
+                    <div class="pt-seasonal__lens-oval">
+                      {%- if lens_image != blank -%}
+                        {{
+                          lens_image
+                          | image_url: width: 360
+                          | image_tag:
+                            widths: '180, 270, 360',
+                            sizes: '160px',
+                            alt: lens_alt,
+                            loading: 'lazy'
+                        }}
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+
+                {%- if title != blank -%}
+                  <h3 class="pt-seasonal__title">
+                    {%- if featured != blank -%}
+                      <a href="{{ featured.url }}">{{ title }}</a>
+                    {%- else -%}
+                      {{ title }}
+                    {%- endif -%}
+                  </h3>
+                {%- endif -%}
+
+                {%- if description != blank -%}
+                  <p class="pt-seasonal__text">{{ description }}</p>
+                {%- endif -%}
+
+                <div class="pt-seasonal__actions">
+                  {%- if featured != blank and variant != blank and variant.available -%}
+                    <product-form data-section-id="{{ section.id }}">
+                      {%- form 'product',
+                        featured,
+                        id: form_id,
+                        class: 'pt-seasonal__form',
+                        novalidate: 'novalidate',
+                        data-type: 'add-to-cart-form'
+                      -%}
+                        <input type="hidden" name="id" value="{{ variant.id }}" class="product-variant-id">
+                        <button type="submit" name="add" class="pt-pill pt-seasonal__btn pt-seasonal__btn--ghost">
+                          {{ atc_label }}
+                        </button>
+                      {%- endform -%}
+                    </product-form>
+
+                    <a
+                      class="pt-pill pt-pill--solid pt-seasonal__btn pt-seasonal__btn--solid"
+                      href="{{ routes.cart_add_url }}?id={{ variant.id }}&quantity=1&return_to=/checkout"
+                    >
+                      {{ buy_label }}
+                      <span class="pt-seasonal__btn-arrow" aria-hidden="true">→</span>
+                    </a>
+                  {%- else -%}
+                    <a class="pt-pill pt-seasonal__btn pt-seasonal__btn--ghost" href="{{ product_url }}">
+                      {{ atc_label }}
+                    </a>
+                    <a class="pt-pill pt-pill--solid pt-seasonal__btn pt-seasonal__btn--solid" href="{{ product_url }}">
+                      {{ buy_label }}
+                      <span class="pt-seasonal__btn-arrow" aria-hidden="true">→</span>
+                    </a>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Seasonal",
+  "tag": "section",
+  "class": "section-patelle-seasonal",
+  "max_blocks": 2,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Add one Image card and one Content card. Set each card's left or right position inside the block."
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Card height align",
+      "options": [
+        { "value": "start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Section top padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Section bottom padding",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image card",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Card position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "promo_heading",
+          "label": "Heading",
+          "default": "Get 15% Off In Seasonal Product"
+        },
+        {
+          "type": "range",
+          "id": "heading_padding_top",
+          "min": 0,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Heading top padding",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "heading_padding_bottom",
+          "min": 0,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Heading bottom padding",
+          "default": 16
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Image link"
+        },
+        {
+          "type": "color",
+          "id": "media_background",
+          "label": "Image background",
+          "default": "#F5F1EA"
+        },
+        {
+          "type": "select",
+          "id": "horizontal_align",
+          "label": "Heading align",
+          "options": [
+            { "value": "start", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "end", "label": "Right" }
+          ],
+          "default": "start"
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "Content card",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Card position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "right"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_lens",
+          "label": "Show lens image",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "lens_image",
+          "label": "Lens image",
+          "info": "Falls back to the product image."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Falls back to the product title.",
+          "default": "Azure Marine Bergamot"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "info": "Falls back to the product description.",
+          "default": "Inspired by Baccarat Rouge 540 Extrait, this fragrance belongs to the Amber Woody Floral scent family and delivers a powerful scent intensity."
+        },
+        {
+          "type": "text",
+          "id": "add_to_cart_label",
+          "label": "Add to cart label",
+          "default": "Add to Cart"
+        },
+        {
+          "type": "text",
+          "id": "buy_now_label",
+          "label": "Buy now label",
+          "default": "Buy Now"
+        },
+        {
+          "type": "select",
+          "id": "horizontal_align",
+          "label": "Content align",
+          "options": [
+            { "value": "start", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "end", "label": "Right" }
+          ],
+          "default": "start"
+        },
+        {
+          "type": "header",
+          "content": "Card padding"
+        },
+        {
+          "type": "range",
+          "id": "padding_top",
+          "min": 0,
+          "max": 120,
+          "step": 4,
+          "unit": "px",
+          "label": "Top padding",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "padding_bottom",
+          "min": 0,
+          "max": 120,
+          "step": 4,
+          "unit": "px",
+          "label": "Bottom padding",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "padding_left",
+          "min": 0,
+          "max": 120,
+          "step": 4,
+          "unit": "px",
+          "label": "Left padding",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "padding_right",
+          "min": 0,
+          "max": 120,
+          "step": 4,
+          "unit": "px",
+          "label": "Right padding",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Seasonal",
+      "blocks": [
+        { "type": "image" },
+        { "type": "content" }
+      ]
+    }
+  ]
+}
+{% endschema %}

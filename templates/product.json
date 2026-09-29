@@ -1,0 +1,188 @@
+/*
+ * ------------------------------------------------------------
+ * PATÉLLE — Product detail page (Figma single product layout)
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "patelle-product-main",
+      "blocks": {
+        "trust_1": {
+          "type": "trust",
+          "settings": {
+            "icon": "diamond",
+            "label": "Premium Quality"
+          }
+        },
+        "trust_2": {
+          "type": "trust",
+          "settings": {
+            "icon": "clock",
+            "label": "Long Lasting"
+          }
+        },
+        "trust_3": {
+          "type": "trust",
+          "settings": {
+            "icon": "leaf",
+            "label": "Clean Ingredients"
+          }
+        }
+      },
+      "block_order": ["trust_1", "trust_2", "trust_3"],
+      "settings": {
+        "short_description": "Visibly firms and smooths skin to reduce early signs of aging.",
+        "fallback_rating": "4.7",
+        "fallback_review_count": "1,634",
+        "gender": "Women",
+        "inspired_by": "Yves Saint Laurent (YSL) Mon Paris",
+        "inspired_retail": "$150",
+        "scent_family": "Fruity Floral Patchouli Size: YSL 50 ml / 1.7 oz EDP high concentration",
+        "intensity_label": "Powerful",
+        "intensity_level": 3,
+        "intensity_help": "How strong the fragrance projects and lasts on skin.",
+        "quantity_note": "Up to 3 Save 20%",
+        "padding_top": 24,
+        "padding_bottom": 40
+      }
+    },
+    "product_reels": {
+      "type": "patelle-product-reels",
+      "blocks": {
+        "reel_1": {
+          "type": "reel",
+          "settings": {
+            "label": "Reel 1"
+          }
+        },
+        "reel_2": {
+          "type": "reel",
+          "settings": {
+            "label": "Reel 2"
+          }
+        },
+        "reel_3": {
+          "type": "reel",
+          "settings": {
+            "label": "Reel 3"
+          }
+        }
+      },
+      "block_order": ["reel_1", "reel_2", "reel_3"],
+      "settings": {
+        "heading": "Product reels",
+        "padding_top": 16,
+        "padding_bottom": 48
+      }
+    },
+    "product_video": {
+      "type": "patelle-product-video",
+      "settings": {
+        "loop": true,
+        "padding_top": 24,
+        "padding_bottom": 48
+      }
+    },
+    "product_reviews": {
+      "type": "patelle-product-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "name": "Rayam Islam",
+            "role": "Verified buyer",
+            "when": "2 weeks ago",
+            "rating": 5,
+            "text": "Long-lasting and beautifully balanced. I get compliments every time I wear it — soft at first, then warm and grounded."
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "name": "Maya Chen",
+            "role": "Verified buyer",
+            "when": "1 month ago",
+            "rating": 5,
+            "text": "Smells expensive without the markup. The peony note is soft and the patchouli keeps it interesting all day."
+          }
+        }
+      },
+      "block_order": ["review_1", "review_2"],
+      "settings": {
+        "heading": "Rating & Reviews",
+        "score": "4.5",
+        "review_count_label": "50 New Reviews",
+        "bar_5": 75,
+        "bar_4": 50,
+        "bar_3": 20,
+        "bar_2": 10,
+        "bar_1": 5,
+        "cta_heading": "Review this product",
+        "cta_text": "Share your thoughts with other customers",
+        "cta_label": "Write a customer review",
+        "show_load_more": true,
+        "load_more_label": "Load More",
+        "padding_top": 40,
+        "padding_bottom": 64
+      }
+    },
+    "product_promise": {
+      "type": "patelle-product-promise",
+      "blocks": {
+        "p1": {
+          "type": "item",
+          "settings": {
+            "icon": "natural",
+            "label": "Natural Ingredients"
+          }
+        },
+        "p2": {
+          "type": "item",
+          "settings": {
+            "icon": "cruelty",
+            "label": "Cruelty Free"
+          }
+        },
+        "p3": {
+          "type": "item",
+          "settings": {
+            "icon": "lasting",
+            "label": "Long Lasting"
+          }
+        },
+        "p4": {
+          "type": "item",
+          "settings": {
+            "icon": "eco",
+            "label": "Eco-Friendly"
+          }
+        }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"],
+      "settings": {
+        "heading": "Our Quality Promise",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "product_related": {
+      "type": "patelle-product-related",
+      "settings": {
+        "heading": "You May Also Like",
+        "products_to_show": 4,
+        "show_rating": true,
+        "padding_top": 64,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "main",
+    "product_reels",
+    "product_video",
+    "product_reviews",
+    "product_promise",
+    "product_related"
+  ]
+}

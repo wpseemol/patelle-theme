@@ -1,0 +1,286 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-retailers.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign style = section.settings.style | default: 'row'
+  assign layout = section.settings.heading_position | default: 'above'
+  assign align = section.settings.align | default: 'start'
+
+  assign root_class = 'pt-retailers pt-retailers--' | append: style | append: ' pt-retailers--' | append: layout | append: ' pt-retailers--align-' | append: align
+  if section.settings.grayscale
+    assign root_class = root_class | append: ' pt-retailers--grayscale'
+  endif
+-%}
+
+<section
+  class="pt-section {{ root_class }}"
+  style="
+    --pt-retailers-bg:{{ section.settings.background }};
+    --pt-retailers-ink:{{ section.settings.text_color }};
+    --pt-retailers-logo-h:{{ section.settings.logo_height }}px;
+    --pt-retailers-gap:{{ section.settings.logo_gap }}px;
+    --pt-retailers-pt:{{ section.settings.padding_top }}px;
+    --pt-retailers-pb:{{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="pt-wrap">
+    <div class="pt-retailers__inner{% if section.settings.show_divider %} pt-retailers__inner--divider{% endif %}">
+      {%- if section.settings.heading != blank or section.settings.text != blank -%}
+        <div class="pt-retailers__head">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="pt-retailers__heading">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+          {%- if section.settings.text != blank -%}
+            <p class="pt-retailers__text">{{ section.settings.text }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="pt-retailers__list" role="list">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign logo = block.settings.logo
+              assign name = block.settings.label | default: logo.alt | default: 'Retailer'
+              assign tag = 'span'
+              if block.settings.link != blank
+                assign tag = 'a'
+              endif
+            -%}
+            <li class="pt-retailers__item" {{ block.shopify_attributes }}>
+              <{{ tag }}
+                class="pt-retailers__link"
+                {% if tag == 'a' %}
+                  href="{{ block.settings.link }}"
+                  {% if block.settings.new_tab %}target="_blank" rel="noopener"{% endif %}
+                  aria-label="{{ name | escape }}"
+                {% endif %}
+              >
+                {%- if logo != blank -%}
+                  <img
+                    src="{{ logo | image_url: width: 480 }}"
+                    srcset="{{ logo | image_url: width: 240 }} 240w, {{ logo | image_url: width: 480 }} 480w"
+                    sizes="200px"
+                    alt="{{ name | escape }}"
+                    width="{{ logo.width }}"
+                    height="{{ logo.height }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  <span class="pt-retailers__name">{{ name }}</span>
+                {%- endif -%}
+              </{{ tag }}>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Retailers",
+  "tag": "section",
+  "class": "section-patelle-retailers",
+  "max_blocks": 16,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find us at these retailers."
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Subheading"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Logo style",
+      "options": [
+        { "value": "row", "label": "Plain row" },
+        { "value": "cards", "label": "Logo cards" }
+      ],
+      "default": "row"
+    },
+    {
+      "type": "select",
+      "id": "heading_position",
+      "label": "Heading position",
+      "options": [
+        { "value": "above", "label": "Above logos" },
+        { "value": "beside", "label": "Beside logos" }
+      ],
+      "default": "above"
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Alignment",
+      "options": [
+        { "value": "start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "Right" }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo height",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "min": 8,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "label": "Space between logos",
+      "default": 48
+    },
+    {
+      "type": "checkbox",
+      "id": "grayscale",
+      "label": "Grayscale logos",
+      "info": "Logos show in color on hover.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider line below",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#FAF6F0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#212121"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "retailer",
+      "name": "Retailer",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo",
+          "info": "Without a logo, the name is shown as text."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Name",
+          "default": "Retailer"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "new_tab",
+          "label": "Open link in new tab",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Retailers",
+      "blocks": [
+        { "type": "retailer", "settings": { "label": "Walmart" } },
+        { "type": "retailer", "settings": { "label": "Amazon" } },
+        { "type": "retailer", "settings": { "label": "eBay" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

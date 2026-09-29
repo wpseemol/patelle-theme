@@ -1,0 +1,744 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_slider": {
+      "type": "hero-slider",
+      "blocks": {
+        "hs_REgbaA": {
+          "type": "slide",
+          "settings": {
+            "bg_color_1": "#633090",
+            "bg_color_2": "#b389da",
+            "gradient_style": "side",
+            "overlay_opacity": 0,
+            "ui_color": "#ffffff",
+            "word": "Jasmine",
+            "word_style": "solid",
+            "word_color": "#ffffff",
+            "word_opacity": 100,
+            "bottle_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "bottle_width": 820,
+            "show_shadow": false,
+            "float_1": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "float_2": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "float_3": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "float_4": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "float_size": 100,
+            "float_depth_blur": false,
+            "product": "jasmine",
+            "show_sizes": true,
+            "show_price": false,
+            "card_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "card_title": "Rose Oud Amber",
+            "card_description": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "button_label": "Add to Cart",
+            "added_label": "Added to cart",
+            "bottle_height": 92,
+            "bottle_offset": -9,
+            "size_labels": "50 ml, 100 ml",
+            "float_5": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "grain": 16,
+            "word_size": "26"
+          }
+        },
+        "hs_fQFeKe": {
+          "type": "slide",
+          "settings": {
+            "bg_color_1": "#67584a",
+            "bg_color_2": "#948270",
+            "gradient_style": "side",
+            "overlay_opacity": 0,
+            "ui_color": "#ffffff",
+            "word": "Pineapple",
+            "word_style": "solid",
+            "word_color": "#ffffff",
+            "word_opacity": 100,
+            "bottle_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "bottle_width": 820,
+            "show_shadow": false,
+            "float_1": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_2": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_3": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_4": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "float_size": 100,
+            "float_depth_blur": false,
+            "product": "jasmine",
+            "show_sizes": true,
+            "show_price": false,
+            "card_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "card_title": "Rose Oud Amber",
+            "card_description": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "button_label": "Add to Cart",
+            "added_label": "Added to cart",
+            "bottle_height": 92,
+            "bottle_offset": -9,
+            "size_labels": "50 ml, 100 ml",
+            "float_5": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "grain": 16,
+            "word_size": "26"
+          }
+        },
+        "hs_apple": {
+          "type": "slide",
+          "settings": {
+            "gradient_style": "side",
+            "overlay_opacity": 0,
+            "grain": 16,
+            "word_size": "26",
+            "ui_color": "#ffffff",
+            "word_style": "solid",
+            "word_color": "#ffffff",
+            "word_opacity": 100,
+            "bottle_width": 820,
+            "bottle_height": 92,
+            "bottle_offset": -9,
+            "show_shadow": false,
+            "float_size": 100,
+            "float_depth_blur": false,
+            "show_sizes": true,
+            "size_labels": "50 ml, 100 ml",
+            "show_price": false,
+            "card_title": "Rose Oud Amber",
+            "card_description": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "button_label": "Add to Cart",
+            "added_label": "Added to cart",
+            "word": "Apple",
+            "bg_color_1": "#212839",
+            "bg_color_2": "#4a464c",
+            "bottle_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "card_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "product": "jasmine"
+          }
+        },
+        "hs_orange": {
+          "type": "slide",
+          "settings": {
+            "gradient_style": "side",
+            "overlay_opacity": 0,
+            "grain": 16,
+            "word_size": "26",
+            "ui_color": "#ffffff",
+            "word_style": "solid",
+            "word_color": "#ffffff",
+            "word_opacity": 100,
+            "bottle_width": 820,
+            "bottle_height": 92,
+            "bottle_offset": -9,
+            "show_shadow": false,
+            "float_size": 100,
+            "float_depth_blur": false,
+            "show_sizes": true,
+            "size_labels": "50 ml, 100 ml",
+            "show_price": false,
+            "card_title": "Rose Oud Amber",
+            "card_description": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "button_label": "Add to Cart",
+            "added_label": "Added to cart",
+            "word": "Orange",
+            "bg_color_1": "#c98a3f",
+            "bg_color_2": "#f2ba62",
+            "bottle_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "card_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "product": "jasmine"
+          }
+        },
+        "hs_amber": {
+          "type": "slide",
+          "settings": {
+            "gradient_style": "side",
+            "overlay_opacity": 0,
+            "grain": 16,
+            "word_size": "26",
+            "ui_color": "#ffffff",
+            "word_style": "solid",
+            "word_color": "#ffffff",
+            "word_opacity": 100,
+            "bottle_width": 820,
+            "bottle_height": 92,
+            "bottle_offset": -9,
+            "show_shadow": false,
+            "float_size": 100,
+            "float_depth_blur": false,
+            "show_sizes": true,
+            "size_labels": "50 ml, 100 ml",
+            "show_price": false,
+            "card_title": "Rose Oud Amber",
+            "card_description": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "button_label": "Add to Cart",
+            "added_label": "Added to cart",
+            "word": "Amber",
+            "bg_color_1": "#942800",
+            "bg_color_2": "#cf5b15",
+            "bottle_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "card_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "product": "jasmine"
+          }
+        }
+      },
+      "block_order": [
+        "hs_REgbaA",
+        "hs_fQFeKe",
+        "hs_apple",
+        "hs_orange",
+        "hs_amber"
+      ],
+      "settings": {
+        "desktop_height": 840,
+        "mobile_height": 720,
+        "full_height": false,
+        "autoplay": true,
+        "autoplay_interval": 6,
+        "transition_speed": 1.4,
+        "pause_on_hover": true,
+        "show_arrows": true,
+        "show_counter": false,
+        "enable_parallax": true,
+        "parallax_strength": 100,
+        "enable_magnetic": true,
+        "magnetic_strength": 35,
+        "bg_entrance": "fade",
+        "word_entrance": "right",
+        "splash_entrance": "burst",
+        "bottle_entrance": "drop",
+        "float_entrance": "center",
+        "card_entrance": "wipe",
+        "display_font": "sf_pro_rounded",
+        "custom_font_name": "SF Pro Rounded Web",
+        "custom_font_url": "",
+        "custom_font_width": 58,
+        "display_italic": false,
+        "display_weight": "800",
+        "controls_color": "#f5ebde",
+        "arrow_style": "solid",
+        "arrow_size": 50,
+        "arrow_bg": "#ffffff",
+        "arrow_icon": "#1d1d1f",
+        "arrow_hover_bg": "#1d1d1f",
+        "arrow_hover_icon": "#ffffff",
+        "card_opacity": 14,
+        "card_blur": 40,
+        "atc_fill_color": "#1d1d1f",
+        "atc_fill_text": "#ffffff",
+        "secondary_label": "",
+        "secondary_link": "",
+        "accessible_label": "Featured fragrances",
+        "bag_action": "checkout"
+      }
+    },
+    "hero_banner": {
+      "type": "hero-banner",
+      "blocks": {
+        "slide_REgbaA": {
+          "type": "slide",
+          "settings": {
+            "bg_color": "#ae63ad",
+            "hero_title": "Jasmine",
+            "main_product_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "flower_top_left": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "flower_top_right": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "flower_mid_left": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703_c268b2e2-12b7-4828-a4d5-d696c96b732b.png",
+            "flower_bottom_right": "shopify://shop_images/7a81c838c8f906324015ec2ef51aff9951771703.png",
+            "featured_product": "jasmine",
+            "card_product_image": "shopify://shop_images/845c30f25f8e1ca581bb832b04697b668ef4a1e4.png",
+            "card_product_title": "Rose Oud Amber",
+            "card_product_desc": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "btn_text": "Add to Cart"
+          }
+        },
+        "slide_fQFeKe": {
+          "type": "slide",
+          "settings": {
+            "bg_color": "#78ab3b",
+            "hero_title": "Pineapple",
+            "main_product_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "flower_top_left": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "flower_top_right": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "flower_mid_left": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "flower_bottom_right": "shopify://shop_images/d41c9239dbb1f617d828932930e64f7d566e3c00.png",
+            "featured_product": "jasmine",
+            "card_product_image": "shopify://shop_images/5cf4a9de97714ef45ea90851be10907460d23fca.png",
+            "card_product_title": "Rose Oud Amber",
+            "card_product_desc": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance.",
+            "btn_text": "Add to Cart"
+          }
+        }
+      },
+      "block_order": [
+        "slide_REgbaA",
+        "slide_fQFeKe"
+      ],
+      "disabled": true,
+      "settings": {}
+    },
+    "shop_all": {
+      "type": "patelle-shop-all",
+      "blocks": {
+        "tab_woman": {
+          "type": "tab",
+          "settings": {
+            "label": "Woman",
+            "collection": "woman"
+          }
+        },
+        "tab_man": {
+          "type": "tab",
+          "settings": {
+            "label": "Man",
+            "collection": ""
+          }
+        },
+        "tab_unisex": {
+          "type": "tab",
+          "settings": {
+            "label": "Unisex",
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "tab_woman",
+        "tab_man",
+        "tab_unisex"
+      ],
+      "settings": {
+        "heading": "Shop All",
+        "vendor_tagline": "(Luxury. No Markup.)",
+        "products_to_show": 4,
+        "show_view_all": true,
+        "view_all_label": "View All",
+        "view_all_url": "",
+        "heading_padding_top": 0,
+        "heading_padding_bottom": 32,
+        "spacing_mode": "margin",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 56,
+        "margin_bottom": 56
+      }
+    },
+    "seasonal_promo": {
+      "type": "patelle-seasonal",
+      "blocks": {
+        "seasonal_image": {
+          "type": "image",
+          "settings": {
+            "position": "left",
+            "promo_heading": "Get 15% Off In Seasonal Product",
+            "heading_padding_top": 0,
+            "heading_padding_bottom": 16,
+            "image": "shopify://shop_images/52b733dbf522c46892636a87ec7a4b271ca2a94f_e0ed70b7-bca6-41d5-aaeb-8b8a367f8a5f.png",
+            "link": "",
+            "media_background": "#f5f1ea",
+            "horizontal_align": "start"
+          }
+        },
+        "seasonal_content": {
+          "type": "content",
+          "settings": {
+            "position": "right",
+            "product": "ee15-rose-lychee-musk",
+            "show_lens": true,
+            "lens_image": "shopify://shop_images/c4526a43dcdb5f7922eec10f239ae6d165e120c1_99399961-f2a2-4917-b69d-5a2072beb3e4.png",
+            "title": "Azure Marine Bergamot",
+            "description": "Inspired by Baccarat Rouge 540 Extrait, this fragrance belongs to the Amber Woody Floral scent family and delivers a powerful scent intensity.",
+            "add_to_cart_label": "Add to Cart",
+            "buy_now_label": "Buy Now",
+            "horizontal_align": "center",
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          }
+        }
+      },
+      "block_order": [
+        "seasonal_image",
+        "seasonal_content"
+      ],
+      "settings": {
+        "vertical_align": "center",
+        "spacing_mode": "margin",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 56
+      }
+    },
+    "patelle_seasonal_YV4iGE": {
+      "type": "patelle-seasonal",
+      "blocks": {
+        "image_UXwTGq": {
+          "type": "image",
+          "settings": {
+            "position": "right",
+            "promo_heading": "Get 15% Off In Seasonal Product",
+            "heading_padding_top": 0,
+            "heading_padding_bottom": 16,
+            "image": "shopify://shop_images/52b733dbf522c46892636a87ec7a4b271ca2a94f_e0ed70b7-bca6-41d5-aaeb-8b8a367f8a5f.png",
+            "link": "",
+            "media_background": "#f5f1ea",
+            "horizontal_align": "start"
+          }
+        },
+        "content_wT9LG7": {
+          "type": "content",
+          "settings": {
+            "position": "left",
+            "product": "ee15-rose-lychee-musk",
+            "show_lens": true,
+            "lens_image": "shopify://shop_images/c4526a43dcdb5f7922eec10f239ae6d165e120c1_99399961-f2a2-4917-b69d-5a2072beb3e4.png",
+            "title": "Azure Marine Bergamot",
+            "description": "Inspired by Baccarat Rouge 540 Extrait, this fragrance belongs to the Amber Woody Floral scent family and delivers a powerful scent intensity.",
+            "add_to_cart_label": "Add to Cart",
+            "buy_now_label": "Buy Now",
+            "horizontal_align": "center",
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          }
+        }
+      },
+      "block_order": [
+        "image_UXwTGq",
+        "content_wT9LG7"
+      ],
+      "settings": {
+        "vertical_align": "center",
+        "spacing_mode": "margin",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 56
+      }
+    },
+    "dossier_collage": {
+      "type": "patelle-collage",
+      "blocks": {
+        "impressions": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/1544fab9031c6743ff328cfae55f68be2ab89b27.png",
+            "background": "#f4ecdd",
+            "logo_width": 210,
+            "heading": "Dossier Impressions",
+            "text": "Designer-inspired, premium-quality favorites.",
+            "link": ""
+          }
+        },
+        "originals": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/8b3c23f73401ab261779cf3786cb0f63301c9155.png",
+            "background": "#d6e4c2",
+            "logo_width": 210,
+            "heading": "Dossier Originals",
+            "text": "Exclusive fragrances crafted in France.",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "impressions",
+        "originals"
+      ],
+      "settings": {
+        "spacing_mode": "margin",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 56
+      }
+    },
+    "more_to_love": {
+      "type": "patelle-more-to-love",
+      "settings": {
+        "heading": "More to Love",
+        "collection": "woman",
+        "products_to_show": 4,
+        "columns": "4",
+        "vendor_tagline": "(Luxury. No Markup.)",
+        "show_rating": true,
+        "show_view_all": true,
+        "view_all_label": "View all",
+        "view_all_url": "",
+        "spacing_mode": "margin",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 56
+      }
+    },
+    "single_product": {
+      "type": "patelle-single-product",
+      "blocks": {
+        "detail_inspired": {
+          "type": "detail",
+          "settings": {
+            "label": "Inspired by:",
+            "source": "inspired_by",
+            "value": "Baccarat Rouge 540 Extrait",
+            "retail": "$168",
+            "bold_label": false
+          }
+        },
+        "detail_family": {
+          "type": "detail",
+          "settings": {
+            "label": "Scent Family:",
+            "source": "scent_family",
+            "value": "Amber Woody Floral",
+            "retail": "",
+            "bold_label": false
+          }
+        },
+        "detail_intensity": {
+          "type": "detail",
+          "settings": {
+            "label": "Scent Intensity Scale:",
+            "source": "scent_intensity",
+            "value": "Powerful",
+            "retail": "",
+            "bold_label": true
+          }
+        },
+        "feature_shipping": {
+          "type": "feature",
+          "settings": {
+            "text": "Free Shipping on Orders $75+"
+          }
+        },
+        "feature_lasting": {
+          "type": "feature",
+          "settings": {
+            "text": "Long Lasting Eau de Parfum"
+          }
+        },
+        "feature_bnpl": {
+          "type": "feature",
+          "settings": {
+            "text": "Buy Now, Pay Later Available"
+          }
+        }
+      },
+      "block_order": [
+        "detail_inspired",
+        "detail_family",
+        "detail_intensity",
+        "feature_shipping",
+        "feature_lasting",
+        "feature_bnpl"
+      ],
+      "settings": {
+        "product": "ee15-rose-lychee-musk",
+        "heading": "With Its Unique Taste, You Should Definitely Buy It!",
+        "show_outline": true,
+        "outline_word_1": "ALMOND",
+        "outline_word_2": "AMBER",
+        "button_label": "View Details",
+        "button_link": "shopify://products/ee15-rose-lychee-musk",
+        "eyebrow": "Patelle Perfume",
+        "show_inspired": true,
+        "inspired_by": "Baccarat Rouge 540 Extrait",
+        "inspired_retail": "$168",
+        "add_to_cart_label": "Add to Cart",
+        "buy_now_label": "Buy it Now",
+        "thumbnails": 4,
+        "background": "#ffffff",
+        "accent_color": "#b8924f",
+        "outline_color": "#cfcfcf",
+        "spacing_mode": "padding",
+        "padding_top": 0,
+        "padding_bottom": 56,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    },
+    "news_strip": {
+      "type": "patelle-news-strip",
+      "blocks": {
+        "news_content": {
+          "type": "content",
+          "settings": {
+            "position": "left",
+            "blog": "",
+            "heading": "Chill Out, Shop On National Ice Cream Day",
+            "subtitle": "Nolita Boutique ONLY",
+            "date": "",
+            "button_label": "Learn more",
+            "link": "",
+            "text_align": "start",
+            "item_gap": 6,
+            "button_gap": 14,
+            "padding_top": 24,
+            "padding_bottom": 24,
+            "padding_left": 22,
+            "padding_right": 0
+          }
+        },
+        "news_image": {
+          "type": "image",
+          "settings": {
+            "position": "right",
+            "image": "shopify://shop_images/dd3bd9e73f7197fa20fef765b0e511d7ea76033a.png",
+            "width": 330,
+            "height_mode": "custom",
+            "height": 270,
+            "height_mobile": 200,
+            "image_fit": "cover",
+            "image_position": "center top"
+          }
+        }
+      },
+      "block_order": [
+        "news_content",
+        "news_image"
+      ],
+      "settings": {
+        "horizontal_align": "between",
+        "vertical_align": "center",
+        "gap": 24,
+        "min_height": 180,
+        "background": "#faf6f0",
+        "show_border": false,
+        "border_color": "#e6ded2",
+        "border_width": 1,
+        "spacing_mode": "margin",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 56
+      }
+    },
+    "brand_banner": {
+      "type": "patelle-brand-banner",
+      "blocks": {
+        "brand_heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "The perfume house for the next generation®"
+          }
+        },
+        "brand_text": {
+          "type": "text",
+          "settings": {
+            "text": "Premium-quality French fragrances. No excessive markups. Crafted with heart, not ego."
+          }
+        },
+        "brand_link": {
+          "type": "link",
+          "settings": {
+            "link_label": "About us",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "brand_heading",
+        "brand_text",
+        "brand_link"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/3edd8a236d68508e4d99694a2e9ffa029e0b41c7.png",
+        "background": "#7fa0c4",
+        "content_horizontal": "start",
+        "content_vertical": "center",
+        "content_gap": 14,
+        "spacing_mode": "margin",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 56
+      }
+    },
+    "quality_promise": {
+      "type": "patelle-quality-promise",
+      "blocks": {
+        "promise_lasting": {
+          "type": "item",
+          "settings": {
+            "icon": "hand",
+            "label": "Long Lasting"
+          }
+        },
+        "promise_quality": {
+          "type": "item",
+          "settings": {
+            "icon": "leaf",
+            "label": "Premium Quality"
+          }
+        },
+        "promise_guarantee": {
+          "type": "item",
+          "settings": {
+            "icon": "heart",
+            "label": "15 Days Satisfaction Guarantee"
+          }
+        },
+        "promise_packaging": {
+          "type": "item",
+          "settings": {
+            "icon": "planet",
+            "label": "Luxury Packaging"
+          }
+        },
+        "promise_shipping": {
+          "type": "item",
+          "settings": {
+            "icon": "drop",
+            "label": "USA Shipping"
+          }
+        }
+      },
+      "block_order": [
+        "promise_lasting",
+        "promise_quality",
+        "promise_guarantee",
+        "promise_packaging",
+        "promise_shipping"
+      ],
+      "settings": {
+        "heading": "Our Quality Promise",
+        "use_figtree": true,
+        "text_color": "#ffffff",
+        "icon_size": 44,
+        "background_image": "shopify://shop_images/c3e40a6bdf03d43937505ffc0f969863340d0c00.png",
+        "image_position": "center center",
+        "full_width": true,
+        "min_height": 550,
+        "min_height_mobile": 420,
+        "panel_width": 1190,
+        "panel_blur": 30,
+        "panel_tint": "#6e3f2e",
+        "panel_tint_opacity": 14,
+        "panel_radius": 20,
+        "spacing_mode": "padding",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "hero_slider",
+    "hero_banner",
+    "shop_all",
+    "seasonal_promo",
+    "patelle_seasonal_YV4iGE",
+    "dossier_collage",
+    "more_to_love",
+    "single_product",
+    "news_strip",
+    "brand_banner",
+    "quality_promise"
+  ]
+}

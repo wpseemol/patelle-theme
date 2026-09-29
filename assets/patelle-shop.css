@@ -1,0 +1,303 @@
+/* ==========================================================================
+   PATÉLLE — Shop / Collection page
+   Matched to Figma: Product Landing Page Design / Shop Page (node 232:738)
+   ========================================================================== */
+
+.pt-shop-page {
+  --pt-shop-bg: #faf6f0;
+  --pt-shop-surface: #ffffff;
+  --pt-shop-ink: #111111;
+  --pt-shop-body: #5c5c5c;
+  --pt-shop-pill: #efe6d3;
+  --pt-shop-why-bg: #f5ebde;
+  --pt-shop-radius: 16px;
+  --pt-shop-max: 1180px;
+  --pt-shop-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia,
+    'Times New Roman', serif;
+
+  background: var(--pt-shop-bg);
+  color: var(--pt-shop-ink);
+}
+
+.pt-shop-page .pt-wrap {
+  max-width: calc(var(--pt-shop-max) + var(--pt-gutter) * 2);
+}
+
+/* —— Hero ——————————————————————————————————————————————————————————————— */
+
+.pt-shop-hero {
+  background: var(--pt-shop-bg);
+  text-align: center;
+  padding-top: calc(var(--pt-header-overlay-h, 0px) + 48px) !important;
+}
+
+.pt-shop-hero__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 560px;
+  margin: 0 auto 36px;
+}
+
+.pt-shop-hero__title {
+  margin: 0;
+  font-family: var(--pt-shop-display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 5.5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--pt-shop-ink);
+}
+
+.pt-shop-hero__text {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--pt-shop-body);
+}
+
+.pt-shop-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pt-shop-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 22px;
+  border: 1px solid var(--pt-shop-ink);
+  border-radius: var(--pt-r-pill);
+  background: transparent;
+  font-family: var(--pt-font);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--pt-shop-ink);
+  text-decoration: none;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.pt-shop-filter:hover,
+.pt-shop-filter:focus-visible {
+  background: rgba(33, 33, 33, 0.06);
+}
+
+.pt-shop-filter.is-active {
+  border-color: var(--pt-ink-deep);
+  background: var(--pt-ink-deep);
+  color: var(--pt-white);
+}
+
+.pt-shop-filter.is-active:hover,
+.pt-shop-filter.is-active:focus-visible {
+  background: #2e2e2e;
+  color: var(--pt-white);
+}
+
+/* —— Product grid ——————————————————————————————————————————————————————— */
+
+.pt-shop-grid {
+  background: var(--pt-shop-bg);
+}
+
+.pt-shop-grid__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pt-shop-grid__item {
+  margin: 0;
+  padding: 0;
+}
+
+.pt-shop-grid__empty {
+  grid-column: 1 / -1;
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--pt-shop-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.pt-shop-grid__pager {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.pt-shop-grid__pager .pagination {
+  margin: 0;
+}
+
+/* —— Why customers ————————————————————————————————————————————————————— */
+
+.pt-shop-why {
+  background: var(--pt-shop-why-bg);
+}
+
+.pt-shop-why__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.pt-shop-why__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.pt-shop-why__title {
+  margin: 0;
+  font-family: var(--pt-shop-display);
+  font-weight: 400;
+  font-size: clamp(1.85rem, 3.2vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--pt-shop-ink);
+}
+
+.pt-shop-why__features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px 28px;
+}
+
+.pt-shop-why__feature {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.pt-shop-why__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--pt-shop-ink);
+}
+
+.pt-shop-why__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.pt-shop-why__feature-title {
+  margin: 0 0 6px;
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.3;
+  color: var(--pt-shop-ink);
+}
+
+.pt-shop-why__feature-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--pt-shop-body);
+}
+
+.pt-shop-why__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--pt-shop-radius);
+  background: #e8e0d4;
+  aspect-ratio: 4 / 5;
+  min-height: 280px;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.06);
+}
+
+.pt-shop-why__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pt-shop-why__ph {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  color: #9a9a9a;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* —— Responsive ———————————————————————————————————————————————————————— */
+
+@media screen and (min-width: 750px) {
+  .pt-shop-why__features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .pt-shop-why__layout {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 56px;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .pt-shop-grid__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 14px;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .pt-shop-hero__intro {
+    margin-bottom: 28px;
+  }
+
+  .pt-shop-filters {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 2px 4px;
+    margin: 0 calc(var(--pt-gutter) * -0.35);
+    padding-inline: calc(var(--pt-gutter) * 0.35);
+  }
+
+  .pt-shop-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pt-shop-filter {
+    flex: 0 0 auto;
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  .pt-shop-grid__list {
+    gap: 20px 10px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .pt-shop-grid__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

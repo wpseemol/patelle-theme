@@ -1,0 +1,191 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-product.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'patelle-product.js' | asset_url }}" defer="defer"></script>
+
+<section
+  class="pt-section pt-product-page pt-pdp-reels"
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="pt-wrap">
+    <div class="pt-pdp-reels__head">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pt-pdp-reels__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      <div class="pt-pdp-reels__nav">
+        <button type="button" class="pt-pdp-reels__arrow" data-pt-reels-prev aria-label="Previous reels">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button type="button" class="pt-pdp-reels__arrow" data-pt-reels-next aria-label="Next reels">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="pt-pdp-reels__track" data-pt-reels-track>
+        {%- for block in section.blocks -%}
+          <article class="pt-pdp-reel" {{ block.shopify_attributes }}>
+            <div class="pt-pdp-reel__media">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '240, 360, 480, 600',
+                    sizes: '(min-width: 990px) 220px, 42vw',
+                    alt: block.settings.label | default: section.settings.heading
+                }}
+              {%- else -%}
+                <div class="pt-pdp-reel__ph" aria-hidden="true">Reel</div>
+              {%- endif -%}
+
+              {%- if block.settings.video_url != blank -%}
+                <a
+                  class="pt-pdp-reel__play"
+                  href="{{ block.settings.video_url }}"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Play reel{% if block.settings.label != blank %} — {{ block.settings.label | escape }}{% endif %}"
+                >
+                  <span class="pt-pdp-reel__play-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                      <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
+                    </svg>
+                  </span>
+                </a>
+              {%- else -%}
+                <span class="pt-pdp-reel__play" aria-hidden="true">
+                  <span class="pt-pdp-reel__play-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" focusable="false">
+                      <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
+                    </svg>
+                  </span>
+                </span>
+              {%- endif -%}
+            </div>
+            {%- if block.settings.label != blank -%}
+              <p class="pt-pdp-reel__label">{{ block.settings.label }}</p>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Product reels",
+  "tag": "section",
+  "class": "section-patelle-product-reels",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Product reels"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Reel",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Poster image"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video link"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Customer reel"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Product reels",
+      "blocks": [
+        { "type": "reel", "settings": { "label": "Reel 1" } },
+        { "type": "reel", "settings": { "label": "Reel 2" } },
+        { "type": "reel", "settings": { "label": "Reel 3" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

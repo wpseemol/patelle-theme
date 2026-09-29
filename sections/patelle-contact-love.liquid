@@ -1,0 +1,233 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-contact.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.use_figtree -%}
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&display=swap">
+{%- endif -%}
+
+{%- liquid
+  assign show_contact = false
+  if page.handle == 'contact' or template.suffix == 'contact'
+    assign show_contact = true
+  endif
+-%}
+
+{%- if show_contact -%}
+  <section
+    class="pt-section pt-contact-love{% if section.settings.use_figtree %} pt-contact-love--figtree{% endif %}"
+    style="
+      --pt-contact-love-bg: {{ section.settings.background }};
+      --pt-contact-love-heading: {{ section.settings.heading_color }};
+      --pt-contact-love-heading-size: {{ section.settings.heading_size }}px;
+      --pt-contact-love-card-bg: {{ section.settings.card_background }};
+      --pt-contact-love-card-title: {{ section.settings.title_color }};
+      --pt-contact-love-card-text: {{ section.settings.text_color }};
+      --pt-contact-love-card-h: {{ section.settings.card_height }}px;
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    "
+  >
+    <div class="pt-wrap">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pt-contact-love__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      <div class="pt-contact-love__grid">
+        {%- for block in section.blocks -%}
+          <article class="pt-contact-love__card" {{ block.shopify_attributes }}>
+            {%- if block.settings.title != blank -%}
+              <h3 class="pt-contact-love__card-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="pt-contact-love__card-text">{{ block.settings.text | escape | newline_to_br }}</p>
+            {%- endif -%}
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PATÉLLE — Contact love",
+  "tag": "section",
+  "class": "section-patelle-contact-love",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "WHY CUSTOMERS LOVE PATELLE"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "checkbox",
+      "id": "use_figtree",
+      "label": "Use Figtree font",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "card_height",
+      "label": "Card height",
+      "min": 140,
+      "max": 340,
+      "step": 2,
+      "unit": "px",
+      "default": 218
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#f4f0ef"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Card title",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Card text",
+      "default": "#858585"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "LONG LASTING"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "info": "Press Enter to choose where the line breaks.",
+          "default": "Luxury scents crafted to stay all day."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Contact love",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "LONG LASTING",
+            "text": "Luxury scents crafted to stay all day."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "PREMIUM INGREDIENTS",
+            "text": "High-quality fragrance oils and refined blends."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "ELEGANT PACKAGING",
+            "text": "Designed for gifting and unforgettable experiences."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

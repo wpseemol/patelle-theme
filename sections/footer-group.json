@@ -1,0 +1,117 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "patelle_retailers": {
+      "type": "patelle-retailers",
+      "blocks": {
+        "retailer_walmart": {
+          "type": "retailer",
+          "settings": {
+            "logo": "shopify://shop_images/Walmart_logo__2025__Alt__svg.png",
+            "label": "Walmart",
+            "link": "",
+            "new_tab": true
+          }
+        },
+        "retailer_cvs": {
+          "type": "retailer",
+          "settings": {
+            "logo": "shopify://shop_images/Amazon_logo_svg.png",
+            "label": "Amazon",
+            "link": "",
+            "new_tab": true
+          }
+        },
+        "retailer_target": {
+          "type": "retailer",
+          "settings": {
+            "logo": "shopify://shop_images/EBay_logo.png",
+            "label": "ebay",
+            "link": "",
+            "new_tab": true
+          }
+        }
+      },
+      "block_order": [
+        "retailer_walmart",
+        "retailer_cvs",
+        "retailer_target"
+      ],
+      "settings": {
+        "heading": "Find us at these retailers.",
+        "text": "",
+        "style": "row",
+        "heading_position": "above",
+        "align": "center",
+        "logo_height": 42,
+        "logo_gap": 52,
+        "grayscale": false,
+        "show_divider": false,
+        "background": "#faf6f0",
+        "text_color": "#212121",
+        "spacing_mode": "padding",
+        "padding_top": 16,
+        "padding_bottom": 28,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    },
+    "patelle_footer": {
+      "type": "patelle-footer",
+      "blocks": {
+        "quick_links": {
+          "type": "menu",
+          "settings": {
+            "heading": "Quick links",
+            "menu": "footer"
+          }
+        },
+        "support": {
+          "type": "menu",
+          "settings": {
+            "heading": "Support",
+            "menu": "footer"
+          }
+        }
+      },
+      "block_order": [
+        "quick_links",
+        "support"
+      ],
+      "settings": {
+        "background": "#faf6f0",
+        "padding_top": 0,
+        "top_logo_width": 220,
+        "top_logo_padding_top": 0,
+        "top_logo_padding_bottom": 0,
+        "top_logo_margin_bottom": 40,
+        "logo": "shopify://shop_images/site_logo.png",
+        "logo_width": 210,
+        "logo_margin_bottom": 14,
+        "brand_name": "",
+        "brand_text": "Luxury fragrances crafted to elevate your presence and leave a lasting impression.",
+        "whatsapp_link": "",
+        "newsletter_enable": true,
+        "newsletter_heading": "Join the PATELLE club",
+        "newsletter_text": "Sign up for exclusive offers, new arrivals and scent inspiration.",
+        "newsletter_placeholder": "Enter your email address",
+        "rating_text": "4.9/5 (10k+ 5 Star Reviews)",
+        "watermark_text": "PATELLE"
+      }
+    }
+  },
+  "order": [
+    "patelle_retailers",
+    "patelle_footer"
+  ]
+}

@@ -1,0 +1,130 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-card.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-shop.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{%- paginate collection.products by section.settings.products_per_page -%}
+  <collection-component
+    view-event-payload="{{ collection | standard_event_data: 'view' | escape }}"
+    data-collection-id="{{ collection.id }}"
+  >
+    <section
+      class="pt-section pt-shop-page pt-shop-grid"
+      style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+    >
+      <div class="pt-wrap">
+        {%- if collection.products.size == 0 -%}
+          <p class="pt-shop-grid__empty" role="status">
+            {{ 'sections.collection_template.empty' | t | default: 'No products found in this collection.' }}
+          </p>
+        {%- else -%}
+          <ul class="pt-shop-grid__list" role="list">
+            {%- for product in collection.products -%}
+              <li class="pt-shop-grid__item">
+                {%- render 'patelle-card',
+                  card_product: product,
+                  card_style: 'catalog',
+                  section_id: section.id,
+                  show_rating: section.settings.show_rating,
+                  index: forloop.index
+                -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if paginate.pages > 1 -%}
+          <div class="pt-shop-grid__pager">
+            {% render 'pagination', paginate: paginate, anchor: '' %}
+          </div>
+        {%- endif -%}
+      </div>
+    </section>
+  </collection-component>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "PATÉLLE — Shop grid",
+  "tag": "section",
+  "class": "section-patelle-shop-grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 6,
+      "max": 36,
+      "step": 3,
+      "label": "Products per page",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating badge",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "presets": [{ "name": "PATÉLLE — Shop grid" }]
+}
+{% endschema %}

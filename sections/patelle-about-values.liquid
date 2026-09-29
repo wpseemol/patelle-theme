@@ -1,0 +1,178 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-about.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign show_about = false
+  if page.handle == 'about' or template.suffix == 'about'
+    assign show_about = true
+  endif
+-%}
+
+{%- if show_about -%}
+  <section
+    class="pt-section pt-about-page pt-about-values"
+    style="
+      --pt-sand: {{ section.settings.background }};
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    "
+  >
+    <div class="pt-wrap">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pt-about-values__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="pt-about-values__grid">
+          {%- for block in section.blocks -%}
+            <article class="pt-about-value" {{ block.shopify_attributes }}>
+              {%- if block.settings.title != blank -%}
+                <h3 class="pt-about-value__title">{{ block.settings.title }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p class="pt-about-value__text">{{ block.settings.text }}</p>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PATÉLLE — About values",
+  "tag": "section",
+  "class": "section-patelle-about-values",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Vision and Value"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#f5ebde"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Value",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "QUALITY FIRST"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Premium ingredients and careful formulation in every bottle."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — About values",
+      "blocks": [
+        {
+          "type": "value",
+          "settings": {
+            "title": "QUALITY FIRST",
+            "text": "We source premium ingredients and refine every formula for lasting presence."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "CRAFTSMANSHIP",
+            "text": "Each scent is composed with intention — from top notes to the final dry-down."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "CUSTOMER CENTRIC",
+            "text": "Your ritual comes first: clear pricing, honest notes, and support that listens."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "SUSTAINABILITY",
+            "text": "Thoughtful packaging and responsible choices for the next generation."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

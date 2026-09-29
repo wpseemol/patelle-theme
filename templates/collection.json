@@ -1,0 +1,118 @@
+/*
+ * ------------------------------------------------------------
+ * PATÉLLE — Collection / Shop page (Figma Shop Page, node 232:738)
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "shop_hero": {
+      "type": "patelle-shop-hero",
+      "blocks": {
+        "filter_all": {
+          "type": "filter",
+          "settings": {
+            "label": "All"
+          }
+        },
+        "filter_men": {
+          "type": "filter",
+          "settings": {
+            "label": "Men"
+          }
+        },
+        "filter_women": {
+          "type": "filter",
+          "settings": {
+            "label": "Women"
+          }
+        },
+        "filter_unisex": {
+          "type": "filter",
+          "settings": {
+            "label": "Unisex"
+          }
+        },
+        "filter_best": {
+          "type": "filter",
+          "settings": {
+            "label": "Best Sellers"
+          }
+        },
+        "filter_new": {
+          "type": "filter",
+          "settings": {
+            "label": "New Arrivals"
+          }
+        }
+      },
+      "block_order": [
+        "filter_all",
+        "filter_men",
+        "filter_women",
+        "filter_unisex",
+        "filter_best",
+        "filter_new"
+      ],
+      "settings": {
+        "heading": "Products",
+        "text": "Explore our full range of luxury fragrances — crafted for everyday presence, without the designer markup.",
+        "padding_top": 48,
+        "padding_bottom": 32
+      }
+    },
+    "shop_grid": {
+      "type": "patelle-shop-grid",
+      "settings": {
+        "products_per_page": 12,
+        "show_rating": true,
+        "padding_top": 16,
+        "padding_bottom": 64
+      }
+    },
+    "shop_why": {
+      "type": "patelle-shop-why",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "delivery",
+            "title": "Fast & Reliable Delivery",
+            "text": "Enjoy quick and dependable shipping to your doorstep."
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopping",
+            "title": "Easy Shopping",
+            "text": "Browse our user-friendly shop with ease and find what you need."
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "secure",
+            "title": "Safe & Secure Payment",
+            "text": "We ensure your products arrive safely and in perfect condition."
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "icon": "support",
+            "title": "Best Customer Service",
+            "text": "Our team is here to help with samples, scents, and orders."
+          }
+        }
+      },
+      "block_order": ["f1", "f2", "f3", "f4"],
+      "settings": {
+        "heading": "Why Customers Choose Patelle",
+        "background": "#f5ebde",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    }
+  },
+  "order": ["shop_hero", "shop_grid", "shop_why"]
+}

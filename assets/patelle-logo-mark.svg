@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+  <circle cx="32" cy="32" r="30.25" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="26.25" stroke="currentColor" stroke-width="1"/>
+  <!-- Mirrored E monogram -->
+  <path
+    fill="currentColor"
+    d="M31.1 17.5H18.4v29h12.7v-4.2H22.7V35h7.4v-4.1H22.7v-5.2h8.4v-4.1H22.7V21.7h8.4v-4.2zm1.8 0h12.7v4.2h-8.4v4.1h8.4v4.1h-8.4v5.2h7.4V42.3h-7.4v4.2H32.9v-29z"
+  />
+</svg>

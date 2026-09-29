@@ -1,0 +1,227 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "contact_hero": {
+      "type": "patelle-contact-hero",
+      "settings": {
+        "heading": "Contact Us",
+        "text": "Have a question about our fragrances, samples, or wholesale? We’d love to hear from you.",
+        "image_1": "shopify://shop_images/c33ecc591f9d098ba333c8992ea50fd47831d3a5.png",
+        "image_2": "shopify://shop_images/e59506d1e93883981fa6fad68c22044bd66c8c94.png",
+        "image_3": "shopify://shop_images/c4526a43dcdb5f7922eec10f239ae6d165e120c1.png",
+        "image_4": "shopify://shop_images/52b733dbf522c46892636a87ec7a4b271ca2a94f.png",
+        "image_5": "shopify://shop_images/52b733dbf522c46892636a87ec7a4b271ca2a94f_6e9039f8-df88-47c9-8c4a-477cfe1a5d1f.png",
+        "spacing_mode": "padding",
+        "padding_top": 64,
+        "padding_bottom": 72,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    },
+    "contact_panel": {
+      "type": "patelle-contact-panel",
+      "settings": {
+        "image": "shopify://shop_images/52b733dbf522c46892636a87ec7a4b271ca2a94f_6e9039f8-df88-47c9-8c4a-477cfe1a5d1f.png",
+        "email_label": "Email",
+        "email": "info@patellefragrance.com",
+        "location_label": "Location",
+        "location": "3105 S 9th street, suite B, lafayette, in 47909",
+        "hours_label": "Business Hours",
+        "hours": "Monday - Friday 9:00 AM - 6:00 PM",
+        "form_heading": "Get In Touch",
+        "form_text": "We’d love to hear from you. Whether you have questions about fragrances, samples, collaborations, or wholesale inquiries, our team is ready to assist.",
+        "label_name": "First Name",
+        "placeholder_name": "Enter your name",
+        "label_email": "Email",
+        "placeholder_email": "Enter your email",
+        "label_phone": "Phone Number",
+        "placeholder_phone": "+1 (555) 000-0000",
+        "label_message": "Message",
+        "placeholder_message": "Write your message",
+        "show_privacy": true,
+        "privacy_text": "I agree to with friendly",
+        "privacy_link_label": "privacy policy.",
+        "privacy_link": "",
+        "button_label": "Send Message",
+        "spacing_mode": "padding",
+        "padding_top": 40,
+        "padding_bottom": 80,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    },
+    "contact_love": {
+      "type": "patelle-contact-love",
+      "blocks": {
+        "love_1": {
+          "type": "feature",
+          "settings": {
+            "title": "LONG LASTING",
+            "text": "Luxury scents crafted to\nstay all day."
+          }
+        },
+        "love_2": {
+          "type": "feature",
+          "settings": {
+            "title": "PREMIUM INGREDIENTS",
+            "text": "High-quality fragrance\noils and refined blends."
+          }
+        },
+        "love_3": {
+          "type": "feature",
+          "settings": {
+            "title": "ELEGANT PACKAGING",
+            "text": "Designed for gifting and\nunforgettable experiences."
+          }
+        }
+      },
+      "block_order": [
+        "love_1",
+        "love_2",
+        "love_3"
+      ],
+      "settings": {
+        "heading": "WHY CUSTOMERS LOVE PATELLE",
+        "heading_size": 56,
+        "use_figtree": true,
+        "card_height": 218,
+        "background": "#f4f0ef",
+        "heading_color": "#0a0a0a",
+        "card_background": "#ffffff",
+        "title_color": "#000000",
+        "text_color": "#858585",
+        "spacing_mode": "padding",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    },
+    "contact_banner": {
+      "type": "patelle-brand-banner",
+      "blocks": {
+        "brand_heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "The perfume house for the next generation®"
+          }
+        },
+        "brand_text": {
+          "type": "text",
+          "settings": {
+            "text": "Premium-quality French fragrances. No excessive markups. Crafted with heart, not ego."
+          }
+        },
+        "brand_link": {
+          "type": "link",
+          "settings": {
+            "link_label": "About Us",
+            "link": "shopify://pages/about",
+            "position": "bottom"
+          }
+        }
+      },
+      "block_order": [
+        "brand_heading",
+        "brand_text",
+        "brand_link"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/3edd8a236d68508e4d99694a2e9ffa029e0b41c7_da156262-40e9-4b14-b2c8-2031807409f5.png",
+        "background": "#a3c1da",
+        "content_horizontal": "start",
+        "content_vertical": "top",
+        "content_gap": 14,
+        "content_inset": 15,
+        "spacing_mode": "padding",
+        "padding_top": 24,
+        "padding_bottom": 40,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    },
+    "contact_promise": {
+      "type": "patelle-contact-promise",
+      "blocks": {
+        "p1": {
+          "type": "item",
+          "settings": {
+            "icon": "lasting",
+            "label": "Long Lasting"
+          }
+        },
+        "p2": {
+          "type": "item",
+          "settings": {
+            "icon": "quality",
+            "label": "Premium Quality"
+          }
+        },
+        "p3": {
+          "type": "item",
+          "settings": {
+            "icon": "guarantee",
+            "label": "15 Days Satisfaction Guarantee"
+          }
+        },
+        "p4": {
+          "type": "item",
+          "settings": {
+            "icon": "packaging",
+            "label": "Luxury Packaging"
+          }
+        },
+        "p5": {
+          "type": "item",
+          "settings": {
+            "icon": "shipping",
+            "label": "USA Shipping"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/c3e40a6bdf03d43937505ffc0f969863340d0c00.png",
+        "heading": "Our Quality Promise",
+        "use_figtree": true,
+        "text_color": "#ffffff",
+        "icon_size": 44,
+        "image_position": "center center",
+        "full_width": true,
+        "min_height": 550,
+        "min_height_mobile": 420,
+        "panel_width": 1190,
+        "panel_blur": 30,
+        "panel_tint": "#6e3f2e",
+        "panel_tint_opacity": 14,
+        "panel_radius": 20,
+        "spacing_mode": "padding",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "contact_hero",
+    "contact_panel",
+    "contact_love",
+    "contact_banner",
+    "contact_promise"
+  ]
+}

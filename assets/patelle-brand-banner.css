@@ -1,0 +1,212 @@
+/* ==========================================================================
+   PATÉLLE — Brand banner
+   Design: 1418 × 670 tile, Inter display line at 52px/64px, 22px copy,
+   optional link pinned to the bottom edge
+   ========================================================================== */
+
+.pt-brand {
+  background: var(--pt-white);
+}
+
+.pt-brand__banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  aspect-ratio: 1418 / 670;
+  overflow: hidden;
+  border-radius: var(--pt-r-card);
+  background: var(--pt-brand-bg, #7fa0c4);
+}
+
+/* Content position. The content column fills the banner height, so the
+   vertical choice aligns the blocks inside it and a bottom link can use
+   the free space above it. */
+
+.pt-brand__banner--v-top .pt-brand__content {
+  justify-content: flex-start;
+}
+
+.pt-brand__banner--v-center .pt-brand__content {
+  justify-content: center;
+}
+
+.pt-brand__banner--v-bottom .pt-brand__content {
+  justify-content: flex-end;
+}
+
+.pt-brand__banner--h-start {
+  align-items: flex-start;
+}
+
+.pt-brand__banner--h-center {
+  align-items: center;
+}
+
+.pt-brand__banner--h-end {
+  align-items: flex-end;
+}
+
+.pt-brand__banner--h-center .pt-brand__content {
+  align-items: center;
+  text-align: center;
+}
+
+.pt-brand__banner--h-end .pt-brand__content {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.pt-brand__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pt-brand__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--pt-brand-gap, 14px);
+  box-sizing: border-box;
+  max-width: 660px;
+  padding: 50px 24px 54px var(--pt-brand-inset, 15px);
+  font-family: var(--pt-font);
+  color: var(--pt-white);
+}
+
+.pt-brand__banner--h-end .pt-brand__content {
+  padding-right: var(--pt-brand-inset, 15px);
+  padding-left: 24px;
+}
+
+.pt-brand__heading {
+  margin: 0;
+  max-width: 600px;
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: 52px;
+  line-height: 64px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--pt-white);
+  text-shadow: 0 1px 24px rgba(20, 40, 70, 0.12);
+}
+
+.pt-brand__text {
+  margin: 0;
+  max-width: 580px;
+  font-family: var(--pt-font);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: 0.015em;
+  color: var(--pt-white);
+}
+
+.pt-brand__link {
+  margin-top: 6px;
+  font-family: var(--pt-font);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 28px;
+  color: var(--pt-white);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+}
+
+.pt-brand__link--bottom {
+  margin-top: auto;
+}
+
+.pt-brand__link:hover {
+  text-decoration-thickness: 2.5px;
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media screen and (max-width: 1200px) {
+  .pt-brand__heading {
+    max-width: 480px;
+    font-size: 42px;
+    line-height: 52px;
+  }
+
+  .pt-brand__text,
+  .pt-brand__link {
+    font-size: 19px;
+    line-height: 25px;
+  }
+
+  .pt-brand__text {
+    max-width: 500px;
+  }
+
+  .pt-brand__content {
+    padding-bottom: 40px;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .pt-brand__banner {
+    aspect-ratio: 4 / 3;
+  }
+
+  .pt-brand__content {
+    padding: 32px 20px 28px;
+  }
+
+  .pt-brand__heading {
+    max-width: 360px;
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .pt-brand__text,
+  .pt-brand__link {
+    font-size: 17px;
+    line-height: 22px;
+  }
+
+  .pt-brand__text {
+    max-width: 420px;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .pt-brand__banner {
+    aspect-ratio: 3 / 4;
+  }
+
+  .pt-brand__heading {
+    max-width: none;
+    font-size: 27px;
+    line-height: 34px;
+  }
+
+  /* The photo crops tight on phones; a soft scrim keeps white copy readable. */
+  .pt-brand__banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      180deg,
+      rgb(20 35 60 / 0.42) 0%,
+      rgb(20 35 60 / 0.12) 45%,
+      rgb(20 35 60 / 0) 65%,
+      rgb(20 35 60 / 0.3) 100%
+    );
+    pointer-events: none;
+  }
+
+  .pt-brand__content {
+    z-index: 2;
+  }
+}

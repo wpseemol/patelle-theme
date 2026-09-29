@@ -1,0 +1,71 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo": "shopify://shop_images/site_logo.png",
+        "logo_text": "PATÉLLE",
+        "logo_tagline": "Luxury No Makeup",
+        "logo_lockup": "image",
+        "logo_max_height": 48,
+        "logo_width": 240,
+        "invert_logo": true,
+        "header_style": "bar",
+        "bar_glass": false,
+        "bar_radius": 32,
+        "bar_height": 64,
+        "capsule_top_gap": 14,
+        "side_padding": 40,
+        "max_width": 1440,
+        "menu_alignment": "center",
+        "overlay_mode": "all",
+        "sticky_mode": "reveal",
+        "overlay_glass_color": "#ffffff",
+        "overlay_text_color": "#ffffff",
+        "solid_glass_color": "#fbfbfd",
+        "solid_text_color": "#111111",
+        "glass_opacity": 18,
+        "glass_blur": 48,
+        "glass_saturation": 200,
+        "border_opacity": 36,
+        "menu": "main-menu",
+        "nav_font": "geist",
+        "nav_font_size": 15,
+        "nav_font_weight": "500",
+        "active_style": "pill",
+        "enable_lens": true,
+        "accent_color": "#111111",
+        "enable_flyouts": true,
+        "flyout_prefix": "Explore",
+        "flyout_font_size": 24,
+        "blur_page": true,
+        "scrim_color": "#000000",
+        "scrim_opacity": 25,
+        "scrim_blur": 16,
+        "animation_speed": 420,
+        "show_search": true,
+        "search_style": "flyout",
+        "search_placeholder": "Search fragrances",
+        "search_menu": "",
+        "search_links_title": "Quick links",
+        "show_account": true,
+        "show_cart": true,
+        "notification_color_scheme": ""
+      }
+    }
+  },
+  "order": [
+    "header"
+  ]
+}

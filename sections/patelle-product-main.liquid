@@ -1,0 +1,530 @@
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-product.css' | asset_url | stylesheet_tag }}
+{{ 'patelle-card.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'patelle-product.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign product_form_id = 'pt-product-form-' | append: section.id
+  assign current_variant = product.selected_or_first_available_variant
+  assign media_count = product.media.size
+  assign rating = product.metafields.reviews.rating.value
+  assign rating_count = product.metafields.reviews.rating_count
+  assign rating_value = section.settings.fallback_rating
+  if rating != blank
+    if rating.rating != blank
+      assign rating_value = rating.rating
+    else
+      assign rating_value = rating
+    endif
+  endif
+  if rating_count == blank
+    assign rating_count = section.settings.fallback_review_count
+  endif
+
+  assign short_desc = product.metafields.custom.short_description.value
+  if short_desc == blank
+    assign short_desc = section.settings.short_description
+  endif
+
+  assign gender = product.metafields.custom.gender.value | default: section.settings.gender
+  assign inspired_by = product.metafields.custom.inspired_by.value | default: section.settings.inspired_by
+  assign inspired_retail = product.metafields.custom.inspired_retail.value | default: section.settings.inspired_retail
+  assign scent_family = product.metafields.custom.scent_family.value | default: section.settings.scent_family
+  assign intensity_label = product.metafields.custom.scent_intensity.value | default: section.settings.intensity_label
+  assign intensity_level = section.settings.intensity_level
+  assign qty_note = section.settings.quantity_note
+
+  assign save_percent = 0
+  if current_variant.compare_at_price > current_variant.price
+    assign save_percent = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round
+  endif
+-%}
+
+<patelle-product-main
+  class="pt-section pt-product-page pt-pdp-main"
+  id="ProductMain-{{ section.id }}"
+  data-section="{{ section.id }}"
+  data-add-label="{{ 'products.product.add_to_cart' | t | escape }}"
+  data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="pt-wrap">
+    <nav class="pt-pdp-crumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="{{ routes.all_products_collection_url }}">Product</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Product Details</span>
+    </nav>
+
+    <div class="pt-pdp-main__grid">
+      <div class="pt-pdp-gallery">
+        <div class="pt-pdp-gallery__main">
+          {%- if product.featured_media -%}
+            <img
+              data-pt-gallery-main
+              src="{{ product.featured_media | image_url: width: 1200 }}"
+              srcset="
+                {{ product.featured_media | image_url: width: 600 }} 600w,
+                {{ product.featured_media | image_url: width: 900 }} 900w,
+                {{ product.featured_media | image_url: width: 1200 }} 1200w
+              "
+              sizes="(min-width: 990px) 560px, 92vw"
+              alt="{{ product.featured_media.alt | default: product.title | escape }}"
+              width="{{ product.featured_media.width }}"
+              height="{{ product.featured_media.height }}"
+              loading="eager"
+            >
+          {%- else -%}
+            <div class="pt-pdp-gallery__ph" aria-hidden="true">Product image</div>
+          {%- endif -%}
+        </div>
+
+        {%- if media_count > 1 -%}
+          <ul class="pt-pdp-gallery__thumbs" role="list">
+            {%- for media in product.media limit: 4 -%}
+              {%- if media.media_type == 'image' -%}
+                <li>
+                  <button
+                    type="button"
+                    class="pt-pdp-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                    data-pt-gallery-thumb
+                    data-src="{{ media | image_url: width: 1200 }}"
+                    data-srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 900 }} 900w, {{ media | image_url: width: 1200 }} 1200w"
+                    data-alt="{{ media.alt | default: product.title | escape }}"
+                    aria-label="{{ product.title | escape }} — image {{ forloop.index }}"
+                    aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                  >
+                    {{
+                      media
+                      | image_url: width: 240
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '120, 180, 240',
+                        sizes: '90px',
+                        alt: media.alt | default: product.title
+                    }}
+                  </button>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      <div class="pt-pdp-info">
+        <h1 class="pt-pdp-info__title">{{ product.title }}</h1>
+
+        <div class="pt-pdp-info__rating">
+          <span class="pt-pdp-stars" aria-hidden="true">
+            {%- for i in (1..5) -%}
+              <svg viewBox="0 0 20 19" aria-hidden="true" focusable="false">
+                <path
+                  d="M10 0l2.7 6.2 6.7.6-5.1 4.4 1.5 6.6L10 14.3 4.2 17.8l1.5-6.6L.6 6.8l6.7-.6L10 0z"
+                  fill="currentColor"
+                />
+              </svg>
+            {%- endfor -%}
+          </span>
+          <a
+            class="pt-pdp-info__reviews"
+            href="#pt-pdp-reviews"
+            aria-label="{{ rating_value }} out of 5 stars, {{ rating_count }} reviews"
+          >
+            {{ rating_value }} ({{ rating_count }} Reviews)
+          </a>
+        </div>
+
+        {%- if short_desc != blank -%}
+          <p class="pt-pdp-info__tagline">{{ short_desc }}</p>
+        {%- endif -%}
+
+        <div class="pt-pdp-price-row">
+          <s
+            class="pt-pdp-price-row__compare"
+            data-pt-compare
+            {% if current_variant.compare_at_price <= current_variant.price %}
+              hidden
+            {% endif %}
+          >
+            {%- if current_variant.compare_at_price > current_variant.price -%}
+              {{ current_variant.compare_at_price | money }}
+            {%- endif -%}
+          </s>
+          <span class="pt-pdp-price-row__current" data-pt-price>
+            {{ current_variant.price | money }}
+          </span>
+          <span
+            class="pt-pdp-price-row__save"
+            data-pt-save
+            {% unless save_percent > 0 %}hidden{% endunless %}
+          >
+            Save <span data-pt-save-value>{{ save_percent }}</span>%
+          </span>
+        </div>
+
+        <dl class="pt-pdp-specs">
+          {%- if gender != blank -%}
+            <div class="pt-pdp-specs__row">
+              <dt>Gender:</dt>
+              <dd>{{ gender }}</dd>
+            </div>
+          {%- endif -%}
+
+          {%- if inspired_by != blank -%}
+            <div class="pt-pdp-specs__row">
+              <dt>Inspired By:</dt>
+              <dd>
+                {{ inspired_by }}
+                {%- if inspired_retail != blank -%}
+                  <span class="pt-pdp-specs__accent">(Retail Price: {{ inspired_retail }})</span>
+                {%- endif -%}
+              </dd>
+            </div>
+          {%- endif -%}
+
+          {%- if scent_family != blank -%}
+            <div class="pt-pdp-specs__row">
+              <dt>Scent Family:</dt>
+              <dd>{{ scent_family }}</dd>
+            </div>
+          {%- endif -%}
+
+          {%- if intensity_label != blank -%}
+            <div class="pt-pdp-specs__row pt-pdp-specs__row--intensity">
+              <dt>Scent Intensity Scale:</dt>
+              <dd>
+                <span class="pt-pdp-intensity">
+                  <span class="pt-pdp-intensity__label">{{ intensity_label }}</span>
+                  <span class="pt-pdp-intensity__bars" aria-hidden="true">
+                    {%- for i in (1..4) -%}
+                      <span class="pt-pdp-intensity__bar{% if i <= intensity_level %} is-on{% endif %}"></span>
+                    {%- endfor -%}
+                  </span>
+                  <button
+                    type="button"
+                    class="pt-pdp-intensity__help"
+                    title="{{ section.settings.intensity_help | escape }}"
+                    aria-label="{{ section.settings.intensity_help | escape }}"
+                  >
+                    ?
+                  </button>
+                </span>
+              </dd>
+            </div>
+          {%- endif -%}
+        </dl>
+
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            <fieldset class="pt-pdp-option">
+              <legend class="pt-pdp-option__label">{{ option.name }}</legend>
+              <div class="pt-pdp-option__values">
+                {%- for value in option.values -%}
+                  <div class="pt-pdp-option__value">
+                    <input
+                      type="radio"
+                      id="pt-opt-{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                      name="pt-option-{{ section.id }}-{{ option.position }}"
+                      value="{{ value | escape }}"
+                      data-pt-option-input
+                      data-option-position="{{ option.position }}"
+                      {% if option.selected_value == value %}
+                        checked
+                      {% endif %}
+                    >
+                    <label for="pt-opt-{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+                      {{ value }}
+                    </label>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        <div class="pt-pdp-actions">
+          <product-form
+            class="product-form"
+            data-hide-errors="false"
+            data-section-id="{{ section.id }}"
+          >
+            <div class="product-form__error-message-wrapper" role="alert" hidden>
+              <span class="product-form__error-message"></span>
+            </div>
+
+            {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+              <input
+                type="hidden"
+                name="id"
+                value="{{ current_variant.id }}"
+                class="product-variant-id"
+                {% unless current_variant.available %}
+                  disabled
+                {% endunless %}
+              >
+
+              <div class="pt-pdp-qty">
+                <label class="pt-pdp-qty__label" for="pt-qty-{{ section.id }}">Quantity:</label>
+                <div class="pt-pdp-qty__control">
+                  <select
+                    id="pt-qty-{{ section.id }}"
+                    class="pt-pdp-qty__select"
+                    name="quantity"
+                  >
+                    {%- for i in (1..3) -%}
+                      <option value="{{ i }}"{% if i == 1 %} selected{% endif %}>{{ i }}</option>
+                    {%- endfor -%}
+                  </select>
+                  {%- if qty_note != blank -%}
+                    <span class="pt-pdp-qty__note">{{ qty_note }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+
+              <div class="product-form__buttons">
+                <button
+                  type="submit"
+                  name="add"
+                  class="pt-pdp-atc"
+                  {% unless current_variant.available %}
+                    disabled
+                    aria-disabled="true"
+                  {% endunless %}
+                >
+                  <span data-pt-atc-label>
+                    {%- if current_variant.available -%}
+                      Add to Cart
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t }}
+                    {%- endif -%}
+                  </span>
+                  {%- render 'loading-spinner' -%}
+                </button>
+              </div>
+            {%- endform -%}
+          </product-form>
+        </div>
+
+        {%- assign trust_blocks = section.blocks | where: 'type', 'trust' -%}
+        {%- if trust_blocks.size > 0 -%}
+          <div class="pt-pdp-trust">
+            {%- for block in trust_blocks -%}
+              <div class="pt-pdp-trust__item" {{ block.shopify_attributes }}>
+                <span class="pt-pdp-trust__icon" aria-hidden="true">
+                  {%- case block.settings.icon -%}
+                    {%- when 'diamond' -%}
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5L20 10l-8 10.5L4 10l8-6.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 10h16" stroke="currentColor" stroke-width="1.5"/></svg>
+                    {%- when 'clock' -%}
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4.2l2.8 1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    {%- when 'leaf' -%}
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M5 18c4-1 7-4 8.5-8.5C15 5 18 3.5 20.5 4c-.4 3.5-2.5 7-7 9.5C9 16 6.5 17.5 5 18z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.5 14.5C8 16 6.5 17.2 5 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    {%- else -%}
+                      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/></svg>
+                  {%- endcase -%}
+                </span>
+                {%- if block.settings.label != blank -%}
+                  <p class="pt-pdp-trust__label">{{ block.settings.label }}</p>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-pt-variants>
+    [
+      {%- for variant in product.variants -%}
+        {
+          "id": {{ variant.id | json }},
+          "available": {{ variant.available | json }},
+          "price": {{ variant.price | json }},
+          "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+          "options": {{ variant.options | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  </script>
+</patelle-product-main>
+
+{% schema %}
+{
+  "name": "PATÉLLE — Product main",
+  "tag": "section",
+  "class": "section-patelle-product-main",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "short_description",
+      "label": "Short description",
+      "default": "Visibly firms and smooths skin to reduce early signs of aging."
+    },
+    {
+      "type": "text",
+      "id": "fallback_rating",
+      "label": "Fallback rating",
+      "default": "4.7"
+    },
+    {
+      "type": "text",
+      "id": "fallback_review_count",
+      "label": "Fallback review count",
+      "default": "1,634"
+    },
+    {
+      "type": "header",
+      "content": "Product details"
+    },
+    {
+      "type": "text",
+      "id": "gender",
+      "label": "Gender",
+      "default": "Women"
+    },
+    {
+      "type": "text",
+      "id": "inspired_by",
+      "label": "Inspired by",
+      "default": "Yves Saint Laurent (YSL) Mon Paris"
+    },
+    {
+      "type": "text",
+      "id": "inspired_retail",
+      "label": "Inspired retail price",
+      "default": "$150"
+    },
+    {
+      "type": "textarea",
+      "id": "scent_family",
+      "label": "Scent family",
+      "default": "Fruity Floral Patchouli Size: YSL 50 ml / 1.7 oz EDP high concentration"
+    },
+    {
+      "type": "text",
+      "id": "intensity_label",
+      "label": "Intensity label",
+      "default": "Powerful"
+    },
+    {
+      "type": "range",
+      "id": "intensity_level",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Intensity bars filled",
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "intensity_help",
+      "label": "Intensity help text",
+      "default": "How strong the fragrance projects and lasts on skin."
+    },
+    {
+      "type": "text",
+      "id": "quantity_note",
+      "label": "Quantity note",
+      "default": "Up to 3 Save 20%"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spacing_mode",
+      "label": "Spacing control",
+      "info": "Padding adds space inside the section background. Margin adds space outside it.",
+      "options": [
+        { "value": "padding", "label": "Padding" },
+        { "value": "margin", "label": "Margin" }
+      ],
+      "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'padding' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "visible_if": "{{ section.settings.spacing_mode == 'margin' }}",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust",
+      "name": "Trust badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "diamond", "label": "Premium / Diamond" },
+            { "value": "clock", "label": "Long lasting / Clock" },
+            { "value": "leaf", "label": "Clean / Leaf" }
+          ],
+          "default": "diamond"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Premium Quality"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PATÉLLE — Product main",
+      "blocks": [
+        { "type": "trust", "settings": { "icon": "diamond", "label": "Premium Quality" } },
+        { "type": "trust", "settings": { "icon": "clock", "label": "Long Lasting" } },
+        { "type": "trust", "settings": { "icon": "leaf", "label": "Clean Ingredients" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

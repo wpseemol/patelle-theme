@@ -1,0 +1,200 @@
+{{ 'hero-banner.css' | asset_url | stylesheet_tag }}
+
+<!-- Include GSAP Core -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+
+<section class="hero-slider-container" id="HeroSlider-{{ section.id }}">
+  <div class="hero-slides-wrapper">
+    {% for block in section.blocks %}
+      <div class="hero-slide {% if forloop.first %}is-active{% endif %}" 
+           data-slide-index="{{ forloop.index0 }}"
+           style="--slide-bg: {{ block.settings.bg_color }};" 
+           {{ block.shopify_attributes }}>
+        
+        <!-- Subtle radial lighting overlay -->
+        <div class="hero-bg-overlay"></div>
+
+        <!-- Big GSAP Watermark Text -->
+        <div class="hero-watermark-wrapper" aria-hidden="true">
+          <h1 class="hero-watermark-text gsap-title">{{ block.settings.hero_title | default: 'Jasmine' }}</h1>
+        </div>
+
+        <!-- Center Main Perfume Bottle -->
+        <div class="hero-center-bottle gsap-bottle">
+          {% if block.settings.main_product_image != blank %}
+            <img src="{{ block.settings.main_product_image | image_url: width: 900 }}" alt="{{ block.settings.hero_title }}" class="main-bottle-img" loading="eager">
+          {% else %}
+            <div class="bottle-placeholder-wireframe">Upload Main Fragrance Bottle</div>
+          {% endif %}
+        </div>
+
+        <!-- Floating Decorative Flowers / Elements (Animated with Parallax) -->
+        {% if block.settings.flower_top_left != blank %}
+          <img src="{{ block.settings.flower_top_left | image_url: width: 220 }}" class="deco-flower flower-tl gsap-flower" data-depth="0.05" alt="" loading="eager">
+        {% endif %}
+        {% if block.settings.flower_top_right != blank %}
+          <img src="{{ block.settings.flower_top_right | image_url: width: 220 }}" class="deco-flower flower-tr gsap-flower" data-depth="0.07" alt="" loading="eager">
+        {% endif %}
+        {% if block.settings.flower_mid_left != blank %}
+          <img src="{{ block.settings.flower_mid_left | image_url: width: 220 }}" class="deco-flower flower-ml gsap-flower" data-depth="0.04" alt="" loading="eager">
+        {% endif %}
+        {% if block.settings.flower_bottom_right != blank %}
+          <img src="{{ block.settings.flower_bottom_right | image_url: width: 360 }}" class="deco-flower flower-br gsap-flower" data-depth="0.09" alt="" loading="eager">
+        {% endif %}
+
+        <div class="hero-content-container">
+          <!-- Bottom Left Product Glass Card -->
+          <div class="hero-glass-card gsap-card">
+            <div class="card-size-selector">
+              <button type="button" class="size-btn active" data-size="50">
+                <span class="size-val">50</span>
+                <span class="size-unit">ml</span>
+              </button>
+              <button type="button" class="size-btn" data-size="100">
+                <span class="size-val">100</span>
+                <span class="size-unit">ml</span>
+              </button>
+            </div>
+
+            <div class="card-thumb-col">
+              {% if block.settings.card_product_image != blank %}
+                <img src="{{ block.settings.card_product_image | image_url: width: 140 }}" alt="{{ block.settings.card_product_title }}" class="thumb-bottle-img">
+              {% else %}
+                <div class="thumb-placeholder">50ml</div>
+              {% endif %}
+            </div>
+
+            <div class="card-info-col">
+              <h3 class="card-title">{{ block.settings.card_product_title | default: 'Rose Oud Amber' }}</h3>
+              <p class="card-desc">{{ block.settings.card_product_desc | default: 'Cardamom, sandalwood, and leather notes crafted for bold modern elegance.' }}</p>
+              
+              <div class="card-action-row">
+                {% form 'product', block.settings.featured_product, class: 'hero-add-form' %}
+                  <input type="hidden" name="id" value="{{ block.settings.featured_product.selected_or_first_available_variant.id }}">
+                  <button type="submit" class="btn-hero-add">{{ block.settings.btn_text | default: 'Add to Cart' }}</button>
+                  <button type="submit" class="btn-hero-bag-icon" aria-label="Quick Add">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                  </button>
+                {% endform %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Persistent Bottom Right Carousel Navigation Arrows -->
+  <div class="hero-persistent-controls">
+    <button type="button" class="arrow-circle-btn hero-prev-btn" aria-label="Previous Slide">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button type="button" class="arrow-circle-btn hero-next-btn" aria-label="Next Slide">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+</section>
+
+<script src="{{ 'hero-slider.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Hero GSAP Slider",
+  "max_blocks": 5,
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Perfume Slide",
+      "settings": [
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Slide Background Color",
+          "default": "#AE63AD"
+        },
+        {
+          "type": "text",
+          "id": "hero_title",
+          "label": "Watermark Title",
+          "default": "Jasmine"
+        },
+        {
+          "type": "image_picker",
+          "id": "main_product_image",
+          "label": "Center Main Bottle Image"
+        },
+        {
+          "type": "header",
+          "content": "Decorative Elements"
+        },
+        {
+          "type": "image_picker",
+          "id": "flower_top_left",
+          "label": "Top Left Element"
+        },
+        {
+          "type": "image_picker",
+          "id": "flower_top_right",
+          "label": "Top Right Element"
+        },
+        {
+          "type": "image_picker",
+          "id": "flower_mid_left",
+          "label": "Middle Left Element"
+        },
+        {
+          "type": "image_picker",
+          "id": "flower_bottom_right",
+          "label": "Bottom Right Element"
+        },
+        {
+          "type": "header",
+          "content": "Floating Product Card"
+        },
+        {
+          "type": "product",
+          "id": "featured_product",
+          "label": "Select Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_product_image",
+          "label": "Mini Bottle Thumbnail"
+        },
+        {
+          "type": "text",
+          "id": "card_product_title",
+          "label": "Product Subtitle",
+          "default": "Rose Oud Amber"
+        },
+        {
+          "type": "textarea",
+          "id": "card_product_desc",
+          "label": "Product Description",
+          "default": "Cardamom, sandalwood, and leather notes crafted for bold modern elegance."
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Label",
+          "default": "Add to Cart"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero GSAP Slider",
+      "blocks": [
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

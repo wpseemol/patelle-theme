@@ -1,0 +1,37 @@
+{%- comment -%}
+  Custom character cursor. Controlled from Theme settings → Custom cursor.
+{%- endcomment -%}
+{%- if settings.cursor_enable -%}
+  {%- liquid
+    if settings.cursor_image != blank
+      assign cursor_src = settings.cursor_image | image_url: width: 240
+    else
+      assign cursor_file = 'patelle-cursor-' | append: settings.cursor_style | append: '.svg'
+      assign cursor_src = cursor_file | asset_url
+    endif
+    assign cursor_height = settings.cursor_size | times: 1.25 | round
+  -%}
+  {{ 'patelle-cursor.css' | asset_url | stylesheet_tag }}
+  <div
+    class="pt-cursor pt-cursor--{{ settings.cursor_hotspot }}{% if settings.cursor_playful %} pt-cursor--playful{% endif %}"
+    data-pt-cursor
+    data-follow="{{ settings.cursor_follow }}"
+    data-hide-default="{{ settings.cursor_hide_default }}"
+    style="--pt-cursor-size: {{ settings.cursor_size }}px;"
+    aria-hidden="true"
+  >
+    <div class="pt-cursor__offset">
+      <div class="pt-cursor__tilt">
+        <img
+          class="pt-cursor__img"
+          src="{{ cursor_src }}"
+          alt=""
+          width="{{ settings.cursor_size }}"
+          height="{{ cursor_height }}"
+          draggable="false"
+        >
+      </div>
+    </div>
+  </div>
+  <script src="{{ 'patelle-cursor.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}

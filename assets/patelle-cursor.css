@@ -1,0 +1,74 @@
+/**
+ * PATÉLLE — custom character cursor
+ */
+.pt-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+  width: var(--pt-cursor-size, 56px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+
+.pt-cursor.is-visible {
+  opacity: 1;
+}
+
+.pt-cursor.is-visible.is-text {
+  opacity: 0;
+}
+
+.pt-cursor--center .pt-cursor__offset {
+  transform: translate(-50%, -50%);
+}
+
+.pt-cursor__tilt {
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.pt-cursor--center .pt-cursor__tilt {
+  transform-origin: 50% 50%;
+}
+
+.pt-cursor__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 0 0;
+  transition: transform 0.18s ease;
+  user-select: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+}
+
+.pt-cursor--center .pt-cursor__img {
+  transform-origin: 50% 50%;
+}
+
+.pt-cursor--playful.is-hover .pt-cursor__img {
+  transform: scale(1.15);
+}
+
+.pt-cursor--playful.is-down .pt-cursor__img {
+  transform: scale(0.88, 0.82);
+}
+
+html.pt-cursor-hide,
+html.pt-cursor-hide * {
+  cursor: none !important;
+}
+
+html.pt-cursor-hide input:not([type='button'], [type='submit'], [type='reset'], [type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file']),
+html.pt-cursor-hide textarea,
+html.pt-cursor-hide [contenteditable='true'] {
+  cursor: text !important;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .pt-cursor {
+    display: none;
+  }
+}

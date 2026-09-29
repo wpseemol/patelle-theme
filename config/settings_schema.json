@@ -1466,5 +1466,82 @@
         "label": "t:settings_schema.customer_accounts.settings.customer_account_menu.label"
       }
     ]
+  },
+  {
+    "name": "Custom cursor",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Replaces the mouse pointer with a character on desktop. Phones and tablets keep their normal behavior."
+      },
+      {
+        "type": "checkbox",
+        "id": "cursor_enable",
+        "label": "Enable custom cursor",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "cursor_style",
+        "label": "Cursor character",
+        "options": [
+          { "value": "doll", "label": "Doll" },
+          { "value": "bottle", "label": "Perfume bottle" },
+          { "value": "bunny", "label": "Bunny" },
+          { "value": "bear", "label": "Teddy bear" },
+          { "value": "cat", "label": "Cat" }
+        ],
+        "default": "doll"
+      },
+      {
+        "type": "image_picker",
+        "id": "cursor_image",
+        "label": "Custom cursor image",
+        "info": "Replaces the character above. Use a transparent PNG or SVG."
+      },
+      {
+        "type": "range",
+        "id": "cursor_size",
+        "min": 32,
+        "max": 96,
+        "step": 4,
+        "unit": "px",
+        "label": "Size",
+        "default": 56
+      },
+      {
+        "type": "select",
+        "id": "cursor_hotspot",
+        "label": "Click point",
+        "options": [
+          { "value": "top-left", "label": "Top left (like a normal pointer)" },
+          { "value": "center", "label": "Center of the character" }
+        ],
+        "default": "top-left"
+      },
+      {
+        "type": "select",
+        "id": "cursor_follow",
+        "label": "Movement",
+        "options": [
+          { "value": "smooth", "label": "Smooth follow" },
+          { "value": "instant", "label": "Instant" }
+        ],
+        "default": "smooth"
+      },
+      {
+        "type": "checkbox",
+        "id": "cursor_playful",
+        "label": "Playful animations",
+        "info": "Swings while moving, grows over links and squishes on click.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "cursor_hide_default",
+        "label": "Hide default pointer",
+        "default": true
+      }
+    ]
   }
 ]

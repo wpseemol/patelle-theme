@@ -129,9 +129,9 @@
         },
         "note_4": {
           "type": "note",
+          "repeater": "{{ product.metafields.shopify.material.value }}",
           "settings": {
-            "image": "shopify://shop_images/e0672fbee6a95230feb728de1e7c8c23c1aa4fdf.png",
-            "label": "Patchouli"
+            "label": "{{ block.repeater.label.value }}"
           }
         },
         "detail_1": {

@@ -1,8 +1,12 @@
 {%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
 {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'patelle-product.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
+  assign app_blocks = section.blocks | where: 'type', '@app'
+  assign review_blocks = section.blocks | where: 'type', 'review'
+  assign per_page = section.settings.reviews_per_page
   assign rating = product.metafields.reviews.rating.value
   assign rating_count = product.metafields.reviews.rating_count
   assign score = section.settings.score
@@ -28,6 +32,7 @@
       <h2 class="pt-pdp-reviews__title">{{ section.settings.heading }}</h2>
     {%- endif -%}
 
+    {%- if section.settings.show_summary -%}
     <div class="pt-pdp-reviews__summary">
       <div class="pt-pdp-reviews__score">
         <p class="pt-pdp-reviews__score-num">
@@ -75,6 +80,8 @@
           {%- liquid
             if section.settings.cta_link != blank
               assign review_cta_href = section.settings.cta_link
+            elsif app_blocks.size > 0
+              assign review_cta_href = '#pt-pdp-reviews-app'
             else
               assign review_cta_href = '#pt-pdp-reviews'
             endif
@@ -85,12 +92,24 @@
         {%- endif -%}
       </div>
     </div>
+    {%- endif -%}
 
-    {%- if section.blocks.size > 0 -%}
-      <ul class="pt-pdp-reviews__list" role="list">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'review' -%}
-            <li class="pt-pdp-review" {{ block.shopify_attributes }}>
+    {%- if app_blocks.size > 0 -%}
+      <div id="pt-pdp-reviews-app" class="pt-pdp-reviews__app">
+        {%- for block in app_blocks -%}
+          {% render block %}
+        {%- endfor -%}
+      </div>
+    {%- elsif review_blocks.size > 0 -%}
+      <ul class="pt-pdp-reviews__list" role="list" data-pt-reviews-list>
+        {%- for block in review_blocks -%}
+            <li
+              class="pt-pdp-review"
+              {% if forloop.index > per_page %}
+                hidden
+              {% endif %}
+              {{ block.shopify_attributes }}
+            >
               <div class="pt-pdp-review__head">
                 {%- if block.settings.avatar != blank -%}
                   {{
@@ -123,7 +142,14 @@
 
               <span class="pt-pdp-stars" aria-label="{{ block.settings.rating }} out of 5 stars">
                 {%- for i in (1..5) -%}
-                  <svg viewBox="0 0 20 19" aria-hidden="true" focusable="false">
+                  <svg
+                    viewBox="0 0 20 19"
+                    aria-hidden="true"
+                    focusable="false"
+                    {% if i > block.settings.rating %}
+                      class="is-empty"
+                    {% endif %}
+                  >
                     <path d="M10 0l2.7 6.2 6.7.6-5.1 4.4 1.5 6.6L10 14.3 4.2 17.8l1.5-6.6L.6 6.8l6.7-.6L10 0z" fill="currentColor"/>
                   </svg>
                 {%- endfor -%}
@@ -133,9 +159,6 @@
                 <p class="pt-pdp-review__text">{{ block.settings.text }}</p>
               {%- endif -%}
 
-              {%- liquid
-                assign photos = '' | split: ''
-              -%}
               {%- capture photo_markup -%}
                 {%- for i in (1..4) -%}
                   {%- assign photo_key = 'photo_' | append: i -%}
@@ -161,17 +184,21 @@
                 </ul>
               {%- endif -%}
             </li>
-          {%- endif -%}
         {%- endfor -%}
       </ul>
-    {%- endif -%}
 
-    {%- if section.settings.show_load_more -%}
-      <div class="pt-pdp-reviews__more">
-        <button type="button" class="pt-pdp-reviews__more-btn">
-          {{ section.settings.load_more_label }}
-        </button>
-      </div>
+      {%- if section.settings.show_load_more and review_blocks.size > per_page -%}
+        <div class="pt-pdp-reviews__more">
+          <button
+            type="button"
+            class="pt-pdp-reviews__more-btn"
+            data-pt-reviews-more
+            data-step="{{ per_page }}"
+          >
+            {{ section.settings.load_more_label }}
+          </button>
+        </div>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </section>
@@ -189,8 +216,20 @@
       "default": "Rating & Reviews"
     },
     {
+      "type": "paragraph",
+      "content": "Add a review app block (e.g. Judge.me Review Widget) to show real reviews. When an app block is added, the sample review blocks are hidden."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_summary",
+      "label": "Show rating summary",
+      "info": "Turn off if the review app shows its own summary.",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "score",
+      "info": "Used when the product has no review app rating yet.",
       "label": "Average score",
       "default": "4.5"
     },
@@ -280,6 +319,15 @@
       "default": true
     },
     {
+      "type": "range",
+      "id": "reviews_per_page",
+      "min": 2,
+      "max": 12,
+      "step": 2,
+      "label": "Reviews shown before load more",
+      "default": 4
+    },
+    {
       "type": "text",
       "id": "load_more_label",
       "label": "Load more label",
@@ -346,6 +394,9 @@
     }
   ],
   "blocks": [
+    {
+      "type": "@app"
+    },
     {
       "type": "review",
       "name": "Review",

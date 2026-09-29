@@ -164,6 +164,22 @@
     video.play();
   });
 
+  if (!window.ptReviewsMoreBound) {
+    window.ptReviewsMoreBound = true;
+    document.addEventListener('click', (event) => {
+      const more = event.target.closest('[data-pt-reviews-more]');
+      if (!more) return;
+      const list = more.closest('.pt-pdp-reviews')?.querySelector('[data-pt-reviews-list]');
+      if (!list) return;
+      const step = Number(more.dataset.step) || 4;
+      const hidden = [...list.querySelectorAll('.pt-pdp-review[hidden]')];
+      hidden.slice(0, step).forEach((item) => {
+        item.hidden = false;
+      });
+      if (hidden.length <= step) more.closest('.pt-pdp-reviews__more')?.remove();
+    });
+  }
+
   document.querySelectorAll('.pt-pdp-reels').forEach((root) => {
     const track = root.querySelector('[data-pt-reels-track]');
     if (!track) return;

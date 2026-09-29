@@ -2,15 +2,22 @@
 {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-product.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign video = product.metafields.custom.product_video.value
+  if video == blank
+    assign video = section.settings.video
+  endif
+-%}
+
 <section
   class="pt-section pt-product-page pt-pdp-video"
   style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="pt-wrap">
     <div class="pt-pdp-video__frame" data-pt-video-frame>
-      {%- if section.settings.video != blank -%}
+      {%- if video != blank -%}
         {{
-          section.settings.video
+          video
           | video_tag:
             image_size: '1600x',
             autoplay: false,
@@ -72,7 +79,8 @@
     {
       "type": "video",
       "id": "video",
-      "label": "Shopify-hosted video"
+      "label": "Shopify-hosted video",
+      "info": "Product metafield custom.product_video (file: video) overrides this."
     },
     {
       "type": "url",

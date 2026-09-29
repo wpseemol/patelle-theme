@@ -22,6 +22,7 @@
   if rating_count == blank
     assign rating_count = section.settings.fallback_review_count
   endif
+  assign stars_filled = rating_value | plus: 0 | round
 
   assign short_desc = product.metafields.custom.short_description.value
   if short_desc == blank
@@ -33,7 +34,7 @@
   assign inspired_retail = product.metafields.custom.inspired_retail.value | default: section.settings.inspired_retail
   assign scent_family = product.metafields.custom.scent_family.value | default: section.settings.scent_family
   assign intensity_label = product.metafields.custom.scent_intensity.value | default: section.settings.intensity_label
-  assign intensity_level = section.settings.intensity_level
+  assign intensity_level = product.metafields.custom.intensity_level.value | default: section.settings.intensity_level
   assign qty_note = section.settings.quantity_note
 
   assign save_percent = 0
@@ -121,7 +122,14 @@
         <div class="pt-pdp-info__rating">
           <span class="pt-pdp-stars" aria-hidden="true">
             {%- for i in (1..5) -%}
-              <svg viewBox="0 0 20 19" aria-hidden="true" focusable="false">
+              <svg
+                viewBox="0 0 20 19"
+                aria-hidden="true"
+                focusable="false"
+                {% if i > stars_filled %}
+                  class="is-empty"
+                {% endif %}
+              >
                 <path
                   d="M10 0l2.7 6.2 6.7.6-5.1 4.4 1.5 6.6L10 14.3 4.2 17.8l1.5-6.6L.6 6.8l6.7-.6L10 0z"
                   fill="currentColor"
@@ -309,6 +317,15 @@
           </product-form>
         </div>
 
+        {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
+        {%- if app_blocks.size > 0 -%}
+          <div class="pt-pdp-info__apps">
+            {%- for block in app_blocks -%}
+              {% render block %}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
         {%- assign trust_blocks = section.blocks | where: 'type', 'trust' -%}
         {%- if trust_blocks.size > 0 -%}
           <div class="pt-pdp-trust">
@@ -417,6 +434,7 @@
       "max": 4,
       "step": 1,
       "label": "Intensity bars filled",
+      "info": "Product metafield custom.intensity_level overrides this.",
       "default": 3
     },
     {
@@ -492,6 +510,9 @@
     }
   ],
   "blocks": [
+    {
+      "type": "@app"
+    },
     {
       "type": "trust",
       "name": "Trust badge",

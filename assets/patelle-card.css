@@ -108,6 +108,7 @@
    -------------------------------------------------------------------------- */
 
 .pt-card--overlay {
+  --pt-card-panel: 190, 183, 173;
   aspect-ratio: 350 / 563;
 }
 
@@ -123,11 +124,11 @@
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 28px 20px 20px;
+  gap: 6px;
+  padding: 22px 20px 18px;
 }
 
-/* Frosted panel: blurs the image behind the copy, feathered at the top edge */
+/* Frosted panel: strong blur of the photo, warm grey that turns solid behind the button */
 .pt-card--overlay .pt-card__body::before {
   content: '';
   position: absolute;
@@ -135,13 +136,15 @@
   z-index: -1;
   background: linear-gradient(
     180deg,
-    rgba(58, 48, 40, 0.18) 0%,
-    rgba(58, 48, 40, 0.38) 100%
+    rgba(var(--pt-card-panel), 0) 0%,
+    rgba(var(--pt-card-panel), 0.12) 20%,
+    rgba(var(--pt-card-panel), 0.38) 34%,
+    rgba(var(--pt-card-panel), 0.75) 48%,
+    rgba(var(--pt-card-panel), 0.93) 62%,
+    rgba(var(--pt-card-panel), 1) 80%
   );
-  -webkit-backdrop-filter: blur(22px) saturate(1.15);
-  backdrop-filter: blur(22px) saturate(1.15);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 28px);
-  mask-image: linear-gradient(180deg, transparent 0, #000 28px);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  backdrop-filter: blur(24px) saturate(1.1);
   pointer-events: none;
 }
 
@@ -149,8 +152,9 @@
   .pt-card--overlay .pt-card__body::before {
     background: linear-gradient(
       180deg,
-      rgba(40, 32, 26, 0.35) 0%,
-      rgba(40, 32, 26, 0.7) 100%
+      rgba(var(--pt-card-panel), 0.35) 0%,
+      rgba(var(--pt-card-panel), 0.8) 34%,
+      rgba(var(--pt-card-panel), 1) 60%
     );
   }
 }
@@ -159,7 +163,12 @@
   font-size: 24px;
   line-height: 29px;
   color: var(--pt-white);
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.18);
+}
+
+.pt-card--overlay .pt-card__title,
+.pt-card--overlay .pt-card__vendor {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .pt-card--overlay .pt-card__vendor {
@@ -180,10 +189,11 @@
 }
 
 .pt-card--overlay .pt-card__atc {
-  padding: 16px 20px;
+  padding: 14px 20px;
   border-color: transparent;
   background: var(--pt-white);
-  font-size: 15px;
+  font-size: 14px;
+  letter-spacing: 0;
   color: var(--pt-ink);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
@@ -419,11 +429,6 @@
   .pt-card--overlay .pt-card__body {
     gap: 4px;
     padding: 22px 10px 10px;
-  }
-
-  .pt-card--overlay .pt-card__body::before {
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20px);
-    mask-image: linear-gradient(180deg, transparent 0, #000 20px);
   }
 
   .pt-card--overlay .pt-card__title {

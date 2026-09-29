@@ -1472,13 +1472,17 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Replaces the mouse pointer with a character on desktop. Phones and tablets keep their normal behavior."
+        "content": "Adds a character that follows the mouse pointer on desktop. Phones and tablets keep their normal behavior."
       },
       {
         "type": "checkbox",
         "id": "cursor_enable",
         "label": "Enable custom cursor",
         "default": true
+      },
+      {
+        "type": "header",
+        "content": "Character"
       },
       {
         "type": "select",
@@ -1506,18 +1510,39 @@
         "max": 96,
         "step": 4,
         "unit": "px",
-        "label": "Size",
-        "default": 56
+        "label": "Character size",
+        "default": 52
+      },
+      {
+        "type": "header",
+        "content": "Pointer"
       },
       {
         "type": "select",
-        "id": "cursor_hotspot",
-        "label": "Click point",
+        "id": "cursor_pointer",
+        "label": "Pointer style",
         "options": [
-          { "value": "top-left", "label": "Top left (like a normal pointer)" },
-          { "value": "center", "label": "Center of the character" }
+          { "value": "themed", "label": "Colored arrow and hand" },
+          { "value": "default", "label": "Normal pointer" },
+          { "value": "hidden", "label": "Hidden (character only)" }
         ],
-        "default": "top-left"
+        "default": "themed"
+      },
+      {
+        "type": "color",
+        "id": "cursor_pointer_fill",
+        "label": "Pointer fill color",
+        "info": "Leave empty to match the character."
+      },
+      {
+        "type": "color",
+        "id": "cursor_pointer_outline",
+        "label": "Pointer outline color",
+        "info": "Leave empty to match the character."
+      },
+      {
+        "type": "header",
+        "content": "Animation"
       },
       {
         "type": "select",
@@ -1532,14 +1557,14 @@
       {
         "type": "checkbox",
         "id": "cursor_playful",
-        "label": "Playful animations",
-        "info": "Swings while moving, grows over links and squishes on click.",
+        "label": "Playful reactions",
+        "info": "Leans while moving, grows over products, bounces over buttons, fidgets when idle and hops on click.",
         "default": true
       },
       {
         "type": "checkbox",
-        "id": "cursor_hide_default",
-        "label": "Hide default pointer",
+        "id": "cursor_stars",
+        "label": "Star burst on click",
         "default": true
       }
     ]

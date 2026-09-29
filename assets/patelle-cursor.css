@@ -6,10 +6,10 @@
   top: 0;
   left: 0;
   z-index: 2147483647;
-  width: var(--pt-cursor-size, 56px);
+  width: var(--pt-cursor-size, 52px);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
   will-change: transform;
 }
 
@@ -21,39 +21,124 @@
   opacity: 0;
 }
 
-.pt-cursor--center .pt-cursor__offset {
-  transform: translate(-50%, -50%);
+.pt-cursor__offset {
+  position: relative;
+  transform: translate(var(--pt-cursor-offset, 12px), var(--pt-cursor-offset, 12px));
 }
 
 .pt-cursor__tilt {
-  transform-origin: 0 0;
+  transform-origin: 50% 100%;
   will-change: transform;
-}
-
-.pt-cursor--center .pt-cursor__tilt {
-  transform-origin: 50% 50%;
 }
 
 .pt-cursor__img {
   display: block;
   width: 100%;
   height: auto;
-  transform-origin: 0 0;
-  transition: transform 0.18s ease;
+  transform-origin: 50% 100%;
+  transition: transform 0.2s ease-out;
   user-select: none;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
 }
 
-.pt-cursor--center .pt-cursor__img {
-  transform-origin: 50% 50%;
+.pt-cursor:not(.is-visible) .pt-cursor__img {
+  transform: scale(0.5) translateY(16px);
+  animation: none;
 }
 
-.pt-cursor--playful.is-hover .pt-cursor__img {
-  transform: scale(1.15);
+.pt-cursor--playful.is-over-card .pt-cursor__img {
+  transform: scale(1.12);
 }
 
-.pt-cursor--playful.is-down .pt-cursor__img {
-  transform: scale(0.88, 0.82);
+.pt-cursor--playful.is-over-cta .pt-cursor__img {
+  animation: pt-cursor-excited 0.55s ease-in-out infinite;
+}
+
+.pt-cursor--playful.is-idle .pt-cursor__img {
+  animation: pt-cursor-fidget 3.2s ease-in-out infinite;
+}
+
+.pt-cursor--playful.is-pressed .pt-cursor__img {
+  transform: scale(1.1, 0.88);
+  animation: none;
+}
+
+.pt-cursor--playful.is-hopping .pt-cursor__img {
+  animation: pt-cursor-hop 0.55s cubic-bezier(0.25, 0.1, 0.25, 1) 1;
+}
+
+.pt-cursor__star {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  width: var(--size, 12px);
+  height: var(--size, 12px);
+  margin-left: calc(var(--size, 12px) / -2);
+  background: var(--color, #9ddcc0);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: pt-cursor-star 0.75s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes pt-cursor-excited {
+  0%,
+  100% {
+    transform: scale(1.02, 0.98) translateY(0);
+  }
+  50% {
+    transform: scale(0.97, 1.05) translateY(-8px);
+  }
+}
+
+@keyframes pt-cursor-fidget {
+  0%,
+  30% {
+    transform: rotate(0) translateY(0);
+  }
+  42% {
+    transform: rotate(-7deg) translateY(-2px);
+  }
+  55% {
+    transform: rotate(-7deg) translateY(0);
+  }
+  67% {
+    transform: rotate(6deg) translateY(-2px);
+  }
+  80%,
+  100% {
+    transform: rotate(0) translateY(0);
+  }
+}
+
+@keyframes pt-cursor-hop {
+  0% {
+    transform: scale(1.1, 0.88) translateY(0);
+  }
+  35% {
+    transform: scale(0.96, 1.06) translateY(-20px);
+  }
+  65% {
+    transform: scale(1.05, 0.95) translateY(0);
+  }
+  82% {
+    transform: scale(0.98, 1.02) translateY(-4px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pt-cursor-star {
+  0% {
+    transform: translate(0, 0) rotate(0) scale(0.4);
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1);
+    opacity: 0;
+  }
 }
 
 html.pt-cursor-hide,
@@ -70,5 +155,13 @@ html.pt-cursor-hide [contenteditable='true'] {
 @media (hover: none), (pointer: coarse) {
   .pt-cursor {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-cursor__img,
+  .pt-cursor__star {
+    animation: none !important;
+    transition: none;
   }
 }

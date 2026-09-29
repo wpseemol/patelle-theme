@@ -6,16 +6,19 @@
   if (!cursor || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
   const tiltEl = cursor.querySelector('.pt-cursor__tilt');
+  const offsetEl = cursor.querySelector('[data-pt-cursor-offset]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const smooth = cursor.dataset.follow === 'smooth' && !reduceMotion;
   const playful = cursor.classList.contains('pt-cursor--playful') && !reduceMotion;
+  const starColors = reduceMotion ? [] : (cursor.dataset.stars || '').split(',').filter(Boolean);
 
-  const hoverSelector =
-    'a, button, [role="button"], label, select, summary, input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"]';
+  const ctaSelector =
+    'button, [role="button"], input[type="submit"], input[type="button"], .button, .pt-pdp-atc';
+  const cardSelector = '.pt-card, .card-wrapper, a, summary, label, select, video';
   const textSelector =
     'input:not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"]';
 
-  if (cursor.dataset.hideDefault === 'true') {
+  if (cursor.dataset.pointer === 'hidden') {
     document.documentElement.classList.add('pt-cursor-hide');
   }
 
@@ -27,17 +30,19 @@
   let velocity = 0;
   let tilt = 0;
   let frame = null;
+  let idleTimer = null;
+  let hopTimer = null;
 
   const render = () => {
     frame = null;
-    const ease = smooth ? 0.25 : 1;
+    const ease = smooth ? 0.28 : 1;
     x += (targetX - x) * ease;
     y += (targetY - y) * ease;
     cursor.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
 
     if (playful && tiltEl) {
       velocity *= 0.85;
-      const goal = Math.max(-25, Math.min(25, velocity * 1.5));
+      const goal = Math.max(-18, Math.min(18, velocity * 1.2));
       tilt += (goal - tilt) * 0.18;
       tiltEl.style.transform = `rotate(${tilt.toFixed(2)}deg)`;
     }
@@ -50,6 +55,29 @@
 
   const requestRender = () => {
     if (!frame) frame = requestAnimationFrame(render);
+  };
+
+  const resetIdle = () => {
+    cursor.classList.remove('is-idle');
+    clearTimeout(idleTimer);
+    if (playful) idleTimer = setTimeout(() => cursor.classList.add('is-idle'), 2500);
+  };
+
+  const burstStars = () => {
+    if (!starColors.length || !offsetEl) return;
+    for (let i = 0; i < 6; i += 1) {
+      const star = document.createElement('span');
+      const angle = (Math.PI * 2 * i) / 6 + Math.random() * 0.6;
+      const distance = 28 + Math.random() * 22;
+      star.className = 'pt-cursor__star';
+      star.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+      star.style.setProperty('--dy', `${Math.sin(angle) * distance - 12}px`);
+      star.style.setProperty('--rot', `${Math.round(Math.random() * 240 - 120)}deg`);
+      star.style.setProperty('--size', `${8 + Math.round(Math.random() * 6)}px`);
+      star.style.setProperty('--color', starColors[i % starColors.length]);
+      star.addEventListener('animationend', () => star.remove(), { once: true });
+      offsetEl.appendChild(star);
+    }
   };
 
   document.addEventListener(
@@ -69,6 +97,7 @@
         y = targetY;
         cursor.classList.add('is-visible');
       }
+      resetIdle();
       requestRender();
     },
     { passive: true }
@@ -77,15 +106,33 @@
   document.addEventListener('pointerover', (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    cursor.classList.toggle('is-hover', Boolean(target.closest(hoverSelector)));
+    const overCta = Boolean(target.closest(ctaSelector));
+    cursor.classList.toggle('is-over-cta', overCta);
+    cursor.classList.toggle('is-over-card', !overCta && Boolean(target.closest(cardSelector)));
     cursor.classList.toggle('is-text', Boolean(target.closest(textSelector)));
   });
 
-  document.addEventListener('pointerdown', () => cursor.classList.add('is-down'));
-  document.addEventListener('pointerup', () => cursor.classList.remove('is-down'));
+  document.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'mouse') return;
+    resetIdle();
+    cursor.classList.remove('is-hopping');
+    cursor.classList.add('is-pressed');
+  });
+
+  document.addEventListener('pointerup', (event) => {
+    if (event.pointerType !== 'mouse') return;
+    cursor.classList.remove('is-pressed');
+    if (playful) {
+      cursor.classList.add('is-hopping');
+      clearTimeout(hopTimer);
+      hopTimer = setTimeout(() => cursor.classList.remove('is-hopping'), 600);
+    }
+    burstStars();
+  });
 
   const hide = () => {
-    cursor.classList.remove('is-visible', 'is-down');
+    cursor.classList.remove('is-visible', 'is-pressed', 'is-idle');
+    clearTimeout(idleTimer);
     lastX = null;
   };
   document.documentElement.addEventListener('pointerleave', hide);

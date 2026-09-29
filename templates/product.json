@@ -109,24 +109,28 @@
         "note_1": {
           "type": "note",
           "settings": {
+            "image": "shopify://shop_images/112547948c11996da57633cac172415c5a6d8baf.png",
             "label": "Strawberry"
           }
         },
         "note_2": {
           "type": "note",
           "settings": {
+            "image": "shopify://shop_images/324bf0883e03ba2263d3f9421da159299c0d2d79.png",
             "label": "Pear"
           }
         },
         "note_3": {
           "type": "note",
           "settings": {
+            "image": "shopify://shop_images/385dfafcda16b03183445b15df33bff3acd39af3.png",
             "label": "Peony"
           }
         },
         "note_4": {
           "type": "note",
           "settings": {
+            "image": "shopify://shop_images/e0672fbee6a95230feb728de1e7c8c23c1aa4fdf.png",
             "label": "Patchouli"
           }
         },

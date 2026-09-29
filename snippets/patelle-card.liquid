@@ -168,7 +168,7 @@
               data-sold-out-message="true"
             >
               <span class="pt-card__atc-label">{{ 'products.product.add_to_cart' | t }}</span>
-              <span class="pt-card__atc-price">{{ variant.price | money }}</span>
+              <span class="pt-card__atc-price">{{ variant.price | money_without_trailing_zeros }}</span>
               <span class="sold-out-message hidden">{{ 'products.product.sold_out' | t }}</span>
               {%- render 'loading-spinner' -%}
             </button>

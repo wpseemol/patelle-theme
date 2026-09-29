@@ -36,13 +36,15 @@
         "reel_1": {
           "type": "reel",
           "settings": {
-            "video_url": "",
+            "image": "shopify://shop_images/efe6d02cfdae725a127af4fb36408b372fe2bb42.png",
+            "video_url": "https://youtu.be/hCMD7egiH9Q?si=FfysGR1PcKxTN2q1",
             "label": "Customer reel 1"
           }
         },
         "reel_2": {
           "type": "reel",
           "settings": {
+            "image": "shopify://shop_images/f894169e9f1928c8e9856eb1b488f306f0629c6f.png",
             "video_url": "",
             "label": "Customer reel 2"
           }
@@ -50,6 +52,7 @@
         "reel_3": {
           "type": "reel",
           "settings": {
+            "image": "shopify://shop_images/f483ae36b0a32d7d681675031df36628a3838359.png",
             "video_url": "",
             "label": "Customer reel 3"
           }

@@ -2,13 +2,16 @@
 
 Custom Shopify theme for **PATÉLLE**, a fragrance brand. Built on top of [Dawn 16.0.0](https://github.com/Shopify/dawn), with a custom set of `patelle-*` sections, styles and scripts that follow the PATÉLLE Figma designs.
 
+- [`PROGRESS.md`](PROGRESS.md): page status, open to-dos and the work log.
+- [`AGENTS.md`](AGENTS.md): conventions for AI coding agents (Cursor reads it automatically).
+
 ## Pages
 
 | Page | Template | Sections |
 |---|---|---|
 | Home | `templates/index.json` | `hero-slider`, `hero-banner`, `patelle-shop-all`, `patelle-seasonal`, `patelle-collage`, `patelle-more-to-love`, `patelle-single-product`, `patelle-news-strip`, `patelle-brand-banner`, `patelle-quality-promise` |
 | Shop (collection) | `templates/collection.json` | `patelle-shop-hero`, `patelle-shop-grid`, `patelle-shop-why` |
-| Product | `templates/product.json` | `patelle-product-main`, `patelle-product-reels`, `patelle-product-video`, `patelle-product-reviews`, `patelle-product-promise`, `patelle-product-related` |
+| Product | `templates/product.json` | `patelle-product-main`, `patelle-product-video`, `patelle-product-reviews`, `patelle-product-promise`, `patelle-product-related` |
 | About | `templates/page.about.json` | `patelle-about-hero`, `patelle-about-story`, `patelle-about-values`, `patelle-about-banner`, `patelle-about-trust` |
 | Contact | `templates/page.contact.json` | `patelle-contact-hero`, `patelle-contact-panel`, `patelle-contact-love`, `patelle-brand-banner`, `patelle-contact-promise` |
 

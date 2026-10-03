@@ -8,7 +8,7 @@ Figma file: [Product Landing Page Design](https://www.figma.com/design/RZhucKZlv
 
 | Page | Template | Figma node | Status | Notes |
 |---|---|---|---|---|
-| Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 160ms; live search results |
+| Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 160ms; hover-to-expand search field with live results |
 | Home | `templates/index.json` | 35-30 (hero card), 82-567 / 82-571 (seasonal), 137-587 (single product) | Done | GSAP hero slider, Shop All, Seasonal ×2, Collage, More to Love, Single product, News strip, Brand banner, Quality promise |
 | Shop / collection | `templates/collection.json` | 232-738 | Done | Shop hero, grid, why-shop |
 | Product | `templates/product.json` | 117-14 | Built from screenshot, needs Figma check | See **Product page to-do** |
@@ -56,6 +56,7 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
+- Header search redesigned: new **Search opens → Expanding field on hover** (now the default). Hovering the search icon grows it into a glass pill field to the left (same glass as the icons) and focuses it, so shoppers can type right away. Live results open in the glass panel below; the panel's own field is hidden in this mode. The pill sizes itself to the space beside the nav; on narrow desktops (about 1100–1250px) the nav pill fades out while the field is open. Moving the mouse away from an empty field closes it; Esc clears it. Phones and tablets keep the tap-to-open glass panel. **Glass panel on click** and **Search page** are still available (`sections/header.liquid`, `assets/patelle-header.js`, `assets/patelle-header.css`, `sections/header-group.json`).
 - Header submenu opens faster again: hover delay 60ms → 30ms, **Open and close speed** 240ms → 160ms (schema minimum 80ms), link and card stagger 12ms + 30ms → 6ms per item with no start delay (`assets/patelle-header.css`, `assets/patelle-header.js`, `sections/header-group.json`).
 - Menu image card blocks (Header → Add block → Menu image card) got **Collection**, **Product** and **Button text** settings. Empty image, title and link fill from the collection, then the product. On the live store a card with no image shows a product photo (first products of the catalog) instead of the grey placeholder; the theme editor still shows the placeholder so it is clear which cards need an image (`sections/header.liquid`).
 - Header search shows live results while typing: after a 250ms pause it asks Shopify's predictive search for up to 4 products, plus query suggestions and collections, and shows them under the search field (photo, title, price), with a "Search for “…”" link to the full results page. Older requests are cancelled when the shopper keeps typing, repeat searches come from a cache, and the quick links come back when the field is cleared. Two columns of results on phones (`sections/header.liquid`, `assets/patelle-header.js`, `assets/patelle-header.css`). Also fixed the search panel running about 14px past the right edge on phones.

@@ -223,7 +223,28 @@
 
         <div class="pt-header__actions">
           {%- if s.show_search -%}
-            {%- if s.search_style == 'flyout' -%}
+            {%- if s.search_style == 'hover' -%}
+              <div class="pt-header__seek" data-seek>
+                <form action="{{ routes.search_url }}" method="get" role="search" class="pt-header__icon pt-header__seek-form">
+                  <label class="visually-hidden" for="PtHeaderSeek">{{ search_label }}</label>
+                  <input
+                    id="PtHeaderSeek"
+                    class="pt-header__seek-input"
+                    type="search"
+                    name="q"
+                    autocomplete="off"
+                    placeholder="{{ s.search_placeholder | escape }}"
+                    aria-controls="PtSearchResults"
+                    data-seek-input
+                  >
+                  <input type="hidden" name="options[prefix]" value="last">
+                  <button type="submit" class="pt-header__seek-btn" aria-controls="PtFlyout-search" aria-expanded="false" data-seek-button>
+                    <span class="visually-hidden">{{ search_label }}</span>
+                    <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15.8 15.8L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                  </button>
+                </form>
+              </div>
+            {%- elsif s.search_style == 'flyout' -%}
               <button
                 type="button"
                 class="pt-header__icon"
@@ -398,7 +419,7 @@
           {%- endfor -%}
         {%- endif -%}
 
-        {%- if s.show_search and s.search_style == 'flyout' -%}
+        {%- if s.show_search and s.search_style != 'page' -%}
           <div class="pt-header__flyout pt-header__flyout--search" id="PtFlyout-search" data-flyout="search" aria-hidden="true" inert>
             <div class="pt-header__flyout-inner">
               <form action="{{ routes.search_url }}" method="get" role="search" class="pt-header__search">
@@ -1019,15 +1040,20 @@
       "label": "Search opens",
       "options": [
         {
+          "value": "hover",
+          "label": "Expanding field on hover"
+        },
+        {
           "value": "flyout",
-          "label": "Glass panel"
+          "label": "Glass panel on click"
         },
         {
           "value": "page",
           "label": "Search page"
         }
       ],
-      "default": "flyout"
+      "default": "hover",
+      "info": "Expanding field: live results open in a glass panel below. Phones and tablets always use the glass panel."
     },
     {
       "type": "text",

@@ -275,7 +275,7 @@
       window.addEventListener('resize', () => this.activeKey && this.measure(), { passive: true, signal });
     }
 
-    openFlyout(key, { focus = false } = {}) {
+    openFlyout(key, { focus = false, keepFocus = false } = {}) {
       const panel = this.flyouts.get(key);
       if (!panel) return;
 
@@ -296,7 +296,9 @@
       });
 
       this.measure();
+      this.seekButton?.setAttribute('aria-expanded', String(key === 'search'));
 
+      if (keepFocus) return;
       if (key === 'search') {
         const input = panel.querySelector('[data-search-input]');
         // Wait for the panel to become visible before moving focus.
@@ -339,6 +341,8 @@
       this.classList.remove('is-open');
       this.style.setProperty('--ph-flyout-h', '0px');
       this.querySelectorAll('[data-flyout-item].is-active').forEach((item) => item.classList.remove('is-active'));
+      this.seekButton?.setAttribute('aria-expanded', 'false');
+      if (this.seek && !this.seek.contains(document.activeElement)) this.seek.classList.remove('is-filled');
 
       if (returnFocus) {
         this.toggles.find((button) => button.dataset.flyoutToggle === key)?.focus({ preventScroll: true });
@@ -349,20 +353,31 @@
 
     bindSearch(signal) {
       const panel = this.flyouts.get('search');
-      const input = panel?.querySelector('[data-search-input]');
       const results = panel?.querySelector('[data-search-results]');
-      if (!input || !results) return;
+      if (!results) return;
 
+      const panelInput = panel.querySelector('[data-search-input]');
       const links = panel.querySelector('[data-search-links]');
+      this.seek = this.querySelector('[data-seek]');
+      const seekInput = this.seek?.querySelector('[data-seek-input]');
+      this.seekButton = this.seek?.querySelector('[data-seek-button]');
+      // Matches the CSS breakpoint where the nav pill and the expanding field show.
+      const wideQuery = window.matchMedia('(min-width: 1100px)');
       const cache = new Map();
       let timer;
       let request;
+      let source = panelInput;
 
       const show = (html) => {
         results.innerHTML = html;
         results.hidden = !html;
         if (links) links.hidden = Boolean(html);
-        if (this.activeKey === 'search') this.measure();
+        if (seekInput && source === seekInput) {
+          if (html) this.openFlyout('search', { keepFocus: true });
+          else if (this.activeKey === 'search') this.closeFlyout();
+        } else if (this.activeKey === 'search') {
+          this.measure();
+        }
       };
 
       const run = async (query) => {
@@ -401,15 +416,109 @@
         }
       };
 
-      input.addEventListener(
-        'input',
-        () => {
-          clearTimeout(timer);
-          const query = input.value.trim();
-          timer = setTimeout(() => run(query), query ? 250 : 0);
-        },
-        { signal }
-      );
+      const search = (input, wait = 250) => {
+        source = input;
+        clearTimeout(timer);
+        const query = input.value.trim();
+        timer = setTimeout(() => run(query), query ? wait : 0);
+      };
+
+      [panelInput, seekInput].filter(Boolean).forEach((input) => {
+        input.addEventListener('input', () => search(input), { signal });
+      });
+
+      if (seekInput) {
+        const seek = this.seek;
+        const nav = this.querySelector('.pt-header__menu');
+
+        // Grow into the free space beside the nav pill; when that is too narrow,
+        // the nav fades out while the field is open (is-seek-tight).
+        const fit = () => {
+          if (!nav || !wideQuery.matches) return;
+          const room = seek.getBoundingClientRect().right - nav.getBoundingClientRect().right - 16;
+          const tight = room < 200;
+          this.classList.toggle('is-seek-tight', tight);
+          seek.style.setProperty('--ph-seek-w', `${tight ? 240 : Math.round(Math.min(300, room))}px`);
+        };
+
+        seek.addEventListener(
+          'pointerenter',
+          (event) => {
+            if (event.pointerType !== 'mouse' || !wideQuery.matches) return;
+            if (this.activeKey && this.activeKey !== 'search') this.closeFlyout();
+            fit();
+            seekInput.focus({ preventScroll: true });
+          },
+          { signal }
+        );
+        seekInput.addEventListener('focus', fit, { signal });
+
+        seek.addEventListener(
+          'pointerleave',
+          (event) => {
+            if (event.pointerType === 'mouse' && !seekInput.value) seekInput.blur();
+          },
+          { signal }
+        );
+
+        seekInput.addEventListener(
+          'input',
+          () => seek.classList.toggle('is-filled', Boolean(seekInput.value)),
+          { signal }
+        );
+
+        seekInput.addEventListener(
+          'focus',
+          () => {
+            if (!seekInput.value.trim()) return;
+            seek.classList.add('is-filled');
+            search(seekInput, 0);
+          },
+          { signal }
+        );
+
+        seekInput.addEventListener(
+          'blur',
+          () => {
+            if (this.activeKey !== 'search') seek.classList.remove('is-filled');
+          },
+          { signal }
+        );
+
+        seekInput.addEventListener(
+          'keydown',
+          (event) => {
+            if (event.key !== 'Escape') return;
+            seekInput.value = '';
+            seek.classList.remove('is-filled');
+            search(seekInput);
+            seekInput.blur();
+          },
+          { signal }
+        );
+
+        // Phones and tablets have no hover: the icon opens the glass panel instead.
+        this.seekButton?.addEventListener(
+          'click',
+          (event) => {
+            if (!wideQuery.matches) {
+              event.preventDefault();
+              if (this.activeKey === 'search') {
+                this.closeFlyout();
+              } else {
+                if (this.classList.contains('is-sheet-open')) this.toggleSheet(false);
+                this.openFlyout('search');
+              }
+              return;
+            }
+            if (!seekInput.value.trim()) {
+              event.preventDefault();
+              seekInput.focus({ preventScroll: true });
+            }
+          },
+          { signal }
+        );
+      }
 
       signal.addEventListener('abort', () => {
         clearTimeout(timer);

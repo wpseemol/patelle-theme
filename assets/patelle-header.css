@@ -1220,6 +1220,156 @@
     display: none;
 }
 
+/* Expanding search field -------------------------------------------------
+   The 48px slot stays in the bar's flow; the glass pill inside grows to the
+   left over the bar, so the nav never shifts. */
+
+.pt-header__seek {
+    --ph-seek-w: clamp(220px, 18vw, 300px);
+    position: relative;
+    flex: none;
+    width: 48px;
+    height: 48px;
+}
+
+.pt-header__seek-form.pt-header__icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    justify-content: flex-end;
+    width: 48px;
+    overflow: hidden;
+    cursor: text;
+    transition:
+        width calc(var(--ph-speed) * 1.8) var(--ph-lens-ease),
+        box-shadow 0.28s var(--ph-ease),
+        background-image 0.28s var(--ph-ease);
+}
+
+.pt-header__seek-form.pt-header__icon:active {
+    transform: translateZ(0);
+}
+
+.pt-header__seek-input {
+    position: relative;
+    z-index: 2;
+    flex: 1 1 auto;
+    width: 0;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: 500 var(--ph-font-size) / 1 var(--ph-font);
+    letter-spacing: -0.01em;
+    color: var(--ph-nav-ink);
+    opacity: 0;
+    transform: translateX(10px);
+    -webkit-appearance: none;
+    appearance: none;
+    transition:
+        opacity 0.1s var(--ph-ease),
+        transform 0.1s var(--ph-ease),
+        padding calc(var(--ph-speed) * 1.8) var(--ph-lens-ease);
+}
+
+.pt-header__seek-input::placeholder {
+    color: inherit;
+    opacity: 0.55;
+}
+
+.pt-header .pt-header__seek-input:focus,
+.pt-header .pt-header__seek-input:focus-visible {
+    outline: none;
+    outline-offset: 0;
+    box-shadow: none;
+}
+
+.pt-header__seek-input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.pt-header__seek-btn {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.pt-header__seek-btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -6px;
+}
+
+.pt-header__seek-btn svg {
+    transition: transform 0.25s var(--ph-ease-out);
+}
+
+@media screen and (min-width: 1100px) {
+    .pt-header__seek:hover .pt-header__seek-form,
+    .pt-header__seek:focus-within .pt-header__seek-form,
+    .pt-header__seek.is-filled .pt-header__seek-form {
+        width: var(--ph-seek-w);
+    }
+
+    .pt-header__seek:hover .pt-header__seek-input,
+    .pt-header__seek:focus-within .pt-header__seek-input,
+    .pt-header__seek.is-filled .pt-header__seek-input {
+        padding-left: 22px;
+        opacity: 1;
+        transform: none;
+        transition:
+            opacity calc(var(--ph-speed) * 1.2) var(--ph-ease-out) calc(var(--ph-speed) * 0.5),
+            transform calc(var(--ph-speed) * 1.2) var(--ph-ease-out) calc(var(--ph-speed) * 0.5),
+            padding calc(var(--ph-speed) * 1.8) var(--ph-lens-ease);
+    }
+
+    .pt-header__seek:focus-within .pt-header__seek-btn svg {
+        transform: scale(0.92);
+    }
+
+    /* The nav's entrance animation holds its opacity, so the pill inside fades. */
+    .pt-header__menu {
+        transition: opacity calc(var(--ph-speed) * 1.2) var(--ph-ease);
+    }
+
+    .pt-header.is-seek-tight:has(.pt-header__seek:is(:hover, :focus-within, .is-filled)) .pt-header__menu {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* The bar field replaces the panel's own field; the panel only lists results. */
+    .pt-header[data-search-style="hover"] .pt-header__flyout--search .pt-header__search {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1099px) {
+    .pt-header__seek-input {
+        display: none;
+    }
+
+    .pt-header__seek-form.pt-header__icon {
+        cursor: pointer;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pt-header__seek-form.pt-header__icon,
+    .pt-header__seek-input {
+        transition: none;
+    }
+}
+
 /* Live search results ---------------------------------------------------- */
 
 .pt-header__results[hidden],

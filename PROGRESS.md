@@ -33,7 +33,7 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Add reel posters and video links, key note images, video section poster, promise background photo.
 - [ ] Install Judge.me and add its Review Widget block to the Rating & Reviews section. Then remove the 4 sample reviews.
 - [ ] Create the product metafields listed in `README.md` and fill them per product.
-- [ ] The quantity field no longer stops at 3. To cap it (for the "Up to 3 Save 20%" offer), set a maximum quantity rule per product in Shopify admin (B2B / catalog quantity rules), or change the **Quantity note** text in Product main.
+- [ ] Quantity is capped by stock only (no fixed limit of 3 anymore). For the cap to work, turn on **Track quantity** for each variant in Shopify admin and leave **Continue selling when out of stock** off. Update the **Quantity note** ("Up to 3 Save 20%") in Product main if the offer changes.
 
 ### About page to-do
 - [ ] Upload images in the theme editor: About hero images 1–5, About story image, About banner image.
@@ -51,7 +51,7 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
-- Product page quantity: the 1–3 dropdown is replaced by a pill stepper (minus button, number field, plus button) in **Product main** (`sections/patelle-product-main.liquid`, `assets/patelle-product.css`, `assets/patelle-product.js`). It follows the variant's Shopify quantity rules (minimum, maximum, increment); with no maximum set there is no upper limit. Typed values are corrected on change.
+- Product page quantity: the 1–3 dropdown is replaced by a pill stepper (minus button, number field, plus button) in **Product main** (`sections/patelle-product-main.liquid`, `assets/patelle-product.css`, `assets/patelle-product.js`). It follows the variant's Shopify quantity rules (minimum, maximum, increment); with no maximum set there is no upper limit. Typed values are corrected on change. The maximum also follows stock: when Shopify tracks inventory and "continue selling when out of stock" is off, + stops at the variant's available quantity, and the limit updates when the shopper switches variants.
 - Header submenu new design: **Panel design → Links with image cards** (default) shows the submenu links on the left and up to 3 image cards on the right. Cards come from new **Menu image card** blocks in the header (menu item name, image, title, link); without blocks, collection and product links use their featured images. **Links only** keeps the old panel. New `snippets/patelle-header-card.liquid`; card styles in `assets/patelle-header.css`. Three sample cards added under Shop (New Arrivals, Best Sellers, Gift Sets).
 - Header submenu (flyout) opens faster: hover delay 120ms → 60ms, **Open and close speed** 420ms → 240ms (schema min lowered to 120ms), panel and link fade start without the extra 60–90ms wait, link stagger 22ms → 12ms. Mobile drill-in panels tightened the same way (`assets/patelle-header.css`, `assets/patelle-header.js`, `sections/header-group.json`, `sections/header.liquid`).
 - Header: overlay position on every page (`overlay_mode: all`). Pages other than home use the solid ink colors (`pt-header--overlay-ink`) so text stays readable.

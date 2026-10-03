@@ -283,6 +283,11 @@
                 assign qty_min = qty_rule.min | default: 1
                 assign qty_step = qty_rule.increment | default: 1
                 assign qty_max = qty_rule.max
+                if current_variant.inventory_management == 'shopify' and current_variant.inventory_policy == 'deny'
+                  if qty_max == null or current_variant.inventory_quantity < qty_max
+                    assign qty_max = current_variant.inventory_quantity | at_least: qty_min
+                  endif
+                endif
               -%}
               <div class="pt-pdp-qty">
                 <label class="pt-pdp-qty__label" for="pt-qty-{{ section.id }}">Quantity:</label>
@@ -485,8 +490,20 @@
   <script type="application/json" data-pt-variants>
     [
       {%- for variant in product.variants -%}
+        {%- liquid
+          assign v_min = variant.quantity_rule.min | default: 1
+          assign v_max = variant.quantity_rule.max
+          if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+            if v_max == null or variant.inventory_quantity < v_max
+              assign v_max = variant.inventory_quantity | at_least: v_min
+            endif
+          endif
+        -%}
         {
           "id": {{ variant.id | json }},
+          "qty_min": {{ v_min | json }},
+          "qty_step": {{ variant.quantity_rule.increment | default: 1 | json }},
+          "qty_max": {{ v_max | json }},
           "available": {{ variant.available | json }},
           "price": {{ variant.price | json }},
           "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},

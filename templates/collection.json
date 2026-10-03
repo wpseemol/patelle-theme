@@ -1,6 +1,10 @@
 /*
  * ------------------------------------------------------------
- * PATÉLLE — Collection / Shop page (Figma Shop Page, node 232:738)
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
 {
@@ -11,37 +15,49 @@
         "filter_all": {
           "type": "filter",
           "settings": {
-            "label": "All"
+            "label": "All",
+            "collection": "",
+            "link": ""
           }
         },
         "filter_men": {
           "type": "filter",
           "settings": {
-            "label": "Men"
+            "label": "Men",
+            "collection": "woman",
+            "link": ""
           }
         },
         "filter_women": {
           "type": "filter",
           "settings": {
-            "label": "Women"
+            "label": "Women",
+            "collection": "woman",
+            "link": ""
           }
         },
         "filter_unisex": {
           "type": "filter",
           "settings": {
-            "label": "Unisex"
+            "label": "Unisex",
+            "collection": "",
+            "link": ""
           }
         },
         "filter_best": {
           "type": "filter",
           "settings": {
-            "label": "Best Sellers"
+            "label": "Best Sellers",
+            "collection": "",
+            "link": ""
           }
         },
         "filter_new": {
           "type": "filter",
           "settings": {
-            "label": "New Arrivals"
+            "label": "New Arrivals",
+            "collection": "",
+            "link": ""
           }
         }
       },
@@ -56,17 +72,27 @@
       "settings": {
         "heading": "Products",
         "text": "Explore our full range of luxury fragrances — crafted for everyday presence, without the designer markup.",
+        "spacing_mode": "padding",
         "padding_top": 48,
-        "padding_bottom": 32
+        "padding_bottom": 32,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     },
     "shop_grid": {
       "type": "patelle-shop-grid",
       "settings": {
         "products_per_page": 12,
+        "card_style": "overlay",
+        "columns": "4",
+        "vendor_tagline": "(Luxury. No Markup.)",
+        "fit_image": true,
         "show_rating": true,
+        "spacing_mode": "padding",
         "padding_top": 16,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     },
     "shop_why": {
@@ -105,14 +131,26 @@
           }
         }
       },
-      "block_order": ["f1", "f2", "f3", "f4"],
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
       "settings": {
         "heading": "Why Customers Choose Patelle",
         "background": "#f5ebde",
+        "spacing_mode": "padding",
         "padding_top": 72,
-        "padding_bottom": 72
+        "padding_bottom": 72,
+        "margin_top": 0,
+        "margin_bottom": 0
       }
     }
   },
-  "order": ["shop_hero", "shop_grid", "shop_why"]
+  "order": [
+    "shop_hero",
+    "shop_grid",
+    "shop_why"
+  ]
 }

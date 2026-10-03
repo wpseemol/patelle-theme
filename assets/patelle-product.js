@@ -170,6 +170,43 @@
     customElements.define('patelle-product-main', PatelleProductMain);
   }
 
+  const clampQuantity = (input, value) => {
+    const min = Number(input.min) || 1;
+    const max = input.max ? Number(input.max) : Infinity;
+    const step = Number(input.step) || 1;
+    let next = Number.isFinite(value) ? value : min;
+    next = Math.round((next - min) / step) * step + min;
+    return Math.min(Math.max(next, min), max);
+  };
+
+  const syncQuantityButtons = (stepper) => {
+    const input = stepper.querySelector('[data-pt-qty-input]');
+    if (!input) return;
+    const value = Number(input.value);
+    const max = input.max ? Number(input.max) : Infinity;
+    stepper.querySelector('[data-pt-qty-step="-1"]').disabled = value <= (Number(input.min) || 1);
+    stepper.querySelector('[data-pt-qty-step="1"]').disabled = value >= max;
+  };
+
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-pt-qty-step]');
+    if (!button) return;
+    const stepper = button.closest('[data-pt-qty]');
+    const input = stepper?.querySelector('[data-pt-qty-input]');
+    if (!input) return;
+    const step = Number(input.step) || 1;
+    const direction = Number(button.dataset.ptQtyStep);
+    input.value = clampQuantity(input, Number(input.value) + direction * step);
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+
+  document.addEventListener('change', (event) => {
+    const input = event.target.closest('[data-pt-qty-input]');
+    if (!input) return;
+    input.value = clampQuantity(input, parseInt(input.value, 10));
+    syncQuantityButtons(input.closest('[data-pt-qty]'));
+  });
+
   document.addEventListener('click', (event) => {
     const play = event.target.closest('[data-pt-video-play]');
     if (!play) return;

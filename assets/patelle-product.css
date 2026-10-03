@@ -352,22 +352,75 @@ patelle-product-main,
   gap: 10px;
 }
 
-.pt-pdp-qty__select {
-  appearance: none;
+.pt-pdp-qty__stepper {
+  display: inline-flex;
+  align-items: stretch;
   box-sizing: border-box;
-  min-width: 72px;
-  min-height: 36px;
-  padding: 6px 32px 6px 12px;
+  height: 40px;
   border: 1px solid var(--pt-pdp-line);
-  border-radius: 6px;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23111111' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")
-    right 12px center / 12px no-repeat,
-    var(--pt-pdp-surface);
-  font-family: var(--pt-font);
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: 999px;
+  background: var(--pt-pdp-surface);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.pt-pdp-qty__stepper:focus-within {
+  border-color: var(--pt-pdp-ink);
+}
+
+.pt-pdp-qty__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--pt-pdp-ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.pt-pdp-qty__btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.pt-pdp-qty__btn:focus-visible {
+  outline: 2px solid var(--pt-pdp-ink);
+  outline-offset: -2px;
+  border-radius: 999px;
+}
+
+.pt-pdp-qty__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pt-pdp-qty__input {
+  box-sizing: border-box;
+  width: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--pt-font);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--pt-pdp-ink);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.pt-pdp-qty__input::-webkit-outer-spin-button,
+.pt-pdp-qty__input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.pt-pdp-qty .pt-pdp-qty__input:focus,
+.pt-pdp-qty .pt-pdp-qty__input:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .pt-pdp-qty__note {

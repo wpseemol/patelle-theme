@@ -1061,6 +1061,106 @@
     opacity: 1;
 }
 
+/* Image card panel: links on the left, cards pushed to the right edge. */
+.pt-header__flyout--images .pt-header__flyout-inner {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 32px 64px;
+}
+
+.pt-header__flyout--images .pt-header__col--primary ul:hover .pt-header__flyout-link {
+    opacity: 0.4;
+}
+
+.pt-header__flyout--images .pt-header__col--primary ul:hover .pt-header__flyout-link:hover {
+    opacity: 1;
+}
+
+.pt-header__flyout .pt-header__cards {
+    display: grid;
+    grid-template-columns: repeat(var(--ph-cards, 3), minmax(0, 210px));
+    gap: 16px;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-left: auto;
+}
+
+.pt-header__card-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.pt-header__card-media {
+    position: relative;
+    display: block;
+    margin-bottom: 8px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: 16px;
+    background-color: color-mix(in srgb, var(--ph-text) 6%, transparent);
+}
+
+.pt-header__card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ph-ease-out);
+}
+
+.pt-header__card-img--placeholder {
+    fill: currentColor;
+    opacity: 0.25;
+}
+
+.pt-header__card-link:hover .pt-header__card-img {
+    transform: scale(1.05);
+}
+
+.pt-header__card-title {
+    font-size: var(--ph-font-size);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+.pt-header__card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: max(12px, calc(var(--ph-font-size) - 2px));
+    opacity: 0.6;
+    transition: opacity 0.2s var(--ph-ease);
+}
+
+.pt-header__card-cta svg {
+    transition: transform 0.2s var(--ph-ease-out);
+}
+
+.pt-header__card-link:hover .pt-header__card-cta {
+    opacity: 1;
+}
+
+.pt-header__card-link:hover .pt-header__card-cta svg {
+    transform: translateX(3px);
+}
+
+.pt-header__card-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pt-header__card-img,
+    .pt-header__card-cta svg {
+        transition: none;
+    }
+}
+
 .pt-header__search {
     display: flex;
     align-items: center;

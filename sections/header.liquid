@@ -272,7 +272,66 @@
         {%- if s.enable_flyouts -%}
           {%- for link in main_menu.links -%}
             {%- if link.links.size > 0 -%}
-              <div class="pt-header__flyout" id="PtFlyout-{{ forloop.index }}" data-flyout="{{ forloop.index }}" aria-hidden="true" inert>
+              {%- liquid
+                # Cards come from "Menu image card" blocks whose menu item name
+                # matches this link. Without blocks, collection and product
+                # links in the submenu supply their featured images.
+                assign item_key = link.title | downcase | strip
+                assign card_count = 0
+                assign card_start = link.links.size | plus: 1
+              -%}
+              {%- capture flyout_cards -%}
+                {%- if s.flyout_style == 'images' -%}
+                  {%- for block in section.blocks -%}
+                    {%- liquid
+                      assign card_key = block.settings.menu_item | downcase | strip
+                      if card_key != item_key and card_key != link.handle
+                        continue
+                      endif
+                      if card_count >= s.flyout_card_limit
+                        break
+                      endif
+                      assign card_count = card_count | plus: 1
+                      assign card_index = card_start | plus: card_count
+                    -%}
+                    {%- render 'patelle-header-card',
+                      image: block.settings.image,
+                      heading: block.settings.heading,
+                      label: s.flyout_card_cta,
+                      url: block.settings.link,
+                      index: card_index,
+                      attributes: block.shopify_attributes
+                    -%}
+                  {%- endfor -%}
+
+                  {%- if card_count == 0 -%}
+                    {%- for child in link.links -%}
+                      {%- liquid
+                        if child.type != 'collection_link' and child.type != 'product_link'
+                          continue
+                        endif
+                        if child.object.featured_image == blank
+                          continue
+                        endif
+                        if card_count >= s.flyout_card_limit
+                          break
+                        endif
+                        assign card_count = card_count | plus: 1
+                        assign card_index = card_start | plus: card_count
+                      -%}
+                      {%- render 'patelle-header-card',
+                        image: child.object.featured_image,
+                        heading: child.title,
+                        label: s.flyout_card_cta,
+                        url: child.url,
+                        index: card_index
+                      -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endcapture -%}
+
+              <div class="pt-header__flyout{% if card_count > 0 %} pt-header__flyout--images{% endif %}" id="PtFlyout-{{ forloop.index }}" data-flyout="{{ forloop.index }}" aria-hidden="true" inert>
                 <div class="pt-header__flyout-inner">
                   <div class="pt-header__col pt-header__col--primary">
                     <p class="pt-header__col-title">{{ s.flyout_prefix | append: ' ' | append: link.title | strip | escape }}</p>
@@ -304,6 +363,11 @@
                       </div>
                     {%- endif -%}
                   {%- endfor -%}
+                  {%- if card_count > 0 -%}
+                    <ul class="pt-header__cards" role="list" style="--ph-cards: {{ card_count }}">
+                      {{- flyout_cards -}}
+                    </ul>
+                  {%- endif -%}
                 </div>
               </div>
             {%- endif -%}
@@ -809,6 +873,38 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "flyout_style",
+      "label": "Panel design",
+      "options": [
+        {
+          "value": "images",
+          "label": "Links with image cards"
+        },
+        {
+          "value": "classic",
+          "label": "Links only"
+        }
+      ],
+      "default": "images",
+      "info": "Add Menu image card blocks to pick the images. Without blocks, collection and product links show their featured images."
+    },
+    {
+      "type": "range",
+      "id": "flyout_card_limit",
+      "label": "Image cards per panel",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "flyout_card_cta",
+      "label": "Image card button text",
+      "default": "Shop now"
+    },
+    {
       "type": "text",
       "id": "flyout_prefix",
       "label": "Panel title prefix",
@@ -927,6 +1023,38 @@
       "id": "notification_color_scheme",
       "label": "Added-to-cart popup colors",
       "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_card",
+      "name": "Menu image card",
+      "limit": 16,
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "Menu item",
+          "info": "Name of the top menu item this card shows under, like Shop.",
+          "default": "Shop"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Title",
+          "default": "New Arrivals"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
     }
   ]
 }

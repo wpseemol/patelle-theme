@@ -1,0 +1,45 @@
+{%- comment -%}
+  Image card inside a desktop header flyout.
+
+  Accepts:
+  - image: image object (optional, placeholder when blank)
+  - heading: card title
+  - label: call to action under the title (optional)
+  - url: card link
+  - index: stagger position for the reveal animation
+  - attributes: block.shopify_attributes (optional)
+
+  Usage:
+  {% render 'patelle-header-card', image: block.settings.image, heading: block.settings.heading, label: 'Shop now', url: block.settings.link, index: 3 %}
+{%- endcomment -%}
+
+<li class="pt-header__card" style="--i: {{ index | default: 1 }}" {{ attributes }}>
+  <a href="{{ url | default: '#' }}" class="pt-header__card-link">
+    <span class="pt-header__card-media">
+      {%- if image != blank -%}
+        {%- assign card_alt = image.alt | default: heading -%}
+        {{
+          image
+          | image_url: width: 640
+          | image_tag:
+            loading: 'lazy',
+            widths: '240, 360, 480, 640',
+            sizes: '(min-width: 990px) 220px, 50vw',
+            alt: card_alt,
+            class: 'pt-header__card-img'
+        }}
+      {%- else -%}
+        {{ 'collection-1' | placeholder_svg_tag: 'pt-header__card-img pt-header__card-img--placeholder' }}
+      {%- endif -%}
+    </span>
+    {%- if heading != blank -%}
+      <span class="pt-header__card-title">{{ heading | escape }}</span>
+    {%- endif -%}
+    {%- if label != blank -%}
+      <span class="pt-header__card-cta">
+        {{- label | escape -}}
+        <svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5h9.5M6.5 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    {%- endif -%}
+  </a>
+</li>

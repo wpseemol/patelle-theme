@@ -47,6 +47,9 @@
         "enable_lens": true,
         "accent_color": "#111111",
         "enable_flyouts": true,
+        "flyout_style": "images",
+        "flyout_card_limit": 3,
+        "flyout_card_cta": "Shop now",
         "flyout_prefix": "Explore",
         "flyout_font_size": 24,
         "blur_page": true,
@@ -62,7 +65,38 @@
         "show_account": true,
         "show_cart": true,
         "notification_color_scheme": ""
-      }
+      },
+      "blocks": {
+        "menu_card_new": {
+          "type": "menu_card",
+          "settings": {
+            "menu_item": "Shop",
+            "heading": "New Arrivals",
+            "link": "/collections/all"
+          }
+        },
+        "menu_card_best": {
+          "type": "menu_card",
+          "settings": {
+            "menu_item": "Shop",
+            "heading": "Best Sellers",
+            "link": "/collections/all"
+          }
+        },
+        "menu_card_gift": {
+          "type": "menu_card",
+          "settings": {
+            "menu_item": "Shop",
+            "heading": "Gift Sets",
+            "link": "/collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "menu_card_new",
+        "menu_card_best",
+        "menu_card_gift"
+      ]
     }
   },
   "order": [

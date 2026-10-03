@@ -60,7 +60,7 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Check the blog and article pages once a blog post exists (the News blog is empty, so the article cards were not seen).
 - [ ] The 404 page could not be previewed locally (the CLI dev server returns a 502 error). Check it on the live theme. Gift card and password pages use their own layouts and still have the Dawn look.
 - [ ] Shop hero and You May Also Like titles use `rem` sizes, which come out smaller under Dawn's 10px root size. Switch them to px if they look small next to the Figma design.
-- [ ] Before pushing, pull first: the GitHub remote has a newer theme editor commit (`sections/header-group.json`).
+- [ ] Finish the merge of `sections/header-group.json` (conflict resolved in the file): `git add sections/header-group.json` then `git commit`, before pushing.
 
 ### Known issues (not caused by recent work)
 - [ ] `sections/hero-banner.liquid`: 6 `ImgWidthAndHeight` theme check errors (missing width and height on `<img>`).
@@ -71,6 +71,7 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
+- Fixed every page showing "Failed to Upload Theme Files — Invalid JSON in sections/header-group.json". Pulling the theme editor commit left git conflict markers in the file. Kept Shopify's version (blocks listed first, `match_page_width`) and added back `menu_position: "2"` on the 3 menu image cards (`sections/header-group.json`).
 - Dawn's default look removed from the rest of the site, so every page now uses the PATÉLLE style (Figma 137-156 homepage as reference, built from the store owner's screenshot because Figma still reports "no edit access"):
   - **Search page** is a new PATÉLLE section, `sections/patelle-search.liquid` (replaces Dawn's `main-search` in `templates/search.json`). It has a cream hero with a serif title, a pill search field and the result count. Filter chips open dropdowns (checkboxes or a price range, shown as a bottom sheet on phones) and there is a sort menu, plus active filter tags with "Remove all". Results use the PATÉLLE product card, with an "Articles & pages" list underneath and round page buttons. With no results it shows a "Popular right now" grid. Settings cover texts, products per page, card design, columns, vendor tagline, filtering, sorting, and the popular collection and count (`assets/patelle-search.css`, `assets/patelle-search.js`).
   - **Product cards everywhere**: Dawn's `snippets/card-product.liquid` now shows the PATÉLLE card (`patelle-card`) in any Dawn section (featured collection, related products, cart drawer suggestions and others). Horizontal cards are left as they are.

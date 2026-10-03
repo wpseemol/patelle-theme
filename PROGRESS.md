@@ -11,7 +11,7 @@ Figma file: [Product Landing Page Design](https://www.figma.com/design/RZhucKZlv
 | Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 160ms; hover-to-expand search field with live results |
 | Home | `templates/index.json` | 35-30 (hero card), 82-567 / 82-571 (seasonal), 137-587 (single product) | Done | GSAP hero slider, Shop All, Seasonal ×2, Collage, More to Love, Single product, News strip, Brand banner, Quality promise |
 | Shop / collection | `templates/collection.json` | 232-738 | Done | Shop hero, grid, why-shop |
-| Product | `templates/product.json` | 117-14 | Built from screenshot, needs Figma check | See **Product page to-do** |
+| Product | `templates/product.json` | 117-14 | Built from screenshot, needs Figma check | Reels play in a floating on-page player; product video plays inline. See **Product page to-do** |
 | About | `templates/page.about.json`, `templates/page.json` | 143-696 | Built from screenshot, needs Figma check | Shows on handle `about` with either template; images to upload |
 | Contact | `templates/page.contact.json` | 171-592, 171-741 (love), 171-765 (promise) | Done | Page must use template `page.contact` |
 | Footer (all pages) | `sections/footer-group.json` | — | Done | Retailers strip is its own section above the footer |
@@ -31,6 +31,7 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Replace placeholder text in the theme editor: reels heading "Real Results", "Key Notes", scent chips, note details, the 5 quality promise labels.
 - [ ] Upload at least 5 product images (first = large image, next 4 = 2×2 grid).
 - [ ] Add reel posters and video links, key note images, video section poster, promise background photo.
+- [ ] Reels 2 and 3 have no video yet, so their tiles do nothing on click. Upload each reel to Shopify (Content → Files) and pick it in Product main → Reel → **Shopify-hosted video**. Vertical (9:16) videos fill the floating player best; a regular wide YouTube video shows with black bars. YouTube Shorts links also fill it.
 - [ ] Install Judge.me and add its Review Widget block to the Rating & Reviews section. Then remove the 4 sample reviews.
 - [ ] Create the product metafields listed in `README.md` and fill them per product.
 - [ ] Create metaobject definitions **Fragrance note** (`name`, `image`) and **FAQ** (`question`, `answer`), then the product metafields `custom.highlight_notes` and `custom.faqs` that point to them. Fill notes, accords, top/heart/base notes, ingredients, about text and disclaimer per product. Until then every product shows the same theme editor content.
@@ -61,6 +62,12 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
+- Product page videos now play on the site instead of opening YouTube in a new tab (Figma 117-14, built from the store owner's reference screenshot):
+  - **Real Results reels** (Product main → Reel blocks): clicking a reel opens a floating vertical player at the bottom right of the page, with close (×, also Esc) and up/down buttons to go to the previous or next reel. The page stays usable behind it. On phones the player is smaller and sits bottom right too.
+  - Reel blocks got a **Shopify-hosted video** setting (best option). **Video link** also plays on the page for YouTube (also Shorts), Vimeo, TikTok, Instagram reels and direct .mp4 links. Any other link shows "This video can’t play here" with a Watch video button.
+  - **Product video** section: the **External video link** (YouTube, Vimeo, .mp4) now plays inside the section frame (16:9 while playing) instead of a new tab. A link alone, without a poster image, also works.
+  - Fixed: the Product video frame was wider than the screen on phones (its minimum height pushed the width out), causing sideways scrolling.
+  - Files: `snippets/patelle-product-reel.liquid`, `sections/patelle-product-main.liquid`, `sections/patelle-product-reels.liquid`, `sections/patelle-product-video.liquid`, `assets/patelle-product.js`, `assets/patelle-product.css`.
 - Menu image card: **Show under menu item** is now a dropdown (Every menu item with a dropdown, 1st–8th menu item, or Match by name). The name field only shows with "Match by name". The 3 sample cards use 2nd menu item (Shop) (`sections/header.liquid`, `sections/header-group.json`).
 - Header over the homepage hero: the script now finds the hero section on every scroll update and after theme editor section changes, instead of once at page load. Before, editing or moving sections in the theme editor could leave the text in the wrong color (white over light content, or dark over the hero) until a reload (`assets/patelle-header.js`).
 - Theme settings fixes (audit of global settings against the PATÉLLE sections):

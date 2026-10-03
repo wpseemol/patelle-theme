@@ -273,16 +273,263 @@
     syncQuantityButtons(input.closest('[data-pt-qty]'));
   });
 
+  /* —— On-page video: link → embeddable player ————————————————————— */
+
+  const embedFor = (raw, { loop = false } = {}) => {
+    if (!raw) return null;
+    let url;
+    try {
+      url = new URL(raw, window.location.href);
+    } catch {
+      return null;
+    }
+    const host = url.hostname.replace(/^(www|m)\./, '');
+    const parts = url.pathname.split('/').filter(Boolean);
+
+    let youtubeId = null;
+    if (host === 'youtu.be') youtubeId = parts[0];
+    else if (host === 'youtube.com' || host === 'youtube-nocookie.com' || host === 'music.youtube.com') {
+      youtubeId = url.searchParams.get('v') || (['shorts', 'embed', 'live'].includes(parts[0]) ? parts[1] : null);
+    }
+    if (youtubeId) {
+      const params = new URLSearchParams({ autoplay: '1', playsinline: '1', rel: '0', modestbranding: '1' });
+      if (loop) {
+        params.set('loop', '1');
+        params.set('playlist', youtubeId);
+      }
+      const start = parseInt(url.searchParams.get('t') || url.searchParams.get('start'), 10);
+      if (start > 0) params.set('start', String(start));
+      return { type: 'iframe', src: `https://www.youtube-nocookie.com/embed/${youtubeId}?${params}` };
+    }
+
+    if (host === 'vimeo.com' || host === 'player.vimeo.com') {
+      const index = parts.findIndex((part) => /^\d+$/.test(part));
+      if (index !== -1) {
+        const params = new URLSearchParams({ autoplay: '1', playsinline: '1' });
+        const hash = url.searchParams.get('h') || (parts[index + 1] && /^[a-f0-9]+$/i.test(parts[index + 1]) ? parts[index + 1] : null);
+        if (hash) params.set('h', hash);
+        if (loop) params.set('loop', '1');
+        return { type: 'iframe', src: `https://player.vimeo.com/video/${parts[index]}?${params}` };
+      }
+    }
+
+    if (host.endsWith('tiktok.com')) {
+      const index = parts.indexOf('video');
+      if (index !== -1 && parts[index + 1]) {
+        return { type: 'iframe', src: `https://www.tiktok.com/embed/v2/${parts[index + 1]}` };
+      }
+    }
+
+    if (host === 'instagram.com' && ['reel', 'reels', 'p', 'tv'].includes(parts[0]) && parts[1]) {
+      return { type: 'iframe', src: `https://www.instagram.com/reel/${parts[1]}/embed` };
+    }
+
+    if (/\.(mp4|webm|ogg|mov|m4v)$/i.test(url.pathname)) {
+      return { type: 'video', src: url.href };
+    }
+    return null;
+  };
+
+  const buildMedia = (embed, { title = 'Video', loop = false, className = '' } = {}) => {
+    if (embed.type === 'iframe') {
+      const frame = document.createElement('iframe');
+      frame.src = embed.src;
+      frame.title = title;
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write';
+      frame.allowFullscreen = true;
+      frame.className = className;
+      return frame;
+    }
+    const video = document.createElement('video');
+    video.src = embed.src;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.loop = loop;
+    video.className = className;
+    return video;
+  };
+
+  const playVideo = (video) => {
+    const attempt = video.play();
+    if (attempt?.catch) {
+      attempt.catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+    }
+  };
+
   document.addEventListener('click', (event) => {
     const play = event.target.closest('[data-pt-video-play]');
     if (!play) return;
     const frame = play.closest('[data-pt-video-frame]');
-    const video = frame?.querySelector('video');
+    if (!frame) return;
+
+    if (play.dataset.url) {
+      const loop = play.dataset.loop === 'true';
+      const embed = embedFor(play.dataset.url, { loop });
+      if (!embed) {
+        window.open(play.dataset.url, '_blank', 'noopener');
+        return;
+      }
+      const media = buildMedia(embed, { title: 'Product video', loop, className: 'pt-pdp-video__media' });
+      frame.querySelectorAll(':scope > img, :scope > .pt-pdp-video__ph').forEach((node) => node.remove());
+      frame.prepend(media);
+      frame.classList.add('is-playing');
+      if (embed.type === 'iframe') frame.classList.add('is-embed');
+      else playVideo(media);
+      return;
+    }
+
+    const video = frame.querySelector('video');
     if (!video) return;
     frame.classList.add('is-playing');
     video.setAttribute('controls', '');
-    video.play();
+    playVideo(video);
   });
+
+  /* —— Floating reel player ———————————————————————————————————————— */
+
+  const ICON_CLOSE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const ICON_UP =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 15l6-6 6 6"/></svg>';
+  const ICON_DOWN =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>';
+
+  const reelPlayer = { el: null, items: [], index: 0, opener: null, hideTimer: 0 };
+
+  const ensureReelPlayer = () => {
+    if (reelPlayer.el?.isConnected) return reelPlayer.el;
+    const el = document.createElement('div');
+    el.className = 'pt-pdp-player';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-label', 'Reel player');
+    el.hidden = true;
+    el.innerHTML = `
+      <div class="pt-pdp-player__card">
+        <div class="pt-pdp-player__stage" data-player-stage></div>
+        <p class="pt-pdp-player__label" data-player-label></p>
+      </div>
+      <div class="pt-pdp-player__rail">
+        <button type="button" class="pt-pdp-player__btn" data-player-close aria-label="Close reel">${ICON_CLOSE}</button>
+        <div class="pt-pdp-player__nav" data-player-nav>
+          <button type="button" class="pt-pdp-player__btn" data-player-prev aria-label="Previous reel">${ICON_UP}</button>
+          <button type="button" class="pt-pdp-player__btn" data-player-next aria-label="Next reel">${ICON_DOWN}</button>
+        </div>
+      </div>`;
+    el.addEventListener('click', (event) => {
+      if (event.target.closest('[data-player-close]')) closeReel();
+      else if (event.target.closest('[data-player-prev]')) showReel(reelPlayer.index - 1);
+      else if (event.target.closest('[data-player-next]')) showReel(reelPlayer.index + 1);
+    });
+    document.body.appendChild(el);
+    reelPlayer.el = el;
+    return el;
+  };
+
+  const reelMedia = (button) => {
+    const template = button.parentElement?.querySelector('template[data-pt-reel-video]');
+    const video = template?.content.querySelector('video');
+    if (video) {
+      const clone = video.cloneNode(true);
+      clone.loop = true;
+      clone.controls = true;
+      clone.playsInline = true;
+      return clone;
+    }
+    const embed = embedFor(button.dataset.url, { loop: true });
+    if (embed) {
+      return buildMedia(embed, {
+        title: button.dataset.label || 'Reel',
+        loop: true,
+        className: 'pt-pdp-player__media',
+      });
+    }
+    if (!button.dataset.url) return null;
+    const fallback = document.createElement('div');
+    fallback.className = 'pt-pdp-player__fallback';
+    const note = document.createElement('p');
+    note.textContent = 'This video can’t play here.';
+    const link = document.createElement('a');
+    link.href = button.dataset.url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Watch video';
+    fallback.append(note, link);
+    return fallback;
+  };
+
+  function showReel(index) {
+    const el = ensureReelPlayer();
+    const { items } = reelPlayer;
+    if (!items.length) return;
+    reelPlayer.index = Math.max(0, Math.min(index, items.length - 1));
+    const button = items[reelPlayer.index];
+
+    const stage = el.querySelector('[data-player-stage]');
+    const media = reelMedia(button);
+    stage.replaceChildren(...(media ? [media] : []));
+    if (media?.tagName === 'VIDEO') {
+      media.classList.add('pt-pdp-player__media');
+      playVideo(media);
+    }
+
+    const label = el.querySelector('[data-player-label]');
+    label.textContent = button.dataset.label || '';
+    label.hidden = !label.textContent || media?.tagName !== 'VIDEO';
+    el.querySelector('[data-player-nav]').hidden = items.length < 2;
+    el.querySelector('[data-player-prev]').disabled = reelPlayer.index === 0;
+    el.querySelector('[data-player-next]').disabled = reelPlayer.index === items.length - 1;
+  }
+
+  function openReel(button) {
+    const el = ensureReelPlayer();
+    const scope = button.closest('[data-pt-reels-track]') || button.closest('.pt-pdp-reels') || document;
+    reelPlayer.items = [...scope.querySelectorAll('[data-pt-reel-open]')];
+    reelPlayer.opener = button;
+    window.clearTimeout(reelPlayer.hideTimer);
+    el.hidden = false;
+    showReel(reelPlayer.items.indexOf(button));
+    requestAnimationFrame(() => el.classList.add('is-open'));
+    el.querySelector('[data-player-close]').focus({ preventScroll: true });
+  }
+
+  function closeReel() {
+    const el = reelPlayer.el;
+    if (!el || el.hidden) return;
+    el.classList.remove('is-open');
+    el.querySelector('[data-player-stage]').replaceChildren();
+    reelPlayer.hideTimer = window.setTimeout(() => {
+      el.hidden = true;
+    }, 220);
+    if (reelPlayer.opener?.isConnected) reelPlayer.opener.focus({ preventScroll: true });
+    reelPlayer.opener = null;
+  }
+
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-pt-reel-open]');
+    if (!button) return;
+    event.preventDefault();
+    openReel(button);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const el = reelPlayer.el;
+    if (!el || el.hidden) return;
+    if (event.key === 'Escape') {
+      closeReel();
+      return;
+    }
+    if (!el.contains(document.activeElement) || event.target.closest('video')) return;
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      showReel(reelPlayer.index + (event.key === 'ArrowUp' ? -1 : 1));
+    }
+  });
+
+  document.addEventListener('shopify:section:unload', closeReel);
 
   document.addEventListener('click', (event) => {
     const control = event.target.closest(

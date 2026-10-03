@@ -1,14 +1,21 @@
 {% comment %}
-  PATÉLLE product reel tile
+  PATÉLLE product reel tile. Play opens the floating reel player
+  (assets/patelle-product.js) on the same page.
 
   Accepts:
-  - block   {Object}  reel block (image, video_url, label)
+  - block   {Object}  reel block (image, video, video_url, label)
   - sizes   {String}  image sizes attribute
   - fallback_alt {String}
   - show_label {Boolean} caption under the tile
 {% endcomment %}
 
-<article class="pt-pdp-reel" {{ block.shopify_attributes }}>
+{%- liquid
+  assign reel_video = block.settings.video
+  assign reel_url = block.settings.video_url
+  assign reel_label = block.settings.label | default: fallback_alt
+-%}
+
+<article class="pt-pdp-reel" data-pt-reel {{ block.shopify_attributes }}>
   <div class="pt-pdp-reel__media">
     {%- if block.settings.image != blank -%}
       {{
@@ -18,18 +25,27 @@
           loading: 'lazy',
           widths: '240, 360, 480, 600',
           sizes: sizes,
-          alt: block.settings.label | default: fallback_alt
+          alt: reel_label
+      }}
+    {%- elsif reel_video != blank -%}
+      {{
+        reel_video.preview_image
+        | image_url: width: 600
+        | image_tag: loading: 'lazy', widths: '240, 360, 480, 600', sizes: sizes, alt: reel_label
       }}
     {%- else -%}
       <div class="pt-pdp-reel__ph" aria-hidden="true">Reel</div>
     {%- endif -%}
 
-    {%- if block.settings.video_url != blank -%}
-      <a
+    {%- if reel_video != blank or reel_url != blank -%}
+      <button
+        type="button"
         class="pt-pdp-reel__play"
-        href="{{ block.settings.video_url }}"
-        target="_blank"
-        rel="noopener"
+        data-pt-reel-open
+        data-label="{{ reel_label | escape }}"
+        {% if reel_url != blank %}
+          data-url="{{ reel_url | escape }}"
+        {% endif %}
         aria-label="Play reel{% if block.settings.label != blank %} — {{ block.settings.label | escape }}{% endif %}"
       >
         <span class="pt-pdp-reel__play-icon">
@@ -37,7 +53,22 @@
             <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
           </svg>
         </span>
-      </a>
+      </button>
+      {%- if reel_video != blank -%}
+        <template data-pt-reel-video>
+          {{-
+            reel_video
+            | video_tag:
+              image_size: '720x',
+              autoplay: true,
+              loop: true,
+              muted: false,
+              controls: true,
+              playsinline: true,
+              class: 'pt-pdp-player__media'
+          -}}
+        </template>
+      {%- endif -%}
     {%- else -%}
       <span class="pt-pdp-reel__play" aria-hidden="true">
         <span class="pt-pdp-reel__play-icon">

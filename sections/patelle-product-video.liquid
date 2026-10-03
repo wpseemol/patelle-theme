@@ -2,6 +2,8 @@
 {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-product.css' | asset_url | stylesheet_tag }}
 
+<script src="{{ 'patelle-product.js' | asset_url }}" defer="defer"></script>
+
 {%- liquid
   assign video = product.metafields.custom.product_video.value
   if video == blank
@@ -33,22 +35,27 @@
             </svg>
           </span>
         </button>
-      {%- elsif section.settings.image != blank -%}
-        {{
-          section.settings.image
-          | image_url: width: 1600
-          | image_tag:
-            loading: 'lazy',
-            widths: '800, 1200, 1600',
-            sizes: '(min-width: 990px) 1180px, 94vw',
-            alt: section.settings.image.alt | default: product.title
-        }}
+      {%- elsif section.settings.image != blank or section.settings.video_url != blank -%}
+        {%- if section.settings.image != blank -%}
+          {{
+            section.settings.image
+            | image_url: width: 1600
+            | image_tag:
+              loading: 'lazy',
+              widths: '800, 1200, 1600',
+              sizes: '(min-width: 990px) 1180px, 94vw',
+              alt: section.settings.image.alt | default: product.title
+          }}
+        {%- else -%}
+          <div class="pt-pdp-video__ph" aria-hidden="true"></div>
+        {%- endif -%}
         {%- if section.settings.video_url != blank -%}
-          <a
+          <button
+            type="button"
             class="pt-pdp-video__play"
-            href="{{ section.settings.video_url }}"
-            target="_blank"
-            rel="noopener"
+            data-pt-video-play
+            data-url="{{ section.settings.video_url | escape }}"
+            data-loop="{{ section.settings.loop }}"
             aria-label="Play video"
           >
             <span class="pt-pdp-video__play-icon">
@@ -56,7 +63,7 @@
                 <path d="M8.5 5.8v12.4L19 12 8.5 5.8z"/>
               </svg>
             </span>
-          </a>
+          </button>
         {%- endif -%}
       {%- else -%}
         <div class="pt-pdp-video__ph" aria-hidden="true">Add lifestyle image or video</div>
@@ -86,7 +93,7 @@
       "type": "url",
       "id": "video_url",
       "label": "External video link",
-      "info": "Used with poster image when no Shopify video is set"
+      "info": "YouTube, Vimeo or an .mp4 link. Plays inside this section (not a new page) when no Shopify video is set."
     },
     {
       "type": "checkbox",

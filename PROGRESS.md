@@ -69,8 +69,16 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [x] Finish the merge of `sections/header-group.json` (committed).
 - [ ] Every product is sold out, so the added-to-cart popup and a filled cart preview were checked with sample data only. Once a product has stock, add it to the cart and check both on the live theme.
 
+### Audit follow-ups (need a decision)
+- [ ] Product cards show a 4.8 star rating on every product when it has no reviews (`snippets/patelle-card.liquid`, `snippets/patelle-card-tile.liquid`). Shoppers may read it as real reviews. Either install a reviews app (fills `reviews.rating`) or hide the stars when there is no rating.
+- [ ] `sections/hero-banner.liquid`, `assets/hero-banner.css` and `assets/hero-slider.js` are an old slider that is disabled on the homepage (its 50/100 ml buttons do nothing). Delete them and the `hero_banner` entry in `templates/index.json` if it won't come back.
+- [ ] Contact form shows a US flag that looks like a country picker but always sends `country_code=US` (`sections/patelle-contact-panel.liquid`). Make it a real select or remove it.
+- [ ] Footer and the homepage hero slider have no Spacing control setting; `hero-slider.liquid` also lacks the `patelle-` prefix.
+- [ ] Some product page text is fixed English (breadcrumbs, spec labels, "Save", "Quantity:", reel player buttons). Move it to settings or translations if the store needs another language.
+- [ ] Shopify admin → Online Store → Preferences: the homepage title reads "PATELEY — The Perfume House…"; check the spelling.
+- [ ] Footer **Quick links** and **Support** menus only contain "Search". Fill them in Online Store → Navigation.
+
 ### Known issues (not caused by recent work)
-- [ ] `sections/hero-banner.liquid`: 6 `ImgWidthAndHeight` theme check errors (missing width and height on `<img>`).
 - [ ] `sections/header.liquid`: 53 settings, over Shopify's recommended 40 (warning only).
 - [ ] Global settings that still only affect Dawn's own sections (cart, search results, account, blog pages), not the PATÉLLE sections, by design: **Colors** (color schemes), **Buttons**, **Variant pills**, **Inputs**, **Product/Collection/Blog cards**, **Content containers**, **Media**, **Badges**, **Typography → font size scale**, **Layout → Section spacing / Grid spacing**, **Animations**. The PATÉLLE sections take these from their own section settings to match Figma. Wire any of them up if the store owner asks. While **Theme settings → PATÉLLE style → Use PATÉLLE style on Dawn pages** is on, `assets/patelle-dawn.css` also overrides Colors, Buttons, Inputs and card corners on those Dawn pages; turn it off to use the Dawn settings again.
 - [ ] `sections/patelle-product-reels.liquid` is no longer used on the product page (reels moved into Product main). Keep or delete.
@@ -78,6 +86,18 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
+- Theme audit and fixes (theme check 35 → 29 offenses, 0 errors; the rest are warnings: Google Fonts and GSAP links, unused Dawn header snippets, Dawn's own files):
+  - **Add to cart** on the search page, Shop All and More to Love now opens the cart popup instead of jumping to `/cart` (`product-form.js` was missing).
+  - **Shop All (homepage)**: shoppers no longer see "Assign a collection — Pick one for the 'Man' tab in the theme editor". Tabs without products are hidden on the live store and still show in the theme editor. Tabs now use arrow-key focus properly, and `patelle-tabs.js` no longer errors when loaded twice.
+  - **Spacing control** is now respected: margins only apply when the section's Spacing control is set to Margin (all 29 sections). About and Contact sections no longer add spacing on pages where they are hidden.
+  - **Alt text**: the product video poster and the Shop "Why" image lost their alt text because of how the fallback was written; fixed.
+  - **Search page**: "Remove all" keeps search terms with `&`, `#` or `+`; filter values are escaped.
+  - **Prices** after a variant change format correctly for every Shopify money format (comma, apostrophe and space separators, thousands groups).
+  - **Screen readers**: the cart count now says "3 items" after an update instead of just "3". Star ratings and the About/Contact photo fans got proper roles.
+  - Glass: the floating reel player now has glass control buttons and a glass rim on the video card. `AGENTS.md` notes the header panels as the one exception (they use the header's own glass).
+  - Smaller fixes: contact email link escaped, hero slider custom font URL made safe, "Inspired by: " spacing, card review count reads the metafield value, `hero-banner` images use `image_tag` (fixes the 6 theme check errors) and no longer error without a product, cursor script guarded against loading twice, product tabs keyboard handler can't crash.
+  - Files: `sections/patelle-search.liquid`, `sections/patelle-shop-all.liquid`, `sections/patelle-more-to-love.liquid`, `assets/patelle-tabs.js`, `snippets/patelle-section-spacing.liquid` plus the render line in every `sections/patelle-*.liquid`, `sections/patelle-product-video.liquid`, `sections/patelle-shop-why.liquid`, `assets/patelle-product.js`, `assets/patelle-product.css`, `sections/header.liquid`, `assets/patelle-header.js`, `sections/patelle-product-reviews.liquid`, `snippets/patelle-card.liquid`, `sections/patelle-about-*.liquid`, `sections/patelle-contact-*.liquid`, `sections/patelle-footer.liquid`, `sections/patelle-single-product.liquid`, `sections/hero-slider.liquid`, `sections/hero-banner.liquid`, `assets/patelle-cursor.js`, `AGENTS.md`.
+  - Not checked in the browser: the local preview started redirecting to the store password page partway through. Restart `shopify theme dev` and enter the store password, then check the homepage Shop All tabs, search page add to cart and the product page.
 - Cart and popups:
   - **Cart preview on hover**: hovering the header bag on desktop opens a glass panel. It lists each cart item (photo with a quantity badge, name, variant, line price) and the estimated total, with **View cart** and **Check out** buttons. When the cart is empty it shows "Your cart is empty" and a **Continue shopping** button.
   - Clicking the bag still opens the cart page. The panel updates after every add to cart and also opens with keyboard focus; Esc closes it. Phones and tablets keep the plain bag link.

@@ -8,7 +8,7 @@ Figma file: [Product Landing Page Design](https://www.figma.com/design/RZhucKZlv
 
 | Page | Template | Figma node | Status | Notes |
 |---|---|---|---|---|
-| Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 240ms |
+| Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 160ms; live search results |
 | Home | `templates/index.json` | 35-30 (hero card), 82-567 / 82-571 (seasonal), 137-587 (single product) | Done | GSAP hero slider, Shop All, Seasonal ×2, Collage, More to Love, Single product, News strip, Brand banner, Quality promise |
 | Shop / collection | `templates/collection.json` | 232-738 | Done | Shop hero, grid, why-shop |
 | Product | `templates/product.json` | 117-14 | Built from screenshot, needs Figma check | See **Product page to-do** |
@@ -43,8 +43,10 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Compare with Figma node 143-696 once Figma access works (spacing and exact text).
 
 ### Header to-do
-- [ ] Theme editor → Header → the 3 **Menu image card** blocks: upload an image and set the link for New Arrivals, Best Sellers and Gift Sets (links point to `/collections/all` for now). Add cards for other menu items by typing their name in **Menu item**.
-- [ ] Fine-tune **Header → Open and close speed** in the theme editor if 240ms feels too quick or too slow.
+- [ ] Theme editor → Header → the 3 **Menu image card** blocks: upload an image (or pick a collection) and set the link for New Arrivals, Best Sellers and Gift Sets (links point to `/collections/all` for now). Add cards for other menu items by typing their name in **Menu item**.
+- [ ] Shopify admin: create the Men, Unisex, Best Sellers, New Arrivals and Gift Sets collections and link them in the main menu (most Shop submenu links are `#` now). "New Arrivels" in the menu is misspelled.
+- [ ] Fine-tune **Header → Open and close speed** in the theme editor if 160ms feels too quick or too slow.
+- [ ] Live search: Shopify returns "Vanila Rebal" for every search term, even nonsense words. Check **Search & Discovery** app → product boosts or synonyms in Shopify admin and remove the rule that pins it. Vanila Rebal also shows a price of $0.00; set its price.
 
 ### Known issues (not caused by recent work)
 - [ ] `sections/hero-banner.liquid`: 6 `ImgWidthAndHeight` theme check errors (missing width and height on `<img>`).
@@ -54,6 +56,11 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
+- Header submenu opens faster again: hover delay 60ms → 30ms, **Open and close speed** 240ms → 160ms (schema minimum 80ms), link and card stagger 12ms + 30ms → 6ms per item with no start delay (`assets/patelle-header.css`, `assets/patelle-header.js`, `sections/header-group.json`).
+- Menu image card blocks (Header → Add block → Menu image card) got **Collection**, **Product** and **Button text** settings. Empty image, title and link fill from the collection, then the product. On the live store a card with no image shows a product photo (first products of the catalog) instead of the grey placeholder; the theme editor still shows the placeholder so it is clear which cards need an image (`sections/header.liquid`).
+- Header search shows live results while typing: after a 250ms pause it asks Shopify's predictive search for up to 4 products, plus query suggestions and collections, and shows them under the search field (photo, title, price), with a "Search for “…”" link to the full results page. Older requests are cancelled when the shopper keeps typing, repeat searches come from a cache, and the quick links come back when the field is cleared. Two columns of results on phones (`sections/header.liquid`, `assets/patelle-header.js`, `assets/patelle-header.css`). Also fixed the search panel running about 14px past the right edge on phones.
+- Pages other than home no longer hide content under the header: when the header overlays the page, `#MainContent` gets top padding equal to the header height, except on pages whose first section already allows for the header (Shop hero, About hero, Contact hero, Product main, marked with `pt-under-header`). Fixes search, cart, account, blog and other Dawn pages (`sections/header.liquid` plus those 4 sections).
+- Header submenu and search panel: the panel background now starts at the top of the screen, so the dimmed strip above the bar is gone (`assets/patelle-header.css`).
 - Product card (overlay style, used on Home Shop All, More to Love, You May Also Like and Shop grid): the photo now sits in its own 4:5 frame above the info panel instead of under it, so the bottle is no longer covered or heavily cropped; a blurred copy of the photo tints the panel. Titles stay on one line with "…" (full title on hover and on the product page). Slight zoom on hover. This "fit" layout is now the default; a section can still pass `fit_image: false` for the old full-bleed tile (`snippets/patelle-card.liquid`, `assets/patelle-card.css`, `assets/patelle-more-to-love.css`).
 - Shop / collection grid now uses the same **overlay** product card as the homepage (name, tagline, stars and Add to Cart / Sold Out over the image), 4 columns on desktop. New Shop grid settings: **Card design** (Overlay or Catalog), **Columns on desktop** (3 or 4), **Vendor tagline**, **Show full product image** (`sections/patelle-shop-grid.liquid`, `assets/patelle-shop.css`).
 - Product page tabs read product metafields first: `custom.scent_accords`, `custom.highlight_notes` (Fragrance note metaobjects), `custom.top_notes`, `custom.heart_notes`, `custom.base_notes`, `custom.ingredients`, `custom.about_fragrance`, `custom.disclaimer`, `custom.faqs` (FAQ metaobjects). Empty metafields fall back to the theme editor blocks. Info tab blocks got a **Product metafield** setting; tabs with no content hide. Tab markup moved to `snippets/patelle-product-tabs.liquid`. Metafield list in `README.md`.

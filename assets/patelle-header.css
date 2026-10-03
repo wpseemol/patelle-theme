@@ -283,6 +283,13 @@
     border-radius: 0 0 24px 24px;
 }
 
+/* The bar floats --ph-gap-top below the viewport edge; an open panel should
+   still reach the top so no dimmed strip shows above it. */
+.pt-header--bar:not(.pt-header--glass-bar) .pt-header__bg {
+    top: calc(var(--ph-gap-top) * -1);
+    height: calc(var(--ph-gap-top) + var(--ph-bar-h) + var(--ph-flyout-h));
+}
+
 /* Curved glass bar ------------------------------------------------------
    Flat (2D) glass panel behind the whole row: clear frosted body, thin
    bright rim, a curved sheen across the top half and one diagonal glint.
@@ -963,7 +970,7 @@
     top: 0;
     left: 0;
     right: 0;
-    padding: 26px 22px 56px;
+    padding: 28px 22px 40px;
     visibility: hidden;
     opacity: 0;
     transition:
@@ -973,7 +980,7 @@
 
 .pt-header--capsule .pt-header__flyout {
     padding-inline: 24px;
-    padding-bottom: 40px;
+    padding-bottom: 32px;
 }
 
 .pt-header__flyout.is-active {
@@ -992,6 +999,7 @@
 
 .pt-header__flyout--search .pt-header__flyout-inner {
     flex-direction: column;
+    flex-wrap: nowrap;
     gap: 28px;
 }
 
@@ -1031,9 +1039,9 @@
     transform: none;
     transition:
         opacity calc(var(--ph-speed) * 0.7) var(--ph-ease-out)
-            calc(var(--i, 0) * 12ms + 30ms),
+            calc(var(--i, 0) * 6ms),
         transform calc(var(--ph-speed) * 0.7) var(--ph-ease-out)
-            calc(var(--i, 0) * 12ms + 30ms);
+            calc(var(--i, 0) * 6ms);
 }
 
 .pt-header__flyout-link {
@@ -1210,6 +1218,145 @@
 
 .pt-header__search-input::-webkit-search-cancel-button {
     display: none;
+}
+
+/* Live search results ---------------------------------------------------- */
+
+.pt-header__results[hidden],
+.pt-header__flyout [data-search-links][hidden] {
+    display: none;
+}
+
+.pt-header__results {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    transition: opacity 0.15s var(--ph-ease);
+}
+
+.pt-header__results[aria-busy='true'] {
+    opacity: 0.55;
+}
+
+.pt-header__results-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px 72px;
+}
+
+.pt-header__col--products {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.pt-header__flyout .pt-header__result-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 168px));
+    gap: 16px;
+}
+
+.pt-header__result-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.pt-header__result-media {
+    display: block;
+    margin-bottom: 8px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background-color: color-mix(in srgb, var(--ph-text) 6%, transparent);
+}
+
+.pt-header__result-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ph-ease-out);
+}
+
+.pt-header__result-link:hover .pt-header__result-media img {
+    transform: scale(1.05);
+}
+
+.pt-header__result-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 12px;
+}
+
+.pt-header__result-title {
+    overflow: hidden;
+    font-size: var(--ph-font-size);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.pt-header__result-price {
+    font-size: max(12px, calc(var(--ph-font-size) - 2px));
+    opacity: 0.6;
+}
+
+.pt-header__results-all {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--ph-font-size);
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.86;
+    transition: opacity 0.2s var(--ph-ease);
+}
+
+.pt-header__results-all svg {
+    transition: transform 0.2s var(--ph-ease-out);
+}
+
+.pt-header__results-all:hover {
+    opacity: 1;
+}
+
+.pt-header__results-all:hover svg {
+    transform: translateX(3px);
+}
+
+.pt-header__results-empty {
+    margin: 0;
+    font-size: var(--ph-font-size);
+    opacity: 0.7;
+}
+
+@media screen and (max-width: 749px) {
+    .pt-header__results-grid {
+        flex-direction: column-reverse;
+        gap: 24px;
+    }
+
+    .pt-header__col--products {
+        width: 100%;
+    }
+
+    .pt-header__flyout .pt-header__result-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pt-header__result-media img,
+    .pt-header__results-all svg {
+        transition: none;
+    }
 }
 
 /* Page scrim ------------------------------------------------------------ */

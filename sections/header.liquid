@@ -130,6 +130,13 @@
     --ph-speed: {{ s.animation_speed }}ms;
   }
 
+  {%- if overlay_ink %}
+    /* Sections that run under the glass add the offset themselves (pt-under-header). */
+    #MainContent:not(:has(.pt-under-header)) {
+      padding-top: {{ header_offset }}px;
+    }
+  {%- endif %}
+
   {%- if on_hero %}
     #PtHeader.is-past-hero {
       --ph-text: {{ s.solid_text_color }};
@@ -293,12 +300,29 @@
                       endif
                       assign card_count = card_count | plus: 1
                       assign card_index = card_start | plus: card_count
+
+                      # Empty fields fall back to the picked collection, then the picked product.
+                      assign card_collection = block.settings.collection
+                      assign card_product = block.settings.product
+                      assign card_image = block.settings.image
+                      if card_image == blank
+                        assign card_image = card_collection.featured_image | default: card_product.featured_image
+                      endif
+                      if card_image == blank and request.design_mode == false
+                        assign fallback_offset = card_count | minus: 1
+                        for fallback in collections.all.products offset: fallback_offset limit: 1
+                          assign card_image = fallback.featured_image
+                        endfor
+                      endif
+                      assign card_heading = block.settings.heading | default: card_collection.title | default: card_product.title
+                      assign card_url = block.settings.link | default: card_collection.url | default: card_product.url
+                      assign card_label = block.settings.cta | default: s.flyout_card_cta
                     -%}
                     {%- render 'patelle-header-card',
-                      image: block.settings.image,
-                      heading: block.settings.heading,
-                      label: s.flyout_card_cta,
-                      url: block.settings.link,
+                      image: card_image,
+                      heading: card_heading,
+                      label: card_label,
+                      url: card_url,
                       index: card_index,
                       attributes: block.shopify_attributes
                     -%}
@@ -387,12 +411,28 @@
                   name="q"
                   autocomplete="off"
                   placeholder="{{ s.search_placeholder | escape }}"
+                  aria-controls="PtSearchResults"
                   data-search-input
                 >
                 <input type="hidden" name="options[prefix]" value="last">
               </form>
+              <div
+                class="pt-header__results"
+                id="PtSearchResults"
+                role="region"
+                aria-label="{{ 'templates.search.title' | t | escape }}"
+                data-search-results
+                data-url="{{ routes.predictive_search_url }}.json"
+                data-search-url="{{ routes.search_url }}"
+                data-money-format="{{ shop.money_format | strip_html | escape }}"
+                data-products="{{ 'templates.search.products' | t | escape }}"
+                data-suggestions="{{ 'templates.search.suggestions' | t | escape }}"
+                data-empty="{{ 'templates.search.no_results' | t: terms: '__TERMS__' | escape }}"
+                data-view-all="{{ 'templates.search.search_for' | t: terms: '__TERMS__' | escape }}"
+                hidden
+              ></div>
               {%- if search_menu != blank and search_menu.links.size > 0 -%}
-                <div class="pt-header__col">
+                <div class="pt-header__col" data-search-links>
                   <p class="pt-header__col-title">{{ s.search_links_title | escape }}</p>
                   <ul role="list">
                     {%- for link in search_menu.links -%}
@@ -887,7 +927,7 @@
         }
       ],
       "default": "images",
-      "info": "Add Menu image card blocks to pick the images. Without blocks, collection and product links show their featured images."
+      "info": "Add, remove or reorder cards with the Menu image card blocks under Header. Without blocks, collection and product links show their featured images."
     },
     {
       "type": "range",
@@ -957,11 +997,11 @@
       "type": "range",
       "id": "animation_speed",
       "label": "Open and close speed",
-      "min": 120,
+      "min": 80,
       "max": 800,
       "step": 20,
       "unit": "ms",
-      "default": 240
+      "default": 160
     },
     {
       "type": "header",
@@ -1039,20 +1079,38 @@
           "default": "Shop"
         },
         {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Fills the image, title and link when those are left empty."
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Used when no collection is picked."
+        },
+        {
           "type": "image_picker",
           "id": "image",
-          "label": "Image"
+          "label": "Image",
+          "info": "Without an image, the live store shows a product photo."
         },
         {
           "type": "text",
           "id": "heading",
-          "label": "Title",
-          "default": "New Arrivals"
+          "label": "Title"
         },
         {
           "type": "url",
           "id": "link",
           "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "cta",
+          "label": "Button text",
+          "info": "Leave empty to use the header's Image card button text."
         }
       ]
     }

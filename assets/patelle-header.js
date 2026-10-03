@@ -30,6 +30,7 @@
 
       this.bindScroll(signal);
       this.bindFlyouts(signal);
+      this.bindSearch(signal);
       this.bindSheet(signal);
       this.bindCart(signal);
       this.bindEditor(signal);
@@ -207,7 +208,7 @@
             clearTimeout(this.closeTimer);
             clearTimeout(this.openTimer);
             // Switch instantly between panels once one is open; wait briefly otherwise.
-            const delay = this.activeKey ? 0 : 60;
+            const delay = this.activeKey ? 0 : 30;
             this.openTimer = setTimeout(() => this.openFlyout(key), delay);
           },
           { signal }
@@ -342,6 +343,144 @@
       if (returnFocus) {
         this.toggles.find((button) => button.dataset.flyoutToggle === key)?.focus({ preventScroll: true });
       }
+    }
+
+    /* Live search ---------------------------------------------------------- */
+
+    bindSearch(signal) {
+      const panel = this.flyouts.get('search');
+      const input = panel?.querySelector('[data-search-input]');
+      const results = panel?.querySelector('[data-search-results]');
+      if (!input || !results) return;
+
+      const links = panel.querySelector('[data-search-links]');
+      const cache = new Map();
+      let timer;
+      let request;
+
+      const show = (html) => {
+        results.innerHTML = html;
+        results.hidden = !html;
+        if (links) links.hidden = Boolean(html);
+        if (this.activeKey === 'search') this.measure();
+      };
+
+      const run = async (query) => {
+        request?.abort();
+        if (query.length < 2) {
+          show('');
+          return;
+        }
+        if (cache.has(query)) {
+          show(cache.get(query));
+          return;
+        }
+
+        const controller = new AbortController();
+        request = controller;
+        results.setAttribute('aria-busy', 'true');
+        try {
+          const url = new URL(results.dataset.url, window.location.origin);
+          url.searchParams.set('q', query);
+          url.searchParams.set('resources[type]', 'product,collection,query');
+          url.searchParams.set('resources[limit]', '4');
+          url.searchParams.set('resources[options][unavailable_products]', 'last');
+          const response = await fetch(url, {
+            signal: controller.signal,
+            headers: { Accept: 'application/json' },
+          });
+          if (!response.ok) throw new Error(`Search failed: ${response.status}`);
+          const data = await response.json();
+          const html = this.renderResults(data.resources?.results || {}, query, results.dataset);
+          cache.set(query, html);
+          show(html);
+        } catch (error) {
+          if (error.name !== 'AbortError') show('');
+        } finally {
+          if (request === controller) results.removeAttribute('aria-busy');
+        }
+      };
+
+      input.addEventListener(
+        'input',
+        () => {
+          clearTimeout(timer);
+          const query = input.value.trim();
+          timer = setTimeout(() => run(query), query ? 250 : 0);
+        },
+        { signal }
+      );
+
+      signal.addEventListener('abort', () => {
+        clearTimeout(timer);
+        request?.abort();
+      });
+    }
+
+    renderResults({ products = [], collections = [], queries = [] }, query, labels) {
+      const esc = (value) =>
+        String(value ?? '').replace(
+          /[&<>"']/g,
+          (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]
+        );
+      const terms = esc(query);
+
+      if (!products.length && !collections.length && !queries.length) {
+        return `<p class="pt-header__results-empty">${esc(labels.empty).replace('__TERMS__', terms)}</p>`;
+      }
+
+      const arrowLink = (url, text) =>
+        `<li><a class="pt-header__flyout-link pt-header__flyout-link--arrow" href="${esc(url)}">${esc(text)}</a></li>`;
+      const suggestions = [
+        ...queries.map((item) => arrowLink(item.url, item.text)),
+        ...collections.map((item) => arrowLink(item.url, item.title)),
+      ].slice(0, 6);
+
+      const items = products
+        .map((product) => {
+          const image = product.featured_image?.url || product.image;
+          const src = image ? `${image}${image.includes('?') ? '&' : '?'}width=320` : '';
+          const alt = product.featured_image?.alt || product.title;
+          return `<li class="pt-header__result">
+            <a class="pt-header__result-link" href="${esc(product.url)}">
+              <span class="pt-header__result-media">${
+                src ? `<img src="${esc(src)}" alt="${esc(alt)}" width="160" height="160" loading="lazy">` : ''
+              }</span>
+              <span class="pt-header__result-title">${esc(product.title)}</span>
+              <span class="pt-header__result-price">${esc(this.formatMoney(product.price, labels.moneyFormat))}</span>
+            </a>
+          </li>`;
+        })
+        .join('');
+
+      const searchUrl = `${labels.searchUrl}?q=${encodeURIComponent(query)}&options%5Bprefix%5D=last`;
+
+      return `<div class="pt-header__results-grid">
+          ${
+            suggestions.length
+              ? `<div class="pt-header__col"><p class="pt-header__col-title">${esc(labels.suggestions)}</p><ul role="list">${suggestions.join('')}</ul></div>`
+              : ''
+          }
+          ${
+            items
+              ? `<div class="pt-header__col pt-header__col--products"><p class="pt-header__col-title">${esc(labels.products)}</p><ul class="pt-header__result-list" role="list">${items}</ul></div>`
+              : ''
+          }
+        </div>
+        <a class="pt-header__results-all" href="${esc(searchUrl)}">
+          ${esc(labels.viewAll).replace('__TERMS__', terms)}
+          <svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5h9.5M6.5 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>`;
+    }
+
+    formatMoney(amount, format = '${{amount}}') {
+      const value = Number(amount);
+      if (!Number.isFinite(value)) return '';
+      return format.replace(/\{\{\s*(\w+)\s*\}\}/, (_, key) => {
+        if (key === 'amount_no_decimals') return Math.round(value).toLocaleString('en-US');
+        if (key.includes('comma')) return value.toFixed(2).replace('.', ',');
+        return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      });
     }
 
     /* Mobile sheet --------------------------------------------------------- */

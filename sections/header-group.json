@@ -13,6 +13,46 @@
   "sections": {
     "header": {
       "type": "header",
+      "blocks": {
+        "menu_card_new": {
+          "type": "menu_card",
+          "settings": {
+            "menu_item": "Shop",
+            "collection": "",
+            "product": "",
+            "heading": "New Arrivals",
+            "link": "/collections/all",
+            "cta": ""
+          }
+        },
+        "menu_card_best": {
+          "type": "menu_card",
+          "settings": {
+            "menu_item": "Shop",
+            "collection": "",
+            "product": "",
+            "heading": "Best Sellers",
+            "link": "/collections/all",
+            "cta": ""
+          }
+        },
+        "menu_card_gift": {
+          "type": "menu_card",
+          "settings": {
+            "menu_item": "Shop",
+            "collection": "",
+            "product": "",
+            "heading": "Gift Sets",
+            "link": "/collections/all",
+            "cta": ""
+          }
+        }
+      },
+      "block_order": [
+        "menu_card_new",
+        "menu_card_best",
+        "menu_card_gift"
+      ],
       "settings": {
         "logo": "shopify://shop_images/site_logo.png",
         "logo_text": "PATÉLLE",
@@ -27,6 +67,7 @@
         "bar_height": 64,
         "capsule_top_gap": 14,
         "side_padding": 40,
+        "match_page_width": true,
         "max_width": 1440,
         "menu_alignment": "center",
         "overlay_mode": "all",
@@ -65,38 +106,7 @@
         "show_account": true,
         "show_cart": true,
         "notification_color_scheme": ""
-      },
-      "blocks": {
-        "menu_card_new": {
-          "type": "menu_card",
-          "settings": {
-            "menu_item": "Shop",
-            "heading": "New Arrivals",
-            "link": "/collections/all"
-          }
-        },
-        "menu_card_best": {
-          "type": "menu_card",
-          "settings": {
-            "menu_item": "Shop",
-            "heading": "Best Sellers",
-            "link": "/collections/all"
-          }
-        },
-        "menu_card_gift": {
-          "type": "menu_card",
-          "settings": {
-            "menu_item": "Shop",
-            "heading": "Gift Sets",
-            "link": "/collections/all"
-          }
-        }
-      },
-      "block_order": [
-        "menu_card_new",
-        "menu_card_best",
-        "menu_card_gift"
-      ]
+      }
     }
   },
   "order": [

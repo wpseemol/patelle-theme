@@ -83,6 +83,13 @@ patelle-product-main,
   gap: 12px;
 }
 
+@media screen and (min-width: 990px) {
+  .pt-pdp-gallery--sticky {
+    position: sticky;
+    top: calc(var(--pt-header-overlay-h, 0px) + 24px);
+  }
+}
+
 .pt-pdp-gallery__main {
   position: relative;
   overflow: hidden;

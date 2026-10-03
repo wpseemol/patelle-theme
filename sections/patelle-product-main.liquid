@@ -62,7 +62,16 @@
     </nav>
 
     <div class="pt-pdp-main__grid">
-      <div class="pt-pdp-gallery">
+      {%- liquid
+        assign gallery_sticky = section.settings.gallery_sticky | default: 'single'
+        assign gallery_is_sticky = false
+        if gallery_sticky == 'always'
+          assign gallery_is_sticky = true
+        elsif gallery_sticky == 'single' and media_count <= 1
+          assign gallery_is_sticky = true
+        endif
+      -%}
+      <div class="pt-pdp-gallery{% if media_count <= 1 %} pt-pdp-gallery--single{% endif %}{% if gallery_is_sticky %} pt-pdp-gallery--sticky{% endif %}">
         <div class="pt-pdp-gallery__main">
           {%- if product.featured_media -%}
             <img
@@ -490,6 +499,22 @@
       "id": "fallback_review_count",
       "label": "Fallback review count",
       "default": "1,634"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "select",
+      "id": "gallery_sticky",
+      "label": "Keep images in view while scrolling (desktop)",
+      "options": [
+        { "value": "single", "label": "Only when the product has one image" },
+        { "value": "always", "label": "Always" },
+        { "value": "off", "label": "Off" }
+      ],
+      "default": "single",
+      "info": "The images stay on screen while the details on the right scroll past. \"Always\" suits products with 1–3 images; a taller gallery can hide its last images."
     },
     {
       "type": "header",

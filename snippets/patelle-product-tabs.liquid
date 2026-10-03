@@ -1,0 +1,306 @@
+{%- comment -%}
+  Product info tabs: Fragrance Notes, info tabs and FAQ.
+
+  Each part reads product metafields first and falls back to the section blocks,
+  so products without metafields still render the theme editor content.
+
+  Fragrance Notes tab
+  - custom.scent_accords     list of single line text (or comma separated text) → chips
+  - custom.highlight_notes   list of metaobjects "fragrance_note" (fields: name, image) → round images
+  - custom.top_notes, custom.heart_notes, custom.base_notes, custom.ingredients
+                             single line, multi-line or list of text → rows
+  Info tab blocks
+  - "Metafield" setting, e.g. custom.about_fragrance (rich text or multi-line text)
+  FAQ
+  - custom.faqs              list of metaobjects "faq" (fields: question, answer)
+
+  Accepts:
+  - product: product object
+  - section: section object
+
+  Usage:
+  {% render 'patelle-product-tabs', product: product, section: section %}
+{%- endcomment -%}
+
+{%- liquid
+  assign mf = product.metafields.custom
+  assign accord_blocks = section.blocks | where: 'type', 'accord'
+  assign note_blocks = section.blocks | where: 'type', 'note'
+  assign detail_blocks = section.blocks | where: 'type', 'detail'
+  assign tab_blocks = section.blocks | where: 'type', 'tab'
+  assign faq_blocks = section.blocks | where: 'type', 'faq'
+  assign tabs_id = 'PtPdpTabs-' | append: section.id
+
+  assign mf_accords = nil
+  if mf.scent_accords != blank
+    if mf.scent_accords.type contains 'list.'
+      assign mf_accords = mf.scent_accords.value
+    else
+      assign mf_accords = mf.scent_accords.value | split: ','
+    endif
+  endif
+
+  assign mf_notes = mf.highlight_notes.value
+
+  assign row_keys = 'top_notes,heart_notes,base_notes,ingredients' | split: ','
+  assign row_labels = section.settings.notes_row_labels | default: 'Top Notes:,Heart Notes:,Base Notes:,Ingredients:' | split: ','
+  assign has_mf_rows = false
+  for key in row_keys
+    if mf[key] != blank
+      assign has_mf_rows = true
+    endif
+  endfor
+
+  assign has_notes_tab = false
+  if mf_accords != blank or mf_notes != blank or has_mf_rows
+    assign has_notes_tab = true
+  elsif accord_blocks.size > 0 or note_blocks.size > 0 or detail_blocks.size > 0
+    assign has_notes_tab = true
+  endif
+-%}
+
+{%- capture faq_html -%}
+  {%- if mf.faqs.value != blank -%}
+    {%- for faq in mf.faqs.value -%}
+      {%- assign faq_question = faq.question.value | default: faq.title.value -%}
+      {%- if faq_question != blank -%}
+        <details class="pt-pdp-faq__item">
+          <summary class="pt-pdp-faq__question">
+            <span>{{ faq_question | escape }}</span>
+            <span class="pt-pdp-faq__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="pt-pdp-faq__answer rte">
+            {%- if faq.answer.type == 'rich_text_field' -%}
+              {{ faq.answer | metafield_tag }}
+            {%- else -%}
+              <p>{{ faq.answer.value | escape | newline_to_br }}</p>
+            {%- endif -%}
+          </div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- else -%}
+    {%- for faq in faq_blocks -%}
+      <details class="pt-pdp-faq__item" {{ faq.shopify_attributes }}>
+        <summary class="pt-pdp-faq__question">
+          <span>{{ faq.settings.question | escape }}</span>
+          <span class="pt-pdp-faq__icon" aria-hidden="true"></span>
+        </summary>
+        <div class="pt-pdp-faq__answer rte">{{ faq.settings.answer }}</div>
+      </details>
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
+{%- assign faq_html = faq_html | strip -%}
+
+{%- liquid
+  assign tab_buttons = ''
+  assign tab_panels = ''
+  assign tab_selected = true
+  if has_notes_tab
+    assign tab_selected = false
+  endif
+-%}
+{%- for block in tab_blocks -%}
+  {%- liquid
+    assign tab_mf = nil
+    assign mf_path = block.settings.metafield | strip | split: '.'
+    if mf_path.size == 2
+      assign tab_mf = product.metafields[mf_path[0]][mf_path[1]]
+    endif
+  -%}
+  {%- capture tab_body -%}
+    {%- if tab_mf != blank -%}
+      <div class="pt-pdp-tabs__rte rte">
+        {%- if tab_mf.type == 'rich_text_field' -%}
+          {{ tab_mf | metafield_tag }}
+        {%- else -%}
+          <p>{{ tab_mf.value | escape | newline_to_br }}</p>
+        {%- endif -%}
+      </div>
+    {%- elsif block.settings.content != blank -%}
+      <div class="pt-pdp-tabs__rte rte">{{ block.settings.content }}</div>
+    {%- endif -%}
+    {%- if block.settings.show_faq and faq_html != blank -%}
+      <div class="pt-pdp-faq">{{ faq_html }}</div>
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- assign tab_body = tab_body | strip -%}
+
+  {%- if tab_body != blank -%}
+    {%- capture tab_button -%}
+      <button
+        type="button"
+        class="pt-pdp-tabs__tab"
+        role="tab"
+        id="{{ tabs_id }}-tab-{{ block.id }}"
+        aria-controls="{{ tabs_id }}-panel-{{ block.id }}"
+        aria-selected="{{ tab_selected }}"
+        {% unless tab_selected %}
+          tabindex="-1"
+        {% endunless %}
+        data-pt-tab
+        {{ block.shopify_attributes }}
+      >
+        {{- block.settings.title | escape -}}
+      </button>
+    {%- endcapture -%}
+    {%- capture tab_panel -%}
+      <div
+        class="pt-pdp-tabs__panel"
+        role="tabpanel"
+        id="{{ tabs_id }}-panel-{{ block.id }}"
+        aria-labelledby="{{ tabs_id }}-tab-{{ block.id }}"
+        tabindex="0"
+        {% unless tab_selected %}
+          hidden
+        {% endunless %}
+      >
+        {{ tab_body }}
+      </div>
+    {%- endcapture -%}
+    {%- liquid
+      assign tab_buttons = tab_buttons | append: tab_button
+      assign tab_panels = tab_panels | append: tab_panel
+      assign tab_selected = false
+    -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if has_notes_tab or tab_buttons != blank -%}
+  <div class="pt-pdp-tabs" data-pt-tabs>
+    <div class="pt-pdp-tabs__list" role="tablist" aria-label="{{ product.title | escape }}">
+      {%- if has_notes_tab -%}
+        <button
+          type="button"
+          class="pt-pdp-tabs__tab"
+          role="tab"
+          id="{{ tabs_id }}-tab-notes"
+          aria-controls="{{ tabs_id }}-panel-notes"
+          aria-selected="true"
+          data-pt-tab
+        >
+          {{- section.settings.notes_tab_label | default: 'Fragrance Notes' | escape -}}
+        </button>
+      {%- endif -%}
+      {{- tab_buttons -}}
+    </div>
+
+    {%- if has_notes_tab -%}
+      <div
+        class="pt-pdp-tabs__panel"
+        role="tabpanel"
+        id="{{ tabs_id }}-panel-notes"
+        aria-labelledby="{{ tabs_id }}-tab-notes"
+        tabindex="0"
+      >
+        {%- if mf_accords != blank -%}
+          <ul class="pt-pdp-accords" role="list">
+            {%- for accord in mf_accords -%}
+              {%- assign accord_label = accord | strip -%}
+              {%- if accord_label != blank -%}
+                <li class="pt-pdp-accord{% if forloop.first %} is-highlight{% endif %}">{{ accord_label | escape }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- elsif accord_blocks.size > 0 -%}
+          <ul class="pt-pdp-accords" role="list">
+            {%- for block in accord_blocks -%}
+              <li
+                class="pt-pdp-accord{% if block.settings.highlight %} is-highlight{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.label }}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if mf_notes != blank or note_blocks.size > 0 -%}
+          <div class="pt-pdp-notes">
+            {%- if section.settings.notes_heading != blank -%}
+              <h3 class="pt-pdp-tabs__heading">{{ section.settings.notes_heading }}</h3>
+            {%- endif -%}
+            <ul class="pt-pdp-notes__list" role="list">
+              {%- if mf_notes != blank -%}
+                {%- for note in mf_notes -%}
+                  {%- liquid
+                    assign note_label = note.name.value | default: note.title.value
+                    assign note_image = note.image.value
+                  -%}
+                  <li class="pt-pdp-note">
+                    <span class="pt-pdp-note__img">
+                      {%- if note_image != blank -%}
+                        {{
+                          note_image
+                          | image_url: width: 200
+                          | image_tag: loading: 'lazy', widths: '100, 160, 200', sizes: '80px', alt: note_label
+                        }}
+                      {%- endif -%}
+                    </span>
+                    {%- if note_label != blank -%}
+                      <span class="pt-pdp-note__label">{{ note_label | escape }}</span>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              {%- else -%}
+                {%- for block in note_blocks -%}
+                  <li class="pt-pdp-note" {{ block.shopify_attributes }}>
+                    <span class="pt-pdp-note__img">
+                      {%- if block.settings.image != blank -%}
+                        {{
+                          block.settings.image
+                          | image_url: width: 200
+                          | image_tag:
+                            loading: 'lazy',
+                            widths: '100, 160, 200',
+                            sizes: '80px',
+                            alt: block.settings.label
+                        }}
+                      {%- endif -%}
+                    </span>
+                    {%- if block.settings.label != blank -%}
+                      <span class="pt-pdp-note__label">{{ block.settings.label }}</span>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if has_mf_rows -%}
+          <dl class="pt-pdp-details">
+            {%- for key in row_keys -%}
+              {%- assign row = mf[key] -%}
+              {%- if row != blank -%}
+                {%- liquid
+                  if row.type contains 'list.'
+                    assign row_value = row.value | join: ', '
+                  else
+                    assign row_value = row.value
+                  endif
+                -%}
+                <div class="pt-pdp-details__item">
+                  <dt>{{ row_labels[forloop.index0] | strip | escape }}</dt>
+                  <dd>{{ row_value | escape | newline_to_br }}</dd>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </dl>
+        {%- elsif detail_blocks.size > 0 -%}
+          <dl class="pt-pdp-details">
+            {%- for block in detail_blocks -%}
+              <div class="pt-pdp-details__item" {{ block.shopify_attributes }}>
+                <dt>{{ block.settings.label }}</dt>
+                <dd>{{ block.settings.value }}</dd>
+              </div>
+            {%- endfor -%}
+          </dl>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {{- tab_panels -}}
+  </div>
+{%- endif -%}

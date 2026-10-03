@@ -69,6 +69,24 @@ Create these in **Settings → Custom data → Products**:
 | `custom.scent_intensity` | Single line text | Intensity label, e.g. "Powerful" |
 | `custom.intensity_level` | Integer (1–4) | Number of filled intensity bars |
 | `custom.product_video` | File (video) | Video in the product video section |
+| `custom.scent_accords` | List of single line text (or comma separated text) | Chips at the top of the Fragrance Notes tab; the first is highlighted |
+| `custom.highlight_notes` | List of metaobjects: Fragrance note | Round note images under "Highlight Notes:" |
+| `custom.top_notes` | Single line text or list of text | "Top Notes:" row |
+| `custom.heart_notes` | Single line text or list of text | "Heart Notes:" row |
+| `custom.base_notes` | Single line text or list of text | "Base Notes:" row |
+| `custom.ingredients` | Multi-line text or list of text | "Ingredients:" row |
+| `custom.about_fragrance` | Rich text | About The Fragrance tab |
+| `custom.disclaimer` | Rich text | Disclaimer & Safety Notice tab |
+| `custom.faqs` | List of metaobjects: FAQ | FAQ tab questions |
+
+Create these metaobject definitions first in **Settings → Custom data → Metaobjects**, then pick them as the metafield type:
+
+| Metaobject | Fields |
+|---|---|
+| Fragrance note (`fragrance_note`) | `name` (single line text), `image` (file, image) |
+| FAQ (`faq`) | `question` (single line text), `answer` (rich text or multi-line text) |
+
+A note like "Pear" is created once and reused on every product. Any **Info tab** block can read its own metafield: type the namespace and key in its **Product metafield** setting. Tabs with no metafield value and no fallback text are hidden.
 
 ### Reviews
 

@@ -167,6 +167,7 @@
           "settings": {
             "title": "About The Fragrance",
             "content": "<p>A fruity floral patchouli that opens with juicy strawberry and pear, settles into a soft heart of peony, jasmine and rose, and dries down to warm patchouli, vanilla and white musk.</p>",
+            "metafield": "custom.about_fragrance",
             "show_faq": false
           }
         },
@@ -198,6 +199,7 @@
           "type": "tab",
           "settings": {
             "title": "Disclaimer & Safety Notice",
+            "metafield": "custom.disclaimer",
             "content": "<p>PATÉLLE fragrances are inspired by well-known scents and are not affiliated with the original brands. For external use only. Avoid contact with eyes, and patch test before use if you have sensitive skin. Keep away from heat and open flame.</p>",
             "show_faq": false
           }

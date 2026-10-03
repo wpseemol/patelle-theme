@@ -22,7 +22,7 @@
         <!-- Center Main Perfume Bottle -->
         <div class="hero-center-bottle gsap-bottle">
           {% if block.settings.main_product_image != blank %}
-            <img src="{{ block.settings.main_product_image | image_url: width: 900 }}" alt="{{ block.settings.hero_title }}" class="main-bottle-img" loading="eager">
+            {{ block.settings.main_product_image | image_url: width: 900 | image_tag: alt: block.settings.hero_title, class: 'main-bottle-img', loading: 'eager', widths: '450, 600, 900', sizes: '(min-width: 990px) 40vw, 80vw' }}
           {% else %}
             <div class="bottle-placeholder-wireframe">Upload Main Fragrance Bottle</div>
           {% endif %}
@@ -30,16 +30,16 @@
 
         <!-- Floating Decorative Flowers / Elements (Animated with Parallax) -->
         {% if block.settings.flower_top_left != blank %}
-          <img src="{{ block.settings.flower_top_left | image_url: width: 220 }}" class="deco-flower flower-tl gsap-flower" data-depth="0.05" alt="" loading="eager">
+          {{ block.settings.flower_top_left | image_url: width: 220 | image_tag: alt: '', class: 'deco-flower flower-tl gsap-flower', data-depth: '0.05', loading: 'eager' }}
         {% endif %}
         {% if block.settings.flower_top_right != blank %}
-          <img src="{{ block.settings.flower_top_right | image_url: width: 220 }}" class="deco-flower flower-tr gsap-flower" data-depth="0.07" alt="" loading="eager">
+          {{ block.settings.flower_top_right | image_url: width: 220 | image_tag: alt: '', class: 'deco-flower flower-tr gsap-flower', data-depth: '0.07', loading: 'eager' }}
         {% endif %}
         {% if block.settings.flower_mid_left != blank %}
-          <img src="{{ block.settings.flower_mid_left | image_url: width: 220 }}" class="deco-flower flower-ml gsap-flower" data-depth="0.04" alt="" loading="eager">
+          {{ block.settings.flower_mid_left | image_url: width: 220 | image_tag: alt: '', class: 'deco-flower flower-ml gsap-flower', data-depth: '0.04', loading: 'eager' }}
         {% endif %}
         {% if block.settings.flower_bottom_right != blank %}
-          <img src="{{ block.settings.flower_bottom_right | image_url: width: 360 }}" class="deco-flower flower-br gsap-flower" data-depth="0.09" alt="" loading="eager">
+          {{ block.settings.flower_bottom_right | image_url: width: 360 | image_tag: alt: '', class: 'deco-flower flower-br gsap-flower', data-depth: '0.09', loading: 'eager' }}
         {% endif %}
 
         <div class="hero-content-container">
@@ -58,7 +58,7 @@
 
             <div class="card-thumb-col">
               {% if block.settings.card_product_image != blank %}
-                <img src="{{ block.settings.card_product_image | image_url: width: 140 }}" alt="{{ block.settings.card_product_title }}" class="thumb-bottle-img">
+                {{ block.settings.card_product_image | image_url: width: 140 | image_tag: alt: block.settings.card_product_title, class: 'thumb-bottle-img', loading: 'lazy' }}
               {% else %}
                 <div class="thumb-placeholder">50ml</div>
               {% endif %}
@@ -69,6 +69,7 @@
               <p class="card-desc">{{ block.settings.card_product_desc | default: 'Cardamom, sandalwood, and leather notes crafted for bold modern elegance.' }}</p>
               
               <div class="card-action-row">
+                {%- if block.settings.featured_product != blank -%}
                 {% form 'product', block.settings.featured_product, class: 'hero-add-form' %}
                   <input type="hidden" name="id" value="{{ block.settings.featured_product.selected_or_first_available_variant.id }}">
                   <button type="submit" class="btn-hero-add">{{ block.settings.btn_text | default: 'Add to Cart' }}</button>
@@ -80,6 +81,7 @@
                     </svg>
                   </button>
                 {% endform %}
+                {%- endif -%}
               </div>
             </div>
           </div>

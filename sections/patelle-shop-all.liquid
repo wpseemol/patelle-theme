@@ -18,16 +18,31 @@
       </h2>
     {%- endif -%}
 
+    {%- liquid
+      # Shoppers only see tabs that have products; the editor sees every tab
+      # so empty ones can be fixed.
+      assign first_tab = 0
+      for block in section.blocks
+        if request.design_mode or block.settings.collection.products.size > 0
+          assign first_tab = forloop.index
+          break
+        endif
+      endfor
+    -%}
     <patelle-tabs class="pt-shop-all__controls">
       <div class="pt-tabs" role="tablist" aria-label="{{ section.settings.heading | escape }}">
         {%- for block in section.blocks -%}
+          {%- unless request.design_mode or block.settings.collection.products.size > 0 -%}
+            {%- continue -%}
+          {%- endunless -%}
           <button
             type="button"
-            class="pt-tab{% if forloop.first %} is-active{% endif %}"
+            class="pt-tab{% if forloop.index == first_tab %} is-active{% endif %}"
             role="tab"
             id="pt-tab-{{ section.id }}-{{ forloop.index }}"
             aria-controls="pt-panel-{{ section.id }}-{{ forloop.index }}"
-            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-selected="{% if forloop.index == first_tab %}true{% else %}false{% endif %}"
+            tabindex="{% if forloop.index == first_tab %}0{% else %}-1{% endif %}"
             {{ block.shopify_attributes }}
           >
             {{ block.settings.label }}
@@ -47,12 +62,15 @@
 
     {%- for block in section.blocks -%}
       {%- assign tab_collection = block.settings.collection -%}
+      {%- unless request.design_mode or tab_collection.products.size > 0 -%}
+        {%- continue -%}
+      {%- endunless -%}
       <div
-        class="pt-shop-all__panel{% unless forloop.first %} is-hidden{% endunless %}"
+        class="pt-shop-all__panel{% unless forloop.index == first_tab %} is-hidden{% endunless %}"
         id="pt-panel-{{ section.id }}-{{ forloop.index }}"
         role="tabpanel"
         aria-labelledby="pt-tab-{{ section.id }}-{{ forloop.index }}"
-        {% unless forloop.first %}hidden{% endunless %}
+        {% unless forloop.index == first_tab %}hidden{% endunless %}
       >
         {%- if tab_collection.products.size > 0 -%}
           <div class="pt-grid pt-grid--4">

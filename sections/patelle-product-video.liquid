@@ -37,6 +37,7 @@
         </button>
       {%- elsif section.settings.image != blank or section.settings.video_url != blank -%}
         {%- if section.settings.image != blank -%}
+          {%- assign video_image_alt = section.settings.image.alt | default: product.title -%}
           {{
             section.settings.image
             | image_url: width: 1600
@@ -44,7 +45,7 @@
               loading: 'lazy',
               widths: '800, 1200, 1600',
               sizes: '(min-width: 990px) 1180px, 94vw',
-              alt: section.settings.image.alt | default: product.title
+              alt: video_image_alt
           }}
         {%- else -%}
           <div class="pt-pdp-video__ph" aria-hidden="true"></div>

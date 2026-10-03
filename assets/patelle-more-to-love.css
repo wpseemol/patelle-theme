@@ -23,23 +23,14 @@
 
 /* Three across is wider than the Shop All tile, so a shorter frame keeps the
    row close to its old height. */
-.pt-more--cols-3 .pt-card--overlay {
+.pt-more--cols-3 .pt-card--overlay:not(.pt-card--fit) {
   aspect-ratio: 4 / 5;
 }
 
 @media screen and (max-width: 749px) {
-  .pt-more--cols-3 .pt-card--overlay,
-  .pt-more--cols-4 .pt-card--overlay {
+  .pt-more--cols-3 .pt-card--overlay:not(.pt-card--fit),
+  .pt-more--cols-4 .pt-card--overlay:not(.pt-card--fit) {
     aspect-ratio: 350 / 563;
-  }
-
-  .pt-more .pt-card--fit {
-    aspect-ratio: auto;
-  }
-
-  .pt-more .pt-card--fit .pt-card__media-wrap {
-    flex: none;
-    aspect-ratio: 4 / 5;
   }
 
   .pt-more__head {

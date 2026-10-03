@@ -8,8 +8,9 @@
   - tagline        {String}  vendor parenthetical, e.g. "(Luxury. No Markup.)"
   - show_rating    {Boolean}
   - index          {Number}  loop index, used to build unique form ids
-  - fit_image      {Boolean} overlay only: keep the photo above the info panel,
-                             with a blurred copy behind the panel
+  - fit_image      {Boolean} overlay only, default true: show the photo in a 4:5
+                             frame above the info panel, with a blurred copy behind
+                             the panel. Pass false for the full-bleed tile.
 {% endcomment %}
 
 {%- liquid
@@ -30,7 +31,7 @@
 
 {%- liquid
   assign fit = false
-  if fit_image and style == 'overlay' and card_product.featured_media
+  if fit_image != false and style == 'overlay' and card_product.featured_media
     assign fit = true
   endif
 -%}
@@ -104,7 +105,7 @@
 
   <div class="pt-card__body">
     <h3 class="pt-card__title">
-      <a href="{{ card_product.url }}">{{ card_product.title }}</a>
+      <a href="{{ card_product.url }}" title="{{ card_product.title | escape }}">{{ card_product.title }}</a>
     </h3>
 
     {%- if style == 'catalog' -%}

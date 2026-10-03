@@ -118,6 +118,14 @@
   padding: 0;
 }
 
+.pt-shop-grid--cols-4 .pt-shop-grid__list {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pt-shop-grid--overlay .pt-shop-grid__list {
+  gap: 16px;
+}
+
 .pt-shop-grid__item {
   margin: 0;
   padding: 0;
@@ -259,7 +267,7 @@
 }
 
 @media screen and (max-width: 989px) {
-  .pt-shop-grid__list {
+  .pt-shop-grid .pt-shop-grid__list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 22px 14px;
   }
@@ -291,13 +299,13 @@
     font-size: 13px;
   }
 
-  .pt-shop-grid__list {
+  .pt-shop-grid .pt-shop-grid__list {
     gap: 20px 10px;
   }
 }
 
 @media screen and (max-width: 479px) {
-  .pt-shop-grid__list {
+  .pt-shop-grid .pt-shop-grid__list {
     grid-template-columns: minmax(0, 1fr);
   }
 }

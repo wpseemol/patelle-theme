@@ -10,7 +10,7 @@
     data-collection-id="{{ collection.id }}"
   >
     <section
-      class="pt-section pt-shop-page pt-shop-grid"
+      class="pt-section pt-shop-page pt-shop-grid pt-shop-grid--cols-{{ section.settings.columns | default: '4' }} pt-shop-grid--{{ section.settings.card_style | default: 'overlay' }}"
       style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
     >
       <div class="pt-wrap">
@@ -24,10 +24,12 @@
               <li class="pt-shop-grid__item">
                 {%- render 'patelle-card',
                   card_product: product,
-                  card_style: 'catalog',
+                  card_style: section.settings.card_style,
                   section_id: section.id,
+                  tagline: section.settings.vendor_tagline,
                   show_rating: section.settings.show_rating,
-                  index: forloop.index
+                  index: forloop.index,
+                  fit_image: section.settings.fit_image
                 -%}
               </li>
             {%- endfor -%}
@@ -58,6 +60,41 @@
       "step": 3,
       "label": "Products per page",
       "default": 12
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Card design",
+      "options": [
+        { "value": "overlay", "label": "Overlay (same as homepage)" },
+        { "value": "catalog", "label": "Catalog (name and price under the image)" }
+      ],
+      "default": "overlay"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "text",
+      "id": "vendor_tagline",
+      "label": "Vendor tagline",
+      "visible_if": "{{ section.settings.card_style == 'overlay' }}",
+      "default": "(Luxury. No Markup.)"
+    },
+    {
+      "type": "checkbox",
+      "id": "fit_image",
+      "label": "Show full product image",
+      "info": "Keeps the photo above the info panel so the bottle is not covered.",
+      "visible_if": "{{ section.settings.card_style == 'overlay' }}",
+      "default": true
     },
     {
       "type": "checkbox",

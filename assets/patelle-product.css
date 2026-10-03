@@ -1777,6 +1777,17 @@ button.pt-pdp-reel__play:hover .pt-pdp-reel__play-icon {
   background: var(--pt-pdp-bg);
 }
 
+.pt-pdp-related product-recommendations.pt-wrap {
+  display: block;
+  padding-inline: var(--pt-related-px, var(--pt-gutter));
+}
+
+@media screen and (max-width: 749px) {
+  .pt-pdp-related product-recommendations.pt-wrap {
+    padding-inline: var(--pt-related-px-mobile, var(--pt-gutter));
+  }
+}
+
 .pt-pdp-related__head {
   display: flex;
   align-items: center;

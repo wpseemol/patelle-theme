@@ -20,6 +20,15 @@
   Usage:
   {% render 'card-product', show_vendor: section.settings.show_vendor %}
 {% endcomment %}
+{%- if card_product and card_product != empty and settings.pt_dawn_cards != false and horizontal_class != true -%}
+  {%- render 'patelle-card',
+    card_product: card_product,
+    card_style: settings.pt_card_style,
+    section_id: section_id,
+    tagline: settings.pt_card_tagline,
+    show_rating: show_rating
+  -%}
+{%- else -%}
 {%- unless skip_styles -%}
   {{ 'component-rating.css' | asset_url | stylesheet_tag }}
   {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
@@ -624,4 +633,5 @@
       </div>
     </div>
   </div>
+{%- endif -%}
 {%- endif -%}

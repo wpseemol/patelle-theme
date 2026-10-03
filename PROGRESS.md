@@ -17,6 +17,8 @@ Figma file: [Product Landing Page Design](https://www.figma.com/design/RZhucKZlv
 | Footer (all pages) | `sections/footer-group.json` | — | Done | Retailers strip is its own section above the footer |
 | Product card | `snippets/patelle-card.liquid` | 82-425 / 82-426 | Done | Styles: `overlay`, `catalog`, `stacked` |
 | Custom cursor | `snippets/patelle-cursor.liquid` | — | Done | Theme settings → Custom cursor |
+| Search | `templates/search.json` | 137-156 (style reference) | Built from screenshot, needs Figma check | `patelle-search` section: filters, sort, PATÉLLE cards, empty state with popular products |
+| Cart, blog, article, collections list, pages, account | Dawn templates | — | Built from screenshot, needs Figma check | Restyled by `assets/patelle-dawn.css` (Theme settings → PATÉLLE style) |
 
 Status values: **Not started**, **In progress**, **Built from screenshot, needs Figma check**, **Done**.
 
@@ -53,15 +55,31 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] **Currency codes** is on, so prices now read "$22.00 USD" on PATÉLLE pages too. Turn off Theme settings → Currency format → Currency codes for "$22.00".
 - [ ] Page width is 1400px. Try other values in Theme settings → Layout → Page width; the design was drawn at about 1400px.
 
+### Site-wide style to-do
+- [ ] Search filters show only what Shopify offers by default (availability, price). Add product type, vendor or tag filters in the **Search & Discovery** app → Filters. They appear on the search page automatically.
+- [ ] Check the blog and article pages once a blog post exists (the News blog is empty, so the article cards were not seen).
+- [ ] The 404 page could not be previewed locally (the CLI dev server returns a 502 error). Check it on the live theme. Gift card and password pages use their own layouts and still have the Dawn look.
+- [ ] Shop hero and You May Also Like titles use `rem` sizes, which come out smaller under Dawn's 10px root size. Switch them to px if they look small next to the Figma design.
+- [ ] Before pushing, pull first: the GitHub remote has a newer theme editor commit (`sections/header-group.json`).
+
 ### Known issues (not caused by recent work)
 - [ ] `sections/hero-banner.liquid`: 6 `ImgWidthAndHeight` theme check errors (missing width and height on `<img>`).
 - [ ] `sections/header.liquid`: 52 settings, over Shopify's recommended 40 (warning only).
-- [ ] Global settings that still only affect Dawn's own sections (cart, search results, account, blog pages), not the PATÉLLE sections, by design: **Colors** (color schemes), **Buttons**, **Variant pills**, **Inputs**, **Product/Collection/Blog cards**, **Content containers**, **Media**, **Badges**, **Typography → font size scale**, **Layout → Section spacing / Grid spacing**, **Animations**. The PATÉLLE sections take these from their own section settings to match Figma. Wire any of them up if the store owner asks.
+- [ ] Global settings that still only affect Dawn's own sections (cart, search results, account, blog pages), not the PATÉLLE sections, by design: **Colors** (color schemes), **Buttons**, **Variant pills**, **Inputs**, **Product/Collection/Blog cards**, **Content containers**, **Media**, **Badges**, **Typography → font size scale**, **Layout → Section spacing / Grid spacing**, **Animations**. The PATÉLLE sections take these from their own section settings to match Figma. Wire any of them up if the store owner asks. While **Theme settings → PATÉLLE style → Use PATÉLLE style on Dawn pages** is on, `assets/patelle-dawn.css` also overrides Colors, Buttons, Inputs and card corners on those Dawn pages; turn it off to use the Dawn settings again.
 - [ ] `sections/patelle-product-reels.liquid` is no longer used on the product page (reels moved into Product main). Keep or delete.
 
 ## Work log
 
 ### 2026-10-03
+- Dawn's default look removed from the rest of the site, so every page now uses the PATÉLLE style (Figma 137-156 homepage as reference, built from the store owner's screenshot because Figma still reports "no edit access"):
+  - **Search page** is a new PATÉLLE section, `sections/patelle-search.liquid` (replaces Dawn's `main-search` in `templates/search.json`). It has a cream hero with a serif title, a pill search field and the result count. Filter chips open dropdowns (checkboxes or a price range, shown as a bottom sheet on phones) and there is a sort menu, plus active filter tags with "Remove all". Results use the PATÉLLE product card, with an "Articles & pages" list underneath and round page buttons. With no results it shows a "Popular right now" grid. Settings cover texts, products per page, card design, columns, vendor tagline, filtering, sorting, and the popular collection and count (`assets/patelle-search.css`, `assets/patelle-search.js`).
+  - **Product cards everywhere**: Dawn's `snippets/card-product.liquid` now shows the PATÉLLE card (`patelle-card`) in any Dawn section (featured collection, related products, cart drawer suggestions and others). Horizontal cards are left as they are.
+  - **Theme settings → PATÉLLE style** (new group): **Use PATÉLLE style on Dawn pages**, **Use PATÉLLE product cards in Dawn sections**, **Card design** (Overlay or Catalog) and **Card tagline**. Turn either checkbox off to go back to the Dawn look.
+  - New `assets/patelle-dawn.css` restyles Dawn pages (cart, blog, article, collections list, standard pages, account pages, 404, search) and the cart drawer. It covers the cream background and ink text, the Inter body font and serif page titles, black pill buttons, white rounded fields, 16px card corners with hover zoom, badges, and round pagination. The page decides through a `pt-dawn` body class set in `layout/theme.liquid`. The cart pop-up keeps the glass style from the header.
+  - Collections list page: a single collection no longer stretches into one giant card (CSS grid instead of Dawn's full-width rule).
+  - Product card titles now use Inter instead of picking up Dawn's heading font (`assets/patelle-card.css`).
+  - Files: `sections/patelle-search.liquid`, `assets/patelle-search.css`, `assets/patelle-search.js`, `templates/search.json`, `snippets/card-product.liquid`, `assets/patelle-dawn.css`, `assets/patelle-card.css`, `layout/theme.liquid`, `config/settings_schema.json`, `config/settings_data.json`.
+- Product page → **PATÉLLE — Product related** (You May Also Like) got **Left / right padding (desktop)** (default 11px, which lines up with the other product page sections) and **Left / right padding (phone)** (default 16px). Before, the grid ran wider than the sections above it and touched the screen edges on phones (`sections/patelle-product-related.liquid`, `assets/patelle-product.css`).
 - Product page videos now play on the site instead of opening YouTube in a new tab (Figma 117-14, built from the store owner's reference screenshot):
   - **Real Results reels** (Product main → Reel blocks): clicking a reel opens a floating vertical player at the bottom right of the page, with close (×, also Esc) and up/down buttons to go to the previous or next reel. The page stays usable behind it. On phones the player is smaller and sits bottom right too.
   - Reel blocks got a **Shopify-hosted video** setting (best option). **Video link** also plays on the page for YouTube (also Shorts), Vimeo, TikTok, Instagram reels and direct .mp4 links. Any other link shows "This video can’t play here" with a Watch video button.

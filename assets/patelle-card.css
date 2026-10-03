@@ -39,6 +39,7 @@
 
 .pt-card__title {
   margin: 0;
+  font-family: var(--pt-font);
   font-weight: 600;
   letter-spacing: -0.01em;
 }

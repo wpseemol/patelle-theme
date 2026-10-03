@@ -297,6 +297,15 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
+    {%- if settings.pt_dawn_style != false or settings.pt_dawn_cards != false -%}
+      {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if settings.pt_dawn_style != false -%}
+      {{ 'patelle-dawn.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if settings.pt_dawn_cards != false -%}
+      {{ 'patelle-card.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
 
     {%- if settings.cart_type == 'drawer' -%}
       {{ 'component-cart-drawer.css' | asset_url | stylesheet_tag }}
@@ -338,7 +347,23 @@
     </script>
   </head>
 
-  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  {%- liquid
+    assign pt_dawn_page = false
+    if settings.pt_dawn_style != false
+      case template.name
+        when 'cart', 'blog', 'article', 'list-collections', '404', 'search'
+          assign pt_dawn_page = true
+        when 'page'
+          if template.suffix == blank
+            assign pt_dawn_page = true
+          endif
+      endcase
+      if template.directory == 'customers'
+        assign pt_dawn_page = true
+      endif
+    endif
+  -%}
+  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}{% if pt_dawn_page %} pt-dawn{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

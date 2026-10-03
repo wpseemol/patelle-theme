@@ -1,0 +1,287 @@
+/* ==========================================================================
+   PATÉLLE skin for Dawn sections
+   Loaded globally (Theme settings → PATÉLLE style). Page rules only apply
+   when <body> has .pt-dawn (cart, blog, article, collections list, 404,
+   search, plain pages); the cart drawer is styled everywhere.
+   ========================================================================== */
+
+.pt-dawn,
+.pt-dawn #MainContent [class*='color-scheme-'],
+cart-drawer .drawer__inner,
+cart-drawer [class*='color-scheme-'] {
+  --color-background: 250, 246, 240;
+  --gradient-background: #faf6f0;
+  --color-foreground: 33, 33, 33;
+  --color-background-contrast: 239, 230, 211;
+  --color-button: 10, 10, 10;
+  --color-button-text: 255, 255, 255;
+  --color-secondary-button: 250, 246, 240;
+  --color-secondary-button-text: 33, 33, 33;
+  --color-link: 33, 33, 33;
+  --color-badge-foreground: 255, 255, 255;
+  --color-badge-background: 10, 10, 10;
+  --color-badge-border: 10, 10, 10;
+
+  --font-body-family: var(--pt-font);
+  --font-body-style: normal;
+  --font-body-weight: 400;
+  --font-body-weight-bold: 600;
+  --font-heading-family: var(--pt-font);
+  --font-heading-style: normal;
+  --font-heading-weight: 600;
+
+  --buttons-radius: 100px;
+  --buttons-radius-outset: 101px;
+  --buttons-border-width: 1px;
+  --buttons-border-opacity: 1;
+  --buttons-shadow-opacity: 0;
+  --buttons-border-offset: 0.3px;
+
+  --inputs-radius: 14px;
+  --inputs-radius-outset: 15px;
+  --inputs-border-width: 1px;
+  --inputs-border-opacity: 0.18;
+  --inputs-shadow-opacity: 0;
+
+  --variant-pills-radius: 100px;
+  --product-card-corner-radius: 1.6rem;
+  --collection-card-corner-radius: 1.6rem;
+  --blog-card-corner-radius: 1.6rem;
+  --media-radius: 16px;
+  --text-boxes-radius: 16px;
+  --badge-corner-radius: 10rem;
+  --popup-corner-radius: 16px;
+}
+
+.pt-dawn {
+  --pt-dawn-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia,
+    'Times New Roman', serif;
+
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* —— Type ——————————————————————————————————————————————————————————————— */
+
+.pt-dawn #MainContent :is(h1, h2, h3, h4, h5, .h0, .h1, .h2, .h3, .h4, .h5):not([class*='pt-']) {
+  letter-spacing: -0.01em;
+  color: #111;
+}
+
+.pt-dawn #MainContent :is(.title--primary, .main-page-title, .article-template__title, .template-404 .title) {
+  font-family: var(--pt-dawn-display);
+  font-weight: 400;
+  font-size: clamp(40px, 5.5vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #111;
+}
+
+.pt-dawn #MainContent .title-wrapper-with-link,
+.pt-dawn #MainContent .main-page-title {
+  margin-bottom: 32px;
+}
+
+.pt-dawn #MainContent .page-width > .title--primary:first-child,
+.pt-dawn #MainContent .main-page-title {
+  margin-top: 40px;
+  margin-bottom: 32px;
+}
+
+.pt-dawn #MainContent .rte a,
+.pt-dawn #MainContent .link {
+  color: #111;
+  text-underline-offset: 3px;
+}
+
+.pt-dawn #MainContent .caption-with-letter-spacing {
+  letter-spacing: 0.12em;
+}
+
+/* —— Buttons ———————————————————————————————————————————————————————————— */
+
+:is(.pt-dawn #MainContent, cart-drawer) :is(.button, .shopify-payment-button__button--unbranded) {
+  min-height: 48px;
+  padding: 0 28px;
+  font-family: var(--pt-font);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+:is(.pt-dawn #MainContent, cart-drawer) .button:not([disabled]):hover {
+  transform: translateY(-1px);
+}
+
+:is(.pt-dawn #MainContent, cart-drawer) .button--secondary {
+  --color-button: 255, 255, 255;
+  --color-button-text: 17, 17, 17;
+}
+
+:is(.pt-dawn #MainContent, cart-drawer) .button--tertiary {
+  min-height: 0;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* —— Fields ——————————————————————————————————————————————————————————— */
+
+:is(.pt-dawn #MainContent, cart-drawer) :is(.field__input, .select__select, .text-area, .customer .field input) {
+  background-color: #fff;
+  font-family: var(--pt-font);
+  letter-spacing: 0;
+}
+
+:is(.pt-dawn #MainContent, cart-drawer) .quantity {
+  border-radius: 100px;
+  background: #fff;
+}
+
+/* —— Cards (blog, collections, Dawn product cards) ————————————————————— */
+
+.pt-dawn #MainContent .card__heading {
+  font-family: var(--pt-font);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pt-dawn #MainContent .article-card .card__information,
+.pt-dawn #MainContent .collection-card-wrapper .card__information {
+  padding-top: 14px;
+}
+
+.pt-dawn #MainContent :is(.article-card, .collection-card-wrapper) .card__inner {
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.pt-dawn #MainContent :is(.article-card, .collection-card-wrapper) .card__media img {
+  transition: transform 0.4s ease;
+}
+
+.pt-dawn #MainContent :is(.article-card, .collection-card-wrapper):hover .card__media img {
+  transform: scale(1.03);
+}
+
+.pt-dawn #MainContent .collection-list.grid {
+  --pt-cols: 3;
+
+  display: grid;
+  grid-template-columns: repeat(var(--pt-cols), minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pt-dawn #MainContent .collection-list.grid--1-col-desktop { --pt-cols: 1; }
+.pt-dawn #MainContent .collection-list.grid--2-col-desktop { --pt-cols: 2; }
+.pt-dawn #MainContent .collection-list.grid--4-col-desktop { --pt-cols: 4; }
+.pt-dawn #MainContent .collection-list.grid--5-col-desktop { --pt-cols: 5; }
+.pt-dawn #MainContent .collection-list.grid--6-col-desktop { --pt-cols: 6; }
+
+.pt-dawn #MainContent .collection-list .grid__item {
+  width: auto;
+  max-width: none;
+}
+
+@media screen and (max-width: 989px) {
+  .pt-dawn #MainContent .collection-list.grid {
+    --pt-cols: 2;
+  }
+
+  .pt-dawn #MainContent .collection-list.grid--1-col-tablet-down {
+    --pt-cols: 1;
+  }
+}
+
+.pt-dawn #MainContent .badge {
+  padding: 4px 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* —— Cart page ——————————————————————————————————————————————————————— */
+
+.pt-dawn #MainContent .cart-items thead th {
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgb(17 17 17 / 0.6);
+}
+
+.pt-dawn #MainContent .cart-item__name {
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.pt-dawn #MainContent .cart-item__image {
+  border-radius: 12px;
+}
+
+.pt-dawn #MainContent .cart__footer .totals__total-value,
+.pt-dawn #MainContent .cart__footer .totals__total {
+  font-weight: 600;
+  color: #111;
+}
+
+.pt-dawn #MainContent .cart__empty-text {
+  font-family: var(--pt-dawn-display);
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, 52px);
+}
+
+/* —— Cart drawer (the cart popup is styled in patelle-header.css) ————————— */
+
+cart-drawer .drawer__inner {
+  font-family: var(--pt-font);
+}
+
+cart-drawer .cart-item__image {
+  border-radius: 10px;
+}
+
+/* —— Pagination (every page, PATÉLLE grids too) ———————————————————————— */
+
+.pagination__list {
+  gap: 8px;
+}
+
+.pagination__item {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgb(17 17 17 / 0.14);
+  border-radius: 50%;
+  background: #fff;
+  font-family: var(--pt-font, inherit);
+  font-weight: 500;
+  font-size: 14px;
+  color: #111;
+  text-decoration: none;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.pagination__item:hover {
+  border-color: #111;
+}
+
+.pagination__item--current {
+  border-color: #0a0a0a;
+  background: #0a0a0a;
+  color: #fff;
+}
+
+.pagination__item--current::after,
+.pagination__item:hover::after {
+  display: none;
+}
+
+.pagination__item-arrow svg {
+  width: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.pt-dawn #MainContent, cart-drawer) .button,
+  .pt-dawn #MainContent .card__media img {
+    transition: none;
+  }
+}

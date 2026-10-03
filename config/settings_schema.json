@@ -511,6 +511,48 @@
     ]
   },
   {
+    "name": "PATÉLLE style",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Applies the PATÉLLE look (Inter, cream background, black pill buttons, rounded fields and cards) to the pages that still use Dawn sections: cart, cart popup, blog, article, collections list, 404 and plain pages."
+      },
+      {
+        "type": "checkbox",
+        "id": "pt_dawn_style",
+        "label": "Use PATÉLLE style on Dawn pages",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Product cards"
+      },
+      {
+        "type": "checkbox",
+        "id": "pt_dawn_cards",
+        "label": "Use PATÉLLE product card in Dawn sections",
+        "info": "Featured collection, related products, collage and other Dawn sections show the same card as the PATÉLLE pages.",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "pt_card_style",
+        "label": "Card design",
+        "options": [
+          { "value": "overlay", "label": "Overlay (same as homepage)" },
+          { "value": "catalog", "label": "Catalog (name and price under the image)" }
+        ],
+        "default": "overlay"
+      },
+      {
+        "type": "text",
+        "id": "pt_card_tagline",
+        "label": "Vendor tagline",
+        "default": "(Luxury. No Markup.)"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.cards.name",
     "settings": [
       {

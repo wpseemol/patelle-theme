@@ -21,7 +21,7 @@
 
 <div
   class="pt-section pt-product-page pt-pdp-related"
-  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px; --pt-related-px: {{ section.settings.padding_x | default: 0 }}px; --pt-related-px-mobile: {{ section.settings.padding_x_mobile | default: 0 }}px;"
 >
   <product-recommendations
     class="pt-wrap"
@@ -150,6 +150,27 @@
         { "value": "margin", "label": "Margin" }
       ],
       "default": "padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Left / right padding (desktop)",
+      "info": "11px lines up with the other product page sections. Higher values move the heading and cards inward.",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "padding_x_mobile",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Left / right padding (mobile)",
+      "default": 16
     },
     {
       "type": "range",

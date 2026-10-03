@@ -272,7 +272,14 @@
                 <span class="pt-header__count" data-cart-count aria-hidden="true" {% if cart.item_count == 0 %}hidden{% endif %}>
                   {%- if cart.item_count < 100 -%}{{ cart.item_count }}{%- else -%}99+{%- endif -%}
                 </span>
-                <span class="visually-hidden" data-cart-count-label>{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+                <span
+                  class="visually-hidden"
+                  data-cart-count-label
+                  data-one="{{ 'sections.header.cart_count' | t: count: 1 | escape }}"
+                  data-other="{{ 'sections.header.cart_count' | t: count: 2 | escape }}"
+                >
+                  {{- 'sections.header.cart_count' | t: count: cart.item_count -}}
+                </span>
               </a>
               {%- if s.cart_preview -%}
                 <div

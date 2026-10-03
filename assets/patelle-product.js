@@ -196,8 +196,29 @@
       if (window.Shopify?.formatMoney) {
         return window.Shopify.formatMoney(cents, format);
       }
-      const amount = (Number(cents) / 100).toFixed(2);
-      return format.replace(/\{\{\s*amount\s*\}\}/, amount).replace(/\{\{\s*amount_no_decimals\s*\}\}/, String(Math.round(cents / 100)));
+      const value = Number(cents) / 100;
+      if (!Number.isFinite(value)) return '';
+      const group = (fixed, thousands, decimal) => {
+        const [whole, fraction] = fixed.split('.');
+        const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
+        return fraction ? `${grouped}${decimal}${fraction}` : grouped;
+      };
+      return format.replace(/\{\{\s*(\w+)\s*\}\}/, (_, key) => {
+        switch (key) {
+          case 'amount_no_decimals':
+            return group(value.toFixed(0), ',', '.');
+          case 'amount_with_comma_separator':
+            return group(value.toFixed(2), '.', ',');
+          case 'amount_no_decimals_with_comma_separator':
+            return group(value.toFixed(0), '.', ',');
+          case 'amount_with_apostrophe_separator':
+            return group(value.toFixed(2), "'", '.');
+          case 'amount_with_space_separator':
+            return group(value.toFixed(2), ' ', ',');
+          default:
+            return group(value.toFixed(2), ',', '.');
+        }
+      });
     }
   }
 
@@ -224,9 +245,10 @@
   });
 
   document.addEventListener('keydown', (event) => {
-    const tab = event.target.closest('[data-pt-tab]');
-    if (!tab) return;
-    const tabs = [...tab.closest('[role="tablist"]').querySelectorAll('[data-pt-tab]')];
+    const tab = event.target.closest?.('[data-pt-tab]');
+    const list = tab?.closest('[role="tablist"]');
+    if (!list) return;
+    const tabs = [...list.querySelectorAll('[data-pt-tab]')];
     const index = tabs.indexOf(tab);
     const moves = {
       ArrowRight: index + 1,

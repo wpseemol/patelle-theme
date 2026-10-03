@@ -113,8 +113,8 @@
 {% style %}
   {%- if custom_font_face != blank -%}
     @font-face {
-      font-family: '{{ custom_name }}';
-      src: url('{{ custom_font_face }}');
+      font-family: {{ custom_name | json }};
+      src: url({{ custom_font_face | json }});
       font-weight: 100 900;
       font-style: normal;
       font-display: swap;

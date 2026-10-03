@@ -1,4 +1,4 @@
-{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom, mode: section.settings.spacing_mode -%}
 {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-seasonal.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>

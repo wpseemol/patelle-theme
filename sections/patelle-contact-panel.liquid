@@ -1,4 +1,3 @@
-{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
 {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-contact.css' | asset_url | stylesheet_tag }}
 
@@ -15,6 +14,7 @@
 -%}
 
 {%- if show_contact -%}
+  {%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom, mode: section.settings.spacing_mode -%}
   <section
     class="pt-section pt-contact-panel"
     style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
@@ -50,7 +50,7 @@
                 </span>
                 <div class="pt-contact-panel__meta">
                   <p class="pt-contact-panel__label">{{ section.settings.email_label }}</p>
-                  <a class="pt-contact-panel__value pt-contact-panel__value--link" href="mailto:{{ section.settings.email }}">
+                  <a class="pt-contact-panel__value pt-contact-panel__value--link" href="mailto:{{ section.settings.email | escape }}">
                     {{- section.settings.email -}}
                   </a>
                 </div>

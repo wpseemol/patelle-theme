@@ -1,4 +1,4 @@
-{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
+{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom, mode: section.settings.spacing_mode -%}
 {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-single-product.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
@@ -124,7 +124,7 @@
 
         {%- if section.settings.show_inspired and inspired_by != blank -%}
           <p class="pt-sp__inspired">
-            Inspired by:{{ inspired_by }}
+            Inspired by: {{ inspired_by }}
             {%- if inspired_retail != blank %}
               <span class="pt-sp__accent">(Retail Price: {{ inspired_retail }})</span>
             {%- endif -%}

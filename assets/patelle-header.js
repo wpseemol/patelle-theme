@@ -868,7 +868,10 @@
       count.hidden = value === 0;
 
       const label = this.querySelector('[data-cart-count-label]');
-      if (label) label.textContent = String(value);
+      if (label) {
+        const template = value === 1 ? label.dataset.one : label.dataset.other;
+        label.textContent = template ? template.replace(/\d+/, value) : String(value);
+      }
 
       if (previous !== count.textContent) {
         count.classList.remove('is-bump');

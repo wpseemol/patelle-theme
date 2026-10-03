@@ -5,12 +5,19 @@
   - id: {String} section.id
   - top: {Number} margin top in px
   - bottom: {Number} margin bottom in px
+  - mode: {String} the section's Spacing control ('padding' or 'margin').
+    Margins only apply in 'margin' mode, so values hidden in the editor
+    can't add space.
 
   Applied as padding on the transparent Shopify section wrapper so the
   spacing of neighbouring sections adds up instead of collapsing.
 {%- endcomment -%}
 {%- assign top = top | default: 0 -%}
 {%- assign bottom = bottom | default: 0 -%}
+{%- if mode != blank and mode != 'margin' -%}
+  {%- assign top = 0 -%}
+  {%- assign bottom = 0 -%}
+{%- endif -%}
 {%- if top > 0 or bottom > 0 -%}
   <style>
     #shopify-section-{{ id }} {

@@ -1,4 +1,3 @@
-{%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom -%}
 {{ 'patelle-base.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-contact.css' | asset_url | stylesheet_tag }}
 {%- if section.settings.use_figtree -%}
@@ -13,6 +12,7 @@
 -%}
 
 {%- if show_contact -%}
+  {%- render 'patelle-section-spacing', id: section.id, top: section.settings.margin_top, bottom: section.settings.margin_bottom, mode: section.settings.spacing_mode -%}
   <section
     class="pt-section pt-contact-love{% if section.settings.use_figtree %} pt-contact-love--figtree{% endif %}"
     style="

@@ -2,6 +2,9 @@
  * PATÉLLE — custom character cursor
  */
 (() => {
+  if (window.ptCursorLoaded) return;
+  window.ptCursorLoaded = true;
+
   const cursor = document.querySelector('[data-pt-cursor]');
   if (!cursor || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 

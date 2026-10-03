@@ -22,7 +22,7 @@ At the end of every task that changes files:
 - Every section renders `patelle-section-spacing` and exposes the **Spacing control** setting (padding or margin) like the existing sections.
 - Make content editable: repeated items are blocks, text and images are settings. Product-specific text reads a `custom.*` metafield first and falls back to the section setting.
 - Reuse `snippets/patelle-card.liquid` for product cards instead of new card markup.
-- Every popup, dropdown, drawer and modal uses the glass design: add `.pt-popup-glass` (tokens `--pt-popup-*` in `assets/patelle-base.css`). Dawn popups that can't take the class are listed in the same rule there. Don't put `backdrop-filter` on an overlay that wraps a glass panel, or the panel's frost stops blurring the page.
+- Every popup, dropdown, drawer and modal uses the glass design: add `.pt-popup-glass` (tokens `--pt-popup-*` in `assets/patelle-base.css`). Dawn popups that can't take the class are listed in the same rule there. The header's own flyouts, search panel and mobile sheet are the one exception: they use the header glass (`--ph-*` settings in the theme editor). Don't put `backdrop-filter` on an overlay that wraps a glass panel, or the panel's frost stops blurring the page.
 - Scripts that several sections include must be safe to load more than once (guard flag plus delegated event listeners).
 
 ## Before finishing

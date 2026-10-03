@@ -10,7 +10,7 @@ Figma file: [Product Landing Page Design](https://www.figma.com/design/RZhucKZlv
 |---|---|---|---|---|
 | Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 160ms; hover-to-expand search field with live results |
 | Home | `templates/index.json` | 35-30 (hero card), 82-567 / 82-571 (seasonal), 137-587 (single product) | Done | GSAP hero slider, Shop All, Seasonal ×2, Collage, More to Love, Single product, News strip, Brand banner, Quality promise |
-| Shop / collection | `templates/collection.json` | 232-738 | Done | Shop hero, grid, why-shop |
+| Shop / collection | `templates/collection.json` | 232-738 | Done | Measured from the Figma presentation view: hero, tile grid with wide cards, why-shop. Needs cut-out bottle photos for the exact look |
 | Product | `templates/product.json` | 117-14 | Built from screenshot, needs Figma check | Reels play in a floating on-page player; product video plays inline. See **Product page to-do** |
 | About | `templates/page.about.json`, `templates/page.json` | 143-696 | Built from screenshot, needs Figma check | Shows on handle `about` with either template; images to upload |
 | Contact | `templates/page.contact.json` | 171-592, 171-741 (love), 171-765 (promise) | Done | Page must use template `page.contact` |
@@ -55,6 +55,12 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] **Currency codes** is on, so prices now read "$22.00 USD" on PATÉLLE pages too. Turn off Theme settings → Currency format → Currency codes for "$22.00".
 - [ ] Page width is 1400px. Try other values in Theme settings → Layout → Page width; the design was drawn at about 1400px.
 
+### Shop page to-do
+- [ ] For the exact Figma look, give each product a cut-out bottle photo (transparent or white background). Either create the product metafield **custom.card_image** (type: File, image) and fill it per product, or make the cut-out the first (featured) product image. Products with lifestyle photos show them as rounded pictures in the card.
+- [ ] Add compare-at prices to products to show the struck-through "was" price as in Figma.
+- [ ] The Men and Women filter pills both point to the `woman` collection; pick the right collections in Shop hero → Filter pill blocks. Unisex, Best Sellers and New Arrivals have no collection yet.
+- [ ] The Why section features all use the heart icon (as in Figma). Pick Delivery, Shopping, Secure or Support per feature in the theme editor if preferred.
+
 ### Site-wide style to-do
 - [ ] Search filters show only what Shopify offers by default (availability, price). Add product type, vendor or tag filters in the **Search & Discovery** app → Filters. They appear on the search page automatically.
 - [ ] Check the blog and article pages once a blog post exists (the News blog is empty, so the article cards were not seen).
@@ -71,6 +77,13 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
+- Shop / collection page rebuilt to match Figma 232-738. The Figma tools still say "no edit access", so sizes were measured in pixels from the Figma presentation view (1440 frame, content 1240px):
+  - **Product grid**: new **Tiles** card design (now the default in Shop grid → Card design). White 398 × 394 cards with 16px corners and 24px gaps, 3 columns. Each card has the rating with a gold star at the top left and a round heart button at the top right. The bottle is centered, the name is uppercase, and the price row shows the struck-through compare-at price before the price, with a round bag (add to cart) button at the bottom right. **Wide cards** (new setting, on): the 1st and 6th card of every 7 span two columns with a taller bottle, like Figma. Tablets show 2 columns and phones 2 smaller columns, with the first card of each group full width. Products per page now 14 (range 6–48). Add to cart now uses the cart pop-up instead of reloading the page (`product-form.js` was missing).
+  - The card photo uses the product metafield `custom.card_image` (a cut-out bottle) if set, otherwise the featured image. Lifestyle photos show as rounded pictures inside the card.
+  - **Hero**: sans "Products" title (54px), 16px text, white 52px pills with a light border (active pill black), background `#f4f0ef`. **Top padding** now works (it was overridden before).
+  - **Why Customers Choose Patelle**: same background as the page, sans 48px title, new **Text** setting under the title, features stacked (icon in a 40px circle, title, text) in two columns, image 530 × 622. New **Heart** icon option (used now, as in Figma).
+  - Shop content width is capped at the Figma 1240px (it still gets narrower if Theme settings → Page width is smaller).
+  - Files: `snippets/patelle-card-tile.liquid` (new), `snippets/patelle-card.liquid`, `assets/patelle-card.css`, `sections/patelle-shop-grid.liquid`, `sections/patelle-shop-hero.liquid`, `sections/patelle-shop-why.liquid`, `assets/patelle-shop.css`, `templates/collection.json`.
 - Product page (Product main): when a product has only one image, the image now stays in view (sticky, under the header) on desktop while the long details column scrolls, instead of leaving a large empty space below it. New setting **Images → Keep images in view while scrolling (desktop)**: Only when the product has one image (default), Always, or Off. Phones are unchanged (`sections/patelle-product-main.liquid`, `assets/patelle-product.css`).
 - Fixed every page showing "Failed to Upload Theme Files — Invalid JSON in sections/header-group.json". Pulling the theme editor commit left git conflict markers in the file. Kept Shopify's version (blocks listed first, `match_page_width`) and added back `menu_position: "2"` on the 3 menu image cards (`sections/header-group.json`).
 - Dawn's default look removed from the rest of the site, so every page now uses the PATÉLLE style (Figma 137-156 homepage as reference, built from the store owner's screenshot because Figma still reports "no edit access"):

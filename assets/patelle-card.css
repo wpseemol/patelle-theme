@@ -443,7 +443,308 @@
   color: var(--pt-muted);
 }
 
+/* --------------------------------------------------------------------------
+   Tile variant — Shop page (Figma 232-738)
+   398 × 394 white card: rating + heart on top, bottle centered,
+   name / prices / bag button at the bottom
+   -------------------------------------------------------------------------- */
+
+.pt-card--tile {
+  --pt-tile-pad: 22px;
+  --pt-tile-inset: 20px;
+  --pt-tile-btn: 40px;
+  --pt-tile-media-top: 64px;
+  --pt-tile-media-bottom: 108px;
+
+  display: block;
+  height: 100%;
+  border-radius: var(--pt-r-card);
+  background: #ffffff;
+  color: #111111;
+  isolation: isolate;
+}
+
+.pt-card--tile .pt-card__media {
+  position: absolute;
+  inset: var(--pt-tile-media-top) var(--pt-tile-pad) var(--pt-tile-media-bottom);
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  background: transparent;
+}
+
+.pt-card--tile .pt-card__media img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.pt-card--tile .pt-card__placeholder-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pt-card--tile .pt-card__placeholder-svg {
+  fill: #e7e3e2;
+}
+
+.pt-card--tile:hover .pt-card__media img {
+  transform: scale(1.04);
+}
+
+.pt-card--tile-wide .pt-card__media {
+  inset: 24px 0 0 50%;
+  width: min(44%, 380px);
+  transform: translateX(-50%);
+}
+
+.pt-card--tile-wide .pt-card__media {
+  align-items: flex-end;
+}
+
+.pt-card--tile-wide .pt-card__media img {
+  border-radius: 12px 12px 0 0;
+}
+
+.pt-card--tile .pt-card__top,
+.pt-card--tile .pt-card__body {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.pt-card--tile .pt-card__top {
+  top: var(--pt-tile-inset);
+  left: var(--pt-tile-pad);
+  right: var(--pt-tile-inset);
+}
+
+.pt-card--tile .pt-card__body {
+  bottom: 24px;
+  left: var(--pt-tile-pad);
+  right: var(--pt-tile-inset);
+  padding: 0;
+  background: none;
+}
+
+.pt-card--tile .pt-card__top > *,
+.pt-card--tile .pt-card__body > * {
+  pointer-events: auto;
+}
+
+.pt-card--tile .pt-card__score {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 20px;
+  color: #111111;
+}
+
+.pt-card--tile .pt-card__score svg {
+  width: 19px;
+  height: 18px;
+  color: #ffbb00;
+}
+
+.pt-card--tile .pt-card__icon-btn {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: var(--pt-tile-btn);
+  height: var(--pt-tile-btn);
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f1f1;
+  color: #111111;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.pt-card--tile .pt-card__icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pt-card--tile .pt-card__icon-btn:hover,
+.pt-card--tile .pt-card__icon-btn:focus-visible {
+  background: #111111;
+  color: #ffffff;
+}
+
+.pt-card--tile .pt-card__icon-btn:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 2px;
+}
+
+.pt-card--tile .pt-card__bag[disabled] {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.pt-card--tile .pt-card__bag[disabled]:hover {
+  background: #f1f1f1;
+  color: #111111;
+}
+
+.pt-card--tile .pt-card__bag.loading .pt-card__bag-icon {
+  visibility: hidden;
+}
+
+.pt-card--tile .pt-card__bag .loading__spinner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+}
+
+.pt-card--tile .pt-card__form {
+  margin: 0;
+}
+
+.pt-card--tile .pt-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pt-card--tile-wide .pt-card__info {
+  max-width: calc(50% - min(22%, 190px) - 16px);
+}
+
+.pt-card--tile .pt-card__title {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: #111111;
+}
+
+.pt-card--tile .pt-card__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 16px;
+  row-gap: 2px;
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #111111;
+}
+
+.pt-card--tile .pt-card__price-was {
+  font-weight: 500;
+  color: #111111;
+}
+
+.pt-card--tile .pt-card__soldout {
+  font-weight: 400;
+  font-size: 12px;
+  color: #8a8a8a;
+}
+
 /* Responsive -------------------------------------------------------------- */
+
+@media screen and (max-width: 1199px) {
+  .pt-card--tile {
+    --pt-tile-pad: 18px;
+    --pt-tile-inset: 16px;
+    --pt-tile-media-top: 60px;
+    --pt-tile-media-bottom: 100px;
+  }
+
+  .pt-card--tile .pt-card__body {
+    bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .pt-card--tile-wide .pt-card__media {
+    inset: var(--pt-tile-media-top) var(--pt-tile-pad) var(--pt-tile-media-bottom);
+    width: auto;
+    transform: none;
+  }
+
+  .pt-card--tile-wide .pt-card__media {
+    align-items: center;
+  }
+
+  .pt-card--tile-wide .pt-card__media img {
+    border-radius: 12px;
+  }
+
+  .pt-card--tile-wide .pt-card__info {
+    max-width: none;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .pt-card--tile {
+    --pt-tile-pad: 12px;
+    --pt-tile-inset: 10px;
+    --pt-tile-btn: 32px;
+    --pt-tile-media-top: 48px;
+    --pt-tile-media-bottom: 82px;
+  }
+
+  .pt-card--tile .pt-card__body {
+    bottom: 12px;
+    gap: 8px;
+  }
+
+  .pt-card--tile .pt-card__score {
+    gap: 5px;
+    font-size: 13px;
+  }
+
+  .pt-card--tile .pt-card__score svg {
+    width: 15px;
+    height: 14px;
+  }
+
+  .pt-card--tile .pt-card__icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pt-card--tile .pt-card__info {
+    gap: 4px;
+  }
+
+  .pt-card--tile .pt-card__title {
+    font-size: 12px;
+    line-height: 15px;
+  }
+
+  .pt-card--tile .pt-card__title a {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+  }
+
+  .pt-card--tile .pt-card__price {
+    column-gap: 8px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
 
 @media screen and (max-width: 989px) {
   .pt-card--overlay .pt-card__title {

@@ -3,6 +3,15 @@
 {{ 'patelle-card.css' | asset_url | stylesheet_tag }}
 {{ 'patelle-shop.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign card_style = section.settings.card_style | default: 'tile'
+  assign show_wide = false
+  if card_style == 'tile' and section.settings.wide_cards
+    assign show_wide = true
+  endif
+-%}
 
 {%- paginate collection.products by section.settings.products_per_page -%}
   <collection-component
@@ -10,8 +19,8 @@
     data-collection-id="{{ collection.id }}"
   >
     <section
-      class="pt-section pt-shop-page pt-shop-grid pt-shop-grid--cols-{{ section.settings.columns | default: '4' }} pt-shop-grid--{{ section.settings.card_style | default: 'overlay' }}"
-      style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
+      class="pt-section pt-shop-page pt-shop-grid pt-shop-grid--cols-{{ section.settings.columns | default: '4' }} pt-shop-grid--{{ card_style }}"
+      style="--pt-shop-grid-pt: {{ section.settings.padding_top }}px; padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
     >
       <div class="pt-wrap">
         {%- if collection.products.size == 0 -%}
@@ -21,15 +30,25 @@
         {%- else -%}
           <ul class="pt-shop-grid__list" role="list">
             {%- for product in collection.products -%}
-              <li class="pt-shop-grid__item">
+              {%- liquid
+                assign pattern_pos = forloop.index0 | modulo: 7
+                assign is_wide = false
+                if show_wide
+                  if pattern_pos == 0 or pattern_pos == 5
+                    assign is_wide = true
+                  endif
+                endif
+              -%}
+              <li class="pt-shop-grid__item{% if is_wide %} pt-shop-grid__item--wide{% if pattern_pos == 0 %} pt-shop-grid__item--wide-first{% endif %}{% endif %}">
                 {%- render 'patelle-card',
                   card_product: product,
-                  card_style: section.settings.card_style,
+                  card_style: card_style,
                   section_id: section.id,
                   tagline: section.settings.vendor_tagline,
                   show_rating: section.settings.show_rating,
                   index: forloop.index,
-                  fit_image: section.settings.fit_image
+                  fit_image: section.settings.fit_image,
+                  wide: is_wide
                 -%}
               </li>
             {%- endfor -%}
@@ -56,25 +75,36 @@
       "type": "range",
       "id": "products_per_page",
       "min": 6,
-      "max": 36,
-      "step": 3,
+      "max": 48,
+      "step": 1,
       "label": "Products per page",
-      "default": 12
+      "info": "14 fills the Figma pattern twice (a wide card, then a row of three, then a wide card).",
+      "default": 14
     },
     {
       "type": "select",
       "id": "card_style",
       "label": "Card design",
       "options": [
+        { "value": "tile", "label": "Tiles (Figma shop page)" },
         { "value": "overlay", "label": "Overlay (same as homepage)" },
         { "value": "catalog", "label": "Catalog (name and price under the image)" }
       ],
-      "default": "overlay"
+      "default": "tile"
+    },
+    {
+      "type": "checkbox",
+      "id": "wide_cards",
+      "label": "Wide cards",
+      "info": "The 1st and 6th card of every 7 span two columns, like the Figma design. For the best look, give products a cut-out bottle photo in the metafield custom.card_image.",
+      "visible_if": "{{ section.settings.card_style == 'tile' }}",
+      "default": true
     },
     {
       "type": "select",
       "id": "columns",
       "label": "Columns on desktop",
+      "visible_if": "{{ section.settings.card_style != 'tile' }}",
       "options": [
         { "value": "3", "label": "3 columns" },
         { "value": "4", "label": "4 columns" }
@@ -99,7 +129,7 @@
     {
       "type": "checkbox",
       "id": "show_rating",
-      "label": "Show rating badge",
+      "label": "Show rating",
       "default": true
     },
     {

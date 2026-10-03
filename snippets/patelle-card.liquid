@@ -3,7 +3,7 @@
 
   Accepts:
   - card_product   {Object}  product
-  - card_style     {String}  'overlay' | 'stacked' | 'catalog'
+  - card_style     {String}  'overlay' | 'stacked' | 'catalog' | 'tile' (see patelle-card-tile)
   - section_id     {String}
   - tagline        {String}  vendor parenthetical, e.g. "(Luxury. No Markup.)"
   - show_rating    {Boolean}
@@ -11,8 +11,18 @@
   - fit_image      {Boolean} overlay only, default true: show the photo in a 4:5
                              frame above the info panel, with a blurred copy behind
                              the panel. Pass false for the full-bleed tile.
+  - wide           {Boolean} tile only: card spans two grid columns
 {% endcomment %}
 
+{%- if card_style == 'tile' -%}
+  {%- render 'patelle-card-tile',
+    card_product: card_product,
+    section_id: section_id,
+    show_rating: show_rating,
+    index: index,
+    wide: wide
+  -%}
+{%- else -%}
 {%- liquid
   assign style = card_style | default: 'overlay'
   assign variant = card_product.selected_or_first_available_variant
@@ -192,3 +202,4 @@
     {%- endif -%}
   </div>
 </div>
+{%- endif -%}

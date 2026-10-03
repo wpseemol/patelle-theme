@@ -73,8 +73,8 @@
         "heading": "Products",
         "text": "Explore our full range of luxury fragrances — crafted for everyday presence, without the designer markup.",
         "spacing_mode": "padding",
-        "padding_top": 48,
-        "padding_bottom": 32,
+        "padding_top": 92,
+        "padding_bottom": 52,
         "margin_top": 0,
         "margin_bottom": 0
       }
@@ -82,15 +82,16 @@
     "shop_grid": {
       "type": "patelle-shop-grid",
       "settings": {
-        "products_per_page": 12,
-        "card_style": "overlay",
+        "products_per_page": 14,
+        "card_style": "tile",
+        "wide_cards": true,
         "columns": "4",
         "vendor_tagline": "(Luxury. No Markup.)",
         "fit_image": true,
         "show_rating": true,
         "spacing_mode": "padding",
-        "padding_top": 16,
-        "padding_bottom": 64,
+        "padding_top": 48,
+        "padding_bottom": 48,
         "margin_top": 0,
         "margin_bottom": 0
       }
@@ -101,7 +102,7 @@
         "f1": {
           "type": "feature",
           "settings": {
-            "icon": "delivery",
+            "icon": "heart",
             "title": "Fast & Reliable Delivery",
             "text": "Enjoy quick and dependable shipping to your doorstep."
           }
@@ -109,7 +110,7 @@
         "f2": {
           "type": "feature",
           "settings": {
-            "icon": "shopping",
+            "icon": "heart",
             "title": "Easy Shopping",
             "text": "Browse our user-friendly shop with ease and find what you need."
           }
@@ -117,7 +118,7 @@
         "f3": {
           "type": "feature",
           "settings": {
-            "icon": "secure",
+            "icon": "heart",
             "title": "Safe & Secure Payment",
             "text": "We ensure your products arrive safely and in perfect condition."
           }
@@ -125,7 +126,7 @@
         "f4": {
           "type": "feature",
           "settings": {
-            "icon": "support",
+            "icon": "heart",
             "title": "Best Customer Service",
             "text": "Our team is here to help with samples, scents, and orders."
           }
@@ -139,11 +140,12 @@
       ],
       "settings": {
         "heading": "Why Customers Choose Patelle",
+        "text": "Experience the perfect blend of luxury, quality and design in every piece.",
         "image": "shopify://shop_images/b9c31117e9f32eb39fc92365137758ea846477ac.png",
-        "background": "#f5ebde",
+        "background": "#f4f0ef",
         "spacing_mode": "padding",
-        "padding_top": 72,
-        "padding_bottom": 72,
+        "padding_top": 52,
+        "padding_bottom": 100,
         "margin_top": 0,
         "margin_bottom": 0
       }

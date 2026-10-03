@@ -176,6 +176,7 @@
           "settings": {
             "title": "High-Concentration EDP",
             "content": "<p>Every PATÉLLE scent is an Eau de Parfum made with a high concentration of fragrance oils, so it projects well and lasts 8–10 hours on skin.</p>",
+            "metafield": "",
             "show_faq": false
           }
         },
@@ -184,6 +185,7 @@
           "settings": {
             "title": "15-Day Satisfaction Guarantee",
             "content": "<p>Not in love with your scent? Contact us within 15 days of delivery and we will make it right.</p>",
+            "metafield": "",
             "show_faq": false
           }
         },
@@ -192,6 +194,7 @@
           "settings": {
             "title": "FAQ",
             "content": "",
+            "metafield": "",
             "show_faq": true
           }
         },
@@ -199,8 +202,8 @@
           "type": "tab",
           "settings": {
             "title": "Disclaimer & Safety Notice",
-            "metafield": "custom.disclaimer",
             "content": "<p>PATÉLLE fragrances are inspired by well-known scents and are not affiliated with the original brands. For external use only. Avoid contact with eyes, and patch test before use if you have sensitive skin. Keep away from heat and open flame.</p>",
+            "metafield": "custom.disclaimer",
             "show_faq": false
           }
         },
@@ -301,17 +304,19 @@
         "short_description": "Visibly firms and smooths skin to reduce early signs of aging.",
         "fallback_rating": "4.7",
         "fallback_review_count": "1,634",
+        "gallery_sticky": "single",
         "gender": "Women",
         "inspired_by": "Yves Saint Laurent (YSL) Mon Paris",
         "inspired_retail": "$150",
         "scent_family": "Fruity Floral Patchouli Size: YSL 50 ml / 1.7 oz EDP high concentration",
         "intensity_label": "Powerful",
-        "intensity_level": 3,
+        "intensity_level": 4,
         "intensity_help": "How strong the fragrance projects and lasts on skin.",
         "quantity_note": "Up to 3 Save 20%",
         "reels_heading": "Real Results",
         "notes_tab_label": "Fragrance Notes",
         "notes_heading": "Highlight Notes:",
+        "notes_row_labels": "Top Notes:,Heart Notes:,Base Notes:,Ingredients:",
         "spacing_mode": "padding",
         "padding_top": 24,
         "padding_bottom": 40,
@@ -474,6 +479,8 @@
         "view_all_label": "View All",
         "view_all_url": "",
         "spacing_mode": "padding",
+        "padding_x": 24,
+        "padding_x_mobile": 16,
         "padding_top": 64,
         "padding_bottom": 80,
         "margin_top": 0,

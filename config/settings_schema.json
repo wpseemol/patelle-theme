@@ -143,6 +143,31 @@
         "unit": "%",
         "label": "t:settings_schema.typography.settings.body_scale.label",
         "default": 100
+      },
+      {
+        "type": "header",
+        "content": "PATÉLLE sections"
+      },
+      {
+        "type": "select",
+        "id": "pt_font",
+        "label": "PATÉLLE sections font",
+        "options": [
+          {
+            "value": "inter",
+            "label": "Inter (design font)"
+          },
+          {
+            "value": "body",
+            "label": "Body font above"
+          },
+          {
+            "value": "heading",
+            "label": "Heading font above"
+          }
+        ],
+        "default": "inter",
+        "info": "The custom PATÉLLE sections (home, shop, product, about, contact, footer) use Inter from the design. Pick a font above to use the theme fonts instead. The header has its own Navigation font setting."
       }
     ]
   },
@@ -157,7 +182,8 @@
         "step": 100,
         "default": 1200,
         "unit": "px",
-        "label": "t:settings_schema.layout.settings.page_width.label"
+        "label": "t:settings_schema.layout.settings.page_width.label",
+        "info": "Also sets the content width of the PATÉLLE sections, and of the header when Header → Match page width is on."
       },
       {
         "type": "range",

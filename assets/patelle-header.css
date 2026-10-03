@@ -1450,6 +1450,13 @@
     text-overflow: ellipsis;
 }
 
+.pt-header__result-vendor {
+    font-size: max(11px, calc(var(--ph-font-size) - 3px));
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.55;
+}
+
 .pt-header__result-price {
     font-size: max(12px, calc(var(--ph-font-size) - 2px));
     opacity: 0.6;

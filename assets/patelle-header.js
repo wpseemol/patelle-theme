@@ -382,7 +382,8 @@
 
       const run = async (query) => {
         request?.abort();
-        if (query.length < 2) {
+        // Theme settings → Search behavior → Enable search suggestions.
+        if (query.length < 2 || results.dataset.live === 'false') {
           show('');
           return;
         }
@@ -555,8 +556,13 @@
               <span class="pt-header__result-media">${
                 src ? `<img src="${esc(src)}" alt="${esc(alt)}" width="160" height="160" loading="lazy">` : ''
               }</span>
+              ${labels.showVendor === 'true' && product.vendor ? `<span class="pt-header__result-vendor">${esc(product.vendor)}</span>` : ''}
               <span class="pt-header__result-title">${esc(product.title)}</span>
-              <span class="pt-header__result-price">${esc(this.formatMoney(product.price, labels.moneyFormat))}</span>
+              ${
+                labels.showPrice === 'true'
+                  ? `<span class="pt-header__result-price">${esc(this.formatMoney(product.price, labels.moneyFormat))}</span>`
+                  : ''
+              }
             </a>
           </li>`;
         })
@@ -667,6 +673,22 @@
     /* Cart count ---------------------------------------------------------- */
 
     bindCart(signal) {
+      // Theme settings → Cart → Drawer: the bag icon opens Dawn's cart drawer.
+      this.querySelectorAll('[data-cart-link]').forEach((link) => {
+        link.addEventListener(
+          'click',
+          (event) => {
+            const drawer = document.querySelector('cart-drawer');
+            if (!drawer || typeof drawer.open !== 'function') return;
+            event.preventDefault();
+            this.closeFlyout();
+            if (this.classList.contains('is-sheet-open')) this.toggleSheet(false);
+            drawer.open(link);
+          },
+          { signal }
+        );
+      });
+
       const count = this.querySelector('[data-cart-count]');
       if (!count) return;
 

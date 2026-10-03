@@ -49,7 +49,7 @@
   data-section="{{ section.id }}"
   data-add-label="{{ 'products.product.add_to_cart' | t | escape }}"
   data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}"
-  data-money-format="{{ shop.money_format | escape }}"
+  data-money-format="{% if settings.currency_code_enabled %}{{ shop.money_with_currency_format | strip_html | escape }}{% else %}{{ shop.money_format | strip_html | escape }}{% endif %}"
   style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="pt-wrap">
@@ -162,11 +162,19 @@
             {% endif %}
           >
             {%- if current_variant.compare_at_price > current_variant.price -%}
-              {{ current_variant.compare_at_price | money }}
+              {%- if settings.currency_code_enabled -%}
+                {{ current_variant.compare_at_price | money_with_currency }}
+              {%- else -%}
+                {{ current_variant.compare_at_price | money }}
+              {%- endif -%}
             {%- endif -%}
           </s>
           <span class="pt-pdp-price-row__current" data-pt-price>
-            {{ current_variant.price | money }}
+            {%- if settings.currency_code_enabled -%}
+              {{ current_variant.price | money_with_currency }}
+            {%- else -%}
+              {{ current_variant.price | money }}
+            {%- endif -%}
           </span>
           <span
             class="pt-pdp-price-row__save"

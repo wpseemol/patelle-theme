@@ -11,7 +11,7 @@
   --pt-about-body: #5c5c5c;
   --pt-about-radius: 16px;
   --pt-about-radius-lg: 20px;
-  --pt-about-max: 1180px;
+  --pt-about-max: calc(var(--pt-max) * 0.832);
 
   background: var(--pt-about-bg);
   color: var(--pt-about-ink);
@@ -62,7 +62,7 @@
   justify-content: center;
   gap: clamp(10px, 1.4vw, 18px);
   width: 100%;
-  max-width: 1080px;
+  max-width: calc(var(--pt-about-max) * 0.915);
   margin: 0 auto;
 }
 

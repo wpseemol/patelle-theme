@@ -16,12 +16,14 @@
     {%- endunless -%}
 
     {% comment %}PATÉLLE — Inter, the typeface the landing page is set in{% endcomment %}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    >
+    {%- if settings.pt_font == 'inter' or settings.pt_font == blank -%}
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      >
+    {%- endif -%}
 
     <title>
       {{ page_title }}
@@ -156,6 +158,13 @@
 
         --page-width: {{ settings.page_width | divided_by: 10 }}rem;
         --page-width-margin: {% if settings.page_width == '1600' %}2{% else %}0{% endif %}rem;
+        --pt-page-width: {{ settings.page_width }}px;
+        {%- case settings.pt_font -%}
+          {%- when 'body' %}
+        --pt-font-family: var(--font-body-family);
+          {%- when 'heading' %}
+        --pt-font-family: var(--font-heading-family);
+        {%- endcase %}
 
         --product-card-image-padding: {{ settings.card_image_padding | divided_by: 10.0 }}rem;
         --product-card-corner-radius: {{ settings.card_corner_radius | divided_by: 10.0 }}rem;

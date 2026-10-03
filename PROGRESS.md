@@ -48,14 +48,27 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Fine-tune **Header → Open and close speed** in the theme editor if 160ms feels too quick or too slow.
 - [ ] Live search: Shopify returns "Vanila Rebal" for every search term, even nonsense words. Check **Search & Discovery** app → product boosts or synonyms in Shopify admin and remove the rule that pins it. Vanila Rebal also shows a price of $0.00; set its price.
 
+### Theme settings to-do
+- [ ] **Currency codes** is on, so prices now read "$22.00 USD" on PATÉLLE pages too. Turn off Theme settings → Currency format → Currency codes for "$22.00".
+- [ ] Page width is 1400px. Try other values in Theme settings → Layout → Page width; the design was drawn at about 1400px.
+
 ### Known issues (not caused by recent work)
 - [ ] `sections/hero-banner.liquid`: 6 `ImgWidthAndHeight` theme check errors (missing width and height on `<img>`).
-- [ ] `sections/header.liquid`: 51 settings, over Shopify's recommended 40 (warning only).
+- [ ] `sections/header.liquid`: 52 settings, over Shopify's recommended 40 (warning only).
+- [ ] Global settings that still only affect Dawn's own sections (cart, search results, account, blog pages), not the PATÉLLE sections, by design: **Colors** (color schemes), **Buttons**, **Variant pills**, **Inputs**, **Product/Collection/Blog cards**, **Content containers**, **Media**, **Badges**, **Typography → font size scale**, **Layout → Section spacing / Grid spacing**, **Animations**. The PATÉLLE sections take these from their own section settings to match Figma. Wire any of them up if the store owner asks.
 - [ ] `sections/patelle-product-reels.liquid` is no longer used on the product page (reels moved into Product main). Keep or delete.
 
 ## Work log
 
 ### 2026-10-03
+- Theme settings fixes (audit of global settings against the PATÉLLE sections):
+  - **Layout → Page width** now sets the width of every PATÉLLE section (`--pt-max` in `assets/patelle-base.css`, fed from `layout/theme.liquid`). Shop, About, Product, Contact and the homepage single product section keep their narrower design widths as a share of the page width. The header got **Match page width** (on by default) so the logo and icons line up with the content; turn it off to use the header's own **Content width**. Tested at 1400px and 1000px.
+  - **Typography → PATÉLLE sections font** (new): Inter (design, default), or the theme's Body or Heading font. Inter is only loaded when it is used.
+  - **Currency format → Currency codes** now applies to PATÉLLE prices (product card, product page price and variant switching, header search).
+  - **Search behavior**: header live search follows **Enable search suggestions**, **Show product vendor** and **Show product price**. **Show product price** was switched on in `config/settings_data.json` so search keeps showing prices.
+  - **Cart → Cart type → Drawer**: the header bag icon now opens the cart drawer instead of going to the cart page.
+  - **Social media**: Pinterest, Snapchat, Tumblr and Vimeo links now show in the PATÉLLE footer (before only TikTok, Instagram, X, Facebook, YouTube).
+  - Files: `layout/theme.liquid`, `config/settings_schema.json`, `config/settings_data.json`, `assets/patelle-base.css`, `assets/patelle-shop.css`, `assets/patelle-about.css`, `assets/patelle-product.css`, `assets/patelle-contact.css`, `assets/patelle-single-product.css`, `sections/header.liquid`, `assets/patelle-header.js`, `assets/patelle-header.css`, `snippets/patelle-card.liquid`, `sections/patelle-product-main.liquid`, `sections/patelle-footer.liquid`.
 - Header search redesigned: new **Search opens → Expanding field on hover** (now the default). Hovering the search icon grows it into a glass pill field to the left (same glass as the icons) and focuses it, so shoppers can type right away. Live results open in the glass panel below; the panel's own field is hidden in this mode. The pill sizes itself to the space beside the nav; on narrow desktops (about 1100–1250px) the nav pill fades out while the field is open. Moving the mouse away from an empty field closes it; Esc clears it. Phones and tablets keep the tap-to-open glass panel. **Glass panel on click** and **Search page** are still available (`sections/header.liquid`, `assets/patelle-header.js`, `assets/patelle-header.css`, `sections/header-group.json`).
 - Header submenu opens faster again: hover delay 60ms → 30ms, **Open and close speed** 240ms → 160ms (schema minimum 80ms), link and card stagger 12ms + 30ms → 6ms per item with no start delay (`assets/patelle-header.css`, `assets/patelle-header.js`, `sections/header-group.json`).
 - Menu image card blocks (Header → Add block → Menu image card) got **Collection**, **Product** and **Button text** settings. Empty image, title and link fill from the collection, then the product. On the live store a card with no image shows a product photo (first products of the catalog) instead of the grey placeholder; the theme editor still shows the placeholder so it is clear which cards need an image (`sections/header.liquid`).

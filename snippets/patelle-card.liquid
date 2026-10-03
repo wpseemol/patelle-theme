@@ -110,7 +110,13 @@
 
     {%- if style == 'catalog' -%}
       <p class="pt-card__price">
-        {%- if card_product.price_varies -%}
+        {%- if settings.currency_code_enabled -%}
+          {%- if card_product.price_varies -%}
+            {{ card_product.price_min | money }} – {{ card_product.price_max | money_with_currency }}
+          {%- else -%}
+            {{ card_product.price | money_with_currency }}
+          {%- endif -%}
+        {%- elsif card_product.price_varies -%}
           {{ card_product.price_min | money }} – {{ card_product.price_max | money }}
         {%- else -%}
           {{ card_product.price | money }}
@@ -169,7 +175,10 @@
               data-sold-out-message="true"
             >
               <span class="pt-card__atc-label">{{ 'products.product.add_to_cart' | t }}</span>
-              <span class="pt-card__atc-price">{{ variant.price | money_without_trailing_zeros }}</span>
+              <span class="pt-card__atc-price">
+                {{- variant.price | money_without_trailing_zeros -}}
+                {%- if settings.currency_code_enabled %} {{ cart.currency.iso_code }}{% endif -%}
+              </span>
               <span class="sold-out-message hidden">{{ 'products.product.sold_out' | t }}</span>
               {%- render 'loading-spinner' -%}
             </button>

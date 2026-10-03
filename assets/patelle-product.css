@@ -14,7 +14,7 @@
   --pt-pdp-star: #f3c612;
   --pt-pdp-radius: 16px;
   --pt-pdp-radius-lg: 20px;
-  --pt-pdp-max: 1300px;
+  --pt-pdp-max: calc(var(--pt-max) * 0.917);
   --pt-pdp-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia,
     'Times New Roman', serif;
 

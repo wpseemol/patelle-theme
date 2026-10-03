@@ -9,7 +9,7 @@
 }
 
 .pt-contact-panel .pt-wrap {
-  max-width: calc(1200px + var(--pt-gutter) * 2);
+  max-width: calc(var(--pt-max) * 0.846 + var(--pt-gutter) * 2);
 }
 
 .pt-contact-panel__grid {
@@ -349,7 +349,7 @@
 }
 
 .pt-contact-love .pt-wrap {
-  max-width: calc(1240px + var(--pt-gutter) * 2);
+  max-width: calc(var(--pt-max) * 0.875 + var(--pt-gutter) * 2);
 }
 
 .pt-contact-love__title {

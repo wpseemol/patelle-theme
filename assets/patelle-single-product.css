@@ -11,7 +11,7 @@
 
 .pt-sp__inner {
   width: 100%;
-  max-width: 1154px;
+  max-width: calc(var(--pt-max) * 0.814);
   margin-inline: auto;
 }
 
@@ -243,7 +243,7 @@
 /* Details strip ----------------------------------------------------------- */
 
 .pt-sp__strip {
-  max-width: 1306px;
+  max-width: calc(var(--pt-max) * 0.921);
   margin: 70px auto 0;
   padding: 42px 0 53px;
   border-top: 1px solid #ececec;

@@ -11,7 +11,7 @@
   --pt-shop-pill: #efe6d3;
   --pt-shop-why-bg: #f5ebde;
   --pt-shop-radius: 16px;
-  --pt-shop-max: 1180px;
+  --pt-shop-max: calc(var(--pt-max) * 0.832);
   --pt-shop-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia,
     'Times New Roman', serif;
 

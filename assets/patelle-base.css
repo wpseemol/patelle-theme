@@ -24,13 +24,16 @@
   --pt-r-lg: 24px;
   --pt-r-pill: 100px;
 
-  /* Grid — design canvas is 1440 with 11px gutters and 6px column gaps */
-  --pt-max: 1418px;
+  /* Grid — design canvas is 1440 with 11px gutters and 6px column gaps.
+     Theme settings → Layout → Page width sets --pt-page-width (layout/theme.liquid);
+     page-specific widths are fractions of --pt-max so they follow it. */
+  --pt-max: var(--pt-page-width, 1418px);
   --pt-gutter: 11px;
   --pt-gap: 6px;
 
-  --pt-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Helvetica, Arial, sans-serif;
+  /* Theme settings → Typography → PATÉLLE sections font sets --pt-font-family. */
+  --pt-font: var(--pt-font-family, 'Inter', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
 
   /* Magnifying-glass 3D finish — convex lens crown, thick rim, soft lift. */
   --pt-glass-blur: 40px;

@@ -427,61 +427,157 @@
           </div>
         {%- endif -%}
 
-        {%- assign accord_blocks = section.blocks | where: 'type', 'accord' -%}
-        {%- if accord_blocks.size > 0 -%}
-          <ul class="pt-pdp-accords" role="list">
-            {%- for block in accord_blocks -%}
-              <li
-                class="pt-pdp-accord{% if block.settings.highlight %} is-highlight{% endif %}"
-                {{ block.shopify_attributes }}
-              >
-                {{ block.settings.label }}
-              </li>
-            {%- endfor -%}
-          </ul>
-        {%- endif -%}
-
-        {%- assign note_blocks = section.blocks | where: 'type', 'note' -%}
-        {%- if note_blocks.size > 0 -%}
-          <div class="pt-pdp-notes">
-            {%- if section.settings.notes_heading != blank -%}
-              <h2 class="pt-pdp-info__subhead">{{ section.settings.notes_heading }}</h2>
-            {%- endif -%}
-            <ul class="pt-pdp-notes__list" role="list">
-              {%- for block in note_blocks -%}
-                <li class="pt-pdp-note" {{ block.shopify_attributes }}>
-                  <span class="pt-pdp-note__img">
-                    {%- if block.settings.image != blank -%}
-                      {{
-                        block.settings.image
-                        | image_url: width: 160
-                        | image_tag:
-                          loading: 'lazy',
-                          widths: '80, 120, 160',
-                          sizes: '64px',
-                          alt: block.settings.label
-                      }}
-                    {%- endif -%}
-                  </span>
-                  {%- if block.settings.label != blank -%}
-                    <span class="pt-pdp-note__label">{{ block.settings.label }}</span>
-                  {%- endif -%}
-                </li>
+        {%- liquid
+          assign accord_blocks = section.blocks | where: 'type', 'accord'
+          assign note_blocks = section.blocks | where: 'type', 'note'
+          assign detail_blocks = section.blocks | where: 'type', 'detail'
+          assign tab_blocks = section.blocks | where: 'type', 'tab'
+          assign faq_blocks = section.blocks | where: 'type', 'faq'
+          assign has_notes_tab = false
+          if accord_blocks.size > 0 or note_blocks.size > 0 or detail_blocks.size > 0
+            assign has_notes_tab = true
+          endif
+          assign tabs_id = 'PtPdpTabs-' | append: section.id
+        -%}
+        {%- if has_notes_tab or tab_blocks.size > 0 -%}
+          <div class="pt-pdp-tabs" data-pt-tabs>
+            <div class="pt-pdp-tabs__list" role="tablist" aria-label="{{ product.title | escape }}">
+              {%- assign tab_selected = true -%}
+              {%- if has_notes_tab -%}
+                <button
+                  type="button"
+                  class="pt-pdp-tabs__tab"
+                  role="tab"
+                  id="{{ tabs_id }}-tab-notes"
+                  aria-controls="{{ tabs_id }}-panel-notes"
+                  aria-selected="true"
+                  data-pt-tab
+                >
+                  {{- section.settings.notes_tab_label | default: 'Fragrance Notes' | escape -}}
+                </button>
+                {%- assign tab_selected = false -%}
+              {%- endif -%}
+              {%- for block in tab_blocks -%}
+                <button
+                  type="button"
+                  class="pt-pdp-tabs__tab"
+                  role="tab"
+                  id="{{ tabs_id }}-tab-{{ block.id }}"
+                  aria-controls="{{ tabs_id }}-panel-{{ block.id }}"
+                  aria-selected="{{ tab_selected }}"
+                  {% unless tab_selected %}
+                    tabindex="-1"
+                  {% endunless %}
+                  data-pt-tab
+                  {{ block.shopify_attributes }}
+                >
+                  {{- block.settings.title | escape -}}
+                </button>
+                {%- assign tab_selected = false -%}
               {%- endfor -%}
-            </ul>
-          </div>
-        {%- endif -%}
+            </div>
 
-        {%- assign detail_blocks = section.blocks | where: 'type', 'detail' -%}
-        {%- if detail_blocks.size > 0 -%}
-          <dl class="pt-pdp-details">
-            {%- for block in detail_blocks -%}
-              <div class="pt-pdp-details__item" {{ block.shopify_attributes }}>
-                <dt>{{ block.settings.label }}</dt>
-                <dd>{{ block.settings.value }}</dd>
+            {%- if has_notes_tab -%}
+              <div
+                class="pt-pdp-tabs__panel"
+                role="tabpanel"
+                id="{{ tabs_id }}-panel-notes"
+                aria-labelledby="{{ tabs_id }}-tab-notes"
+                tabindex="0"
+              >
+                {%- if accord_blocks.size > 0 -%}
+                  <ul class="pt-pdp-accords" role="list">
+                    {%- for block in accord_blocks -%}
+                      <li
+                        class="pt-pdp-accord{% if block.settings.highlight %} is-highlight{% endif %}"
+                        {{ block.shopify_attributes }}
+                      >
+                        {{ block.settings.label }}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+
+                {%- if note_blocks.size > 0 -%}
+                  <div class="pt-pdp-notes">
+                    {%- if section.settings.notes_heading != blank -%}
+                      <h3 class="pt-pdp-tabs__heading">{{ section.settings.notes_heading }}</h3>
+                    {%- endif -%}
+                    <ul class="pt-pdp-notes__list" role="list">
+                      {%- for block in note_blocks -%}
+                        <li class="pt-pdp-note" {{ block.shopify_attributes }}>
+                          <span class="pt-pdp-note__img">
+                            {%- if block.settings.image != blank -%}
+                              {{
+                                block.settings.image
+                                | image_url: width: 200
+                                | image_tag:
+                                  loading: 'lazy',
+                                  widths: '100, 160, 200',
+                                  sizes: '80px',
+                                  alt: block.settings.label
+                              }}
+                            {%- endif -%}
+                          </span>
+                          {%- if block.settings.label != blank -%}
+                            <span class="pt-pdp-note__label">{{ block.settings.label }}</span>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+
+                {%- if detail_blocks.size > 0 -%}
+                  <dl class="pt-pdp-details">
+                    {%- for block in detail_blocks -%}
+                      <div class="pt-pdp-details__item" {{ block.shopify_attributes }}>
+                        <dt>{{ block.settings.label }}</dt>
+                        <dd>{{ block.settings.value }}</dd>
+                      </div>
+                    {%- endfor -%}
+                  </dl>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- for block in tab_blocks -%}
+              {%- liquid
+                assign panel_hidden = true
+                if forloop.first and has_notes_tab == false
+                  assign panel_hidden = false
+                endif
+              -%}
+              <div
+                class="pt-pdp-tabs__panel"
+                role="tabpanel"
+                id="{{ tabs_id }}-panel-{{ block.id }}"
+                aria-labelledby="{{ tabs_id }}-tab-{{ block.id }}"
+                tabindex="0"
+                {% if panel_hidden %}
+                  hidden
+                {% endif %}
+              >
+                {%- if block.settings.content != blank -%}
+                  <div class="pt-pdp-tabs__rte rte">{{ block.settings.content }}</div>
+                {%- endif -%}
+
+                {%- if block.settings.show_faq and faq_blocks.size > 0 -%}
+                  <div class="pt-pdp-faq">
+                    {%- for faq in faq_blocks -%}
+                      <details class="pt-pdp-faq__item" {{ faq.shopify_attributes }}>
+                        <summary class="pt-pdp-faq__question">
+                          <span>{{ faq.settings.question | escape }}</span>
+                          <span class="pt-pdp-faq__icon" aria-hidden="true"></span>
+                        </summary>
+                        <div class="pt-pdp-faq__answer rte">{{ faq.settings.answer }}</div>
+                      </details>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
               </div>
             {%- endfor -%}
-          </dl>
+          </div>
         {%- endif -%}
       </div>
     </div>
@@ -606,9 +702,16 @@
     },
     {
       "type": "text",
+      "id": "notes_tab_label",
+      "label": "Fragrance notes tab label",
+      "info": "First tab. Shows Scent accord, Key note and Detail blocks. Add Info tab blocks for more tabs.",
+      "default": "Fragrance Notes"
+    },
+    {
+      "type": "text",
       "id": "notes_heading",
       "label": "Key notes heading",
-      "default": "Key Notes"
+      "default": "Highlight Notes:"
     },
     {
       "type": "header",
@@ -770,6 +873,48 @@
           "id": "value",
           "label": "Value",
           "default": "Strawberry, Pear, Mandarin"
+        }
+      ]
+    },
+    {
+      "type": "tab",
+      "name": "Info tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab label",
+          "default": "About The Fragrance"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Connect a product metafield with the dynamic source button to show different text per product."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_faq",
+          "label": "Show FAQ questions in this tab",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How long do PATÉLLE fragrances last?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Most of our Eau de Parfums last 8–10 hours on skin.</p>"
         }
       ]
     }

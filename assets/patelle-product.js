@@ -205,6 +205,55 @@
     customElements.define('patelle-product-main', PatelleProductMain);
   }
 
+  const selectTab = (tab, { focus = false } = {}) => {
+    const root = tab.closest('[data-pt-tabs]');
+    if (!root) return;
+    root.querySelectorAll('[data-pt-tab]').forEach((other) => {
+      const selected = other === tab;
+      other.setAttribute('aria-selected', String(selected));
+      other.tabIndex = selected ? 0 : -1;
+      const panel = document.getElementById(other.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !selected;
+    });
+    if (focus) tab.focus();
+  };
+
+  document.addEventListener('click', (event) => {
+    const tab = event.target.closest('[data-pt-tab]');
+    if (tab) selectTab(tab);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const tab = event.target.closest('[data-pt-tab]');
+    if (!tab) return;
+    const tabs = [...tab.closest('[role="tablist"]').querySelectorAll('[data-pt-tab]')];
+    const index = tabs.indexOf(tab);
+    const moves = {
+      ArrowRight: index + 1,
+      ArrowLeft: index - 1,
+      Home: 0,
+      End: tabs.length - 1,
+    };
+    if (!(event.key in moves)) return;
+    event.preventDefault();
+    const next = tabs[(moves[event.key] + tabs.length) % tabs.length];
+    selectTab(next, { focus: true });
+  });
+
+  // Theme editor: selecting a tab or FAQ block shows its panel.
+  document.addEventListener('shopify:block:select', (event) => {
+    const target = event.target;
+    if (!target.closest?.('[data-pt-tabs]')) return;
+    if (target.matches('[data-pt-tab]')) {
+      selectTab(target);
+      return;
+    }
+    const panel = target.closest('[role="tabpanel"]');
+    const tab = panel && document.querySelector(`[aria-controls="${panel.id}"]`);
+    if (tab) selectTab(tab);
+    if (target.matches('details')) target.open = true;
+  });
+
   document.addEventListener('click', (event) => {
     const button = event.target.closest('[data-pt-qty-step]');
     if (!button) return;

@@ -137,29 +137,125 @@
         "detail_1": {
           "type": "detail",
           "settings": {
-            "label": "Top Notes",
+            "label": "Top Notes:",
             "value": "Strawberry, Pear, Mandarin"
           }
         },
         "detail_2": {
           "type": "detail",
           "settings": {
-            "label": "Heart Notes",
+            "label": "Heart Notes:",
             "value": "Peony, Jasmine, Rose"
           }
         },
         "detail_3": {
           "type": "detail",
           "settings": {
-            "label": "Base Notes",
+            "label": "Base Notes:",
             "value": "Patchouli, Vanilla, White Musk"
           }
         },
         "detail_4": {
           "type": "detail",
           "settings": {
-            "label": "Longevity",
-            "value": "8–10 hours"
+            "label": "Ingredients:",
+            "value": "Strawberry, Pear, Mandarin, Peony, Jasmine, Rose, Patchouli, Vanilla, White Musk"
+          }
+        },
+        "tab_about": {
+          "type": "tab",
+          "settings": {
+            "title": "About The Fragrance",
+            "content": "<p>A fruity floral patchouli that opens with juicy strawberry and pear, settles into a soft heart of peony, jasmine and rose, and dries down to warm patchouli, vanilla and white musk.</p>",
+            "show_faq": false
+          }
+        },
+        "tab_edp": {
+          "type": "tab",
+          "settings": {
+            "title": "High-Concentration EDP",
+            "content": "<p>Every PATÉLLE scent is an Eau de Parfum made with a high concentration of fragrance oils, so it projects well and lasts 8–10 hours on skin.</p>",
+            "show_faq": false
+          }
+        },
+        "tab_guarantee": {
+          "type": "tab",
+          "settings": {
+            "title": "15-Day Satisfaction Guarantee",
+            "content": "<p>Not in love with your scent? Contact us within 15 days of delivery and we will make it right.</p>",
+            "show_faq": false
+          }
+        },
+        "tab_faq": {
+          "type": "tab",
+          "settings": {
+            "title": "FAQ",
+            "content": "",
+            "show_faq": true
+          }
+        },
+        "tab_disclaimer": {
+          "type": "tab",
+          "settings": {
+            "title": "Disclaimer & Safety Notice",
+            "content": "<p>PATÉLLE fragrances are inspired by well-known scents and are not affiliated with the original brands. For external use only. Avoid contact with eyes, and patch test before use if you have sensitive skin. Keep away from heat and open flame.</p>",
+            "show_faq": false
+          }
+        },
+        "faq_1": {
+          "type": "faq",
+          "settings": {
+            "question": "What concentration are PATÉLLE fragrances?",
+            "answer": "<p>All PATÉLLE fragrances are high-concentration Eau de Parfum.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "faq",
+          "settings": {
+            "question": "How long do PATÉLLE fragrances last?",
+            "answer": "<p>Most of our Eau de Parfums last 8–10 hours on skin, depending on skin type and climate.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "faq",
+          "settings": {
+            "question": "Are PATÉLLE fragrances Eau de Parfum (EDP)?",
+            "answer": "<p>Yes. Every scent in the collection is an Eau de Parfum.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "faq",
+          "settings": {
+            "question": "Are PATÉLLE fragrances for men or women?",
+            "answer": "<p>We make scents for women, men and unisex. Each product page shows who the fragrance is made for, but anyone can wear what they love.</p>"
+          }
+        },
+        "faq_5": {
+          "type": "faq",
+          "settings": {
+            "question": "Where are PATÉLLE fragrances made?",
+            "answer": "<p>Our fragrances are crafted in France.</p>"
+          }
+        },
+        "faq_6": {
+          "type": "faq",
+          "settings": {
+            "question": "Are PATÉLLE fragrances cruelty-free?",
+            "answer": "<p>Yes. Our fragrances are cruelty free and vegan.</p>"
+          }
+        },
+        "faq_7": {
+          "type": "faq",
+          "settings": {
+            "question": "How should I apply fragrance for the best performance?",
+            "answer": "<p>Spray on pulse points such as wrists, neck and behind the ears right after showering, when skin is moisturised. Avoid rubbing your wrists together.</p>"
+          }
+        },
+        "faq_8": {
+          "type": "faq",
+          "settings": {
+            "question": "What does \"Inspired By\" mean?",
+            "answer": "<p>It names the well-known fragrance that our scent is inspired by. PATÉLLE is not affiliated with that brand; we create our own interpretation at a fair price.</p>"
           }
         }
       },
@@ -184,7 +280,20 @@
         "detail_1",
         "detail_2",
         "detail_3",
-        "detail_4"
+        "detail_4",
+        "tab_about",
+        "tab_edp",
+        "tab_guarantee",
+        "tab_faq",
+        "tab_disclaimer",
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6",
+        "faq_7",
+        "faq_8"
       ],
       "settings": {
         "short_description": "Visibly firms and smooths skin to reduce early signs of aging.",
@@ -199,7 +308,8 @@
         "intensity_help": "How strong the fragrance projects and lasts on skin.",
         "quantity_note": "Up to 3 Save 20%",
         "reels_heading": "Real Results",
-        "notes_heading": "Key Notes",
+        "notes_tab_label": "Fragrance Notes",
+        "notes_heading": "Highlight Notes:",
         "spacing_mode": "padding",
         "padding_top": 24,
         "padding_bottom": 40,

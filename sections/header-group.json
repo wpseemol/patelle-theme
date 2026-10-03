@@ -53,7 +53,7 @@
         "scrim_color": "#000000",
         "scrim_opacity": 25,
         "scrim_blur": 16,
-        "animation_speed": 420,
+        "animation_speed": 240,
         "show_search": true,
         "search_style": "flyout",
         "search_placeholder": "Search fragrances",

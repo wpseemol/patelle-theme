@@ -262,8 +262,8 @@
     background-color: transparent;
     box-shadow: none;
     transition:
-        height var(--ph-speed) var(--ph-ease),
-        background-color 0.3s var(--ph-ease);
+        height var(--ph-speed) var(--ph-ease-out),
+        background-color var(--ph-speed) var(--ph-ease);
 }
 
 .pt-header.is-open .pt-header__bg,
@@ -967,8 +967,8 @@
     visibility: hidden;
     opacity: 0;
     transition:
-        opacity 0.16s var(--ph-ease),
-        visibility 0s linear 0.16s;
+        opacity 0.12s var(--ph-ease),
+        visibility 0s linear 0.12s;
 }
 
 .pt-header--capsule .pt-header__flyout {
@@ -980,7 +980,7 @@
     visibility: visible;
     opacity: 1;
     transition:
-        opacity calc(var(--ph-speed) * 0.8) var(--ph-ease) 0.06s,
+        opacity calc(var(--ph-speed) * 0.7) var(--ph-ease),
         visibility 0s;
 }
 
@@ -1018,10 +1018,10 @@
 .pt-header__flyout .pt-header__col-title,
 .pt-header__search {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-4px);
     transition:
-        opacity 0.12s var(--ph-ease),
-        transform 0.12s var(--ph-ease);
+        opacity 0.1s var(--ph-ease),
+        transform 0.1s var(--ph-ease);
 }
 
 .pt-header__flyout.is-active li,
@@ -1030,10 +1030,10 @@
     opacity: 1;
     transform: none;
     transition:
-        opacity calc(var(--ph-speed) * 0.9) var(--ph-ease-out)
-            calc(var(--i, 0) * 22ms + 90ms),
-        transform calc(var(--ph-speed) * 0.9) var(--ph-ease-out)
-            calc(var(--i, 0) * 22ms + 90ms);
+        opacity calc(var(--ph-speed) * 0.7) var(--ph-ease-out)
+            calc(var(--i, 0) * 12ms + 30ms),
+        transform calc(var(--ph-speed) * 0.7) var(--ph-ease-out)
+            calc(var(--i, 0) * 12ms + 30ms);
 }
 
 .pt-header__flyout-link {
@@ -1262,8 +1262,8 @@ html.pt-header-locked {
         opacity: 1;
         transform: none;
         transition:
-            opacity calc(var(--ph-speed) * 0.7) var(--ph-ease) 0.08s,
-            transform calc(var(--ph-speed) * 0.7) var(--ph-ease-out) 0.08s,
+            opacity calc(var(--ph-speed) * 0.7) var(--ph-ease) 0.04s,
+            transform calc(var(--ph-speed) * 0.7) var(--ph-ease-out) 0.04s,
             visibility 0s;
     }
 
@@ -1285,9 +1285,9 @@ html.pt-header-locked {
         transform: none;
         transition:
             opacity var(--ph-speed) var(--ph-ease-out)
-                calc(var(--i, 0) * 28ms + 120ms),
+                calc(var(--i, 0) * 16ms + 60ms),
             transform var(--ph-speed) var(--ph-ease-out)
-                calc(var(--i, 0) * 28ms + 120ms);
+                calc(var(--i, 0) * 16ms + 60ms);
     }
 
     .pt-header__sheet-link {

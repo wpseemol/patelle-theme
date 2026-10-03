@@ -207,7 +207,7 @@
             clearTimeout(this.closeTimer);
             clearTimeout(this.openTimer);
             // Switch instantly between panels once one is open; wait briefly otherwise.
-            const delay = this.activeKey ? 0 : 120;
+            const delay = this.activeKey ? 0 : 60;
             this.openTimer = setTimeout(() => this.openFlyout(key), delay);
           },
           { signal }

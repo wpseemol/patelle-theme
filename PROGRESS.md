@@ -8,11 +8,11 @@ Figma file: [Product Landing Page Design](https://www.figma.com/design/RZhucKZlv
 
 | Page | Template | Figma node | Status | Notes |
 |---|---|---|---|---|
-| Header (all pages) | `sections/header-group.json` | — | Done | Glass header; white text over hero, black after scroll |
+| Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; flyout speed 240ms |
 | Home | `templates/index.json` | 35-30 (hero card), 82-567 / 82-571 (seasonal), 137-587 (single product) | Done | GSAP hero slider, Shop All, Seasonal ×2, Collage, More to Love, Single product, News strip, Brand banner, Quality promise |
 | Shop / collection | `templates/collection.json` | 232-738 | Done | Shop hero, grid, why-shop |
 | Product | `templates/product.json` | 117-14 | Built from screenshot, needs Figma check | See **Product page to-do** |
-| About | `templates/page.about.json` | 143-696 | Done | Page must use template `page.about` |
+| About | `templates/page.about.json`, `templates/page.json` | 143-696 | Built from screenshot, needs Figma check | Shows on handle `about` with either template; images to upload |
 | Contact | `templates/page.contact.json` | 171-592, 171-741 (love), 171-765 (promise) | Done | Page must use template `page.contact` |
 | Footer (all pages) | `sections/footer-group.json` | — | Done | Retailers strip is its own section above the footer |
 | Product card | `snippets/patelle-card.liquid` | 82-425 / 82-426 | Done | Styles: `overlay`, `catalog`, `stacked` |
@@ -34,12 +34,25 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Install Judge.me and add its Review Widget block to the Rating & Reviews section. Then remove the 4 sample reviews.
 - [ ] Create the product metafields listed in `README.md` and fill them per product.
 
+### About page to-do
+- [ ] Upload images in the theme editor: About hero images 1–5, About story image, About banner image.
+- [ ] Compare with Figma node 143-696 once Figma access works (spacing and exact text).
+
+### Header to-do
+- [ ] Run `shopify theme check` (the terminal sandbox blocked it on 2026-10-03).
+- [ ] Fine-tune **Header → Open and close speed** in the theme editor if 240ms feels too quick or too slow.
+
 ### Known issues (not caused by recent work)
 - [ ] `sections/hero-banner.liquid`: 6 `ImgWidthAndHeight` theme check errors (missing width and height on `<img>`).
 - [ ] `sections/header.liquid`: 48 settings, over Shopify's recommended 40.
 - [ ] `sections/patelle-product-reels.liquid` is no longer used on the product page (reels moved into Product main). Keep or delete.
 
 ## Work log
+
+### 2026-10-03
+- Header submenu (flyout) opens faster: hover delay 120ms → 60ms, **Open and close speed** 420ms → 240ms (schema min lowered to 120ms), panel and link fade start without the extra 60–90ms wait, link stagger 22ms → 12ms. Mobile drill-in panels tightened the same way (`assets/patelle-header.css`, `assets/patelle-header.js`, `sections/header-group.json`, `sections/header.liquid`).
+- Header: overlay position on every page (`overlay_mode: all`). Pages other than home use the solid ink colors (`pt-header--overlay-ink`) so text stays readable.
+- About page (143-696) rebuilt from the Figma browser view (Figma MCP still reports "no edit access"): hero with 5-image fan, story with feature note, Vision and Value (4 blocks), brand banner (`patelle-about-banner`), trust strip with icons (`patelle-about-trust`). Sections also live in `templates/page.json`, shown only on the `about` page handle; `main-page` hides its default title and content there.
 
 ### 2026-09-29
 - Product page rebuilt to follow Figma 117-14 (from a screenshot, Figma not readable):

@@ -265,14 +265,39 @@
 
           {%- comment -%} Reference order: search, bag, profile. {%- endcomment -%}
           {%- if s.show_cart -%}
-            <a href="{{ routes.cart_url }}" class="pt-header__icon pt-header__icon--cart" data-cart-link>
-              <span class="visually-hidden">{{ cart_label }}</span>
-              <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12.2a1 1 0 0 1-1 .8H7a1 1 0 0 1-1-.8L5 8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-              <span class="pt-header__count" data-cart-count aria-hidden="true" {% if cart.item_count == 0 %}hidden{% endif %}>
-                {%- if cart.item_count < 100 -%}{{ cart.item_count }}{%- else -%}99+{%- endif -%}
-              </span>
-              <span class="visually-hidden" data-cart-count-label>{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
-            </a>
+            <div class="pt-header__cart"{% if s.cart_preview %} data-minicart{% endif %}>
+              <a href="{{ routes.cart_url }}" class="pt-header__icon pt-header__icon--cart" data-cart-link>
+                <span class="visually-hidden">{{ cart_label }}</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12.2a1 1 0 0 1-1 .8H7a1 1 0 0 1-1-.8L5 8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                <span class="pt-header__count" data-cart-count aria-hidden="true" {% if cart.item_count == 0 %}hidden{% endif %}>
+                  {%- if cart.item_count < 100 -%}{{ cart.item_count }}{%- else -%}99+{%- endif -%}
+                </span>
+                <span class="visually-hidden" data-cart-count-label>{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+              </a>
+              {%- if s.cart_preview -%}
+                <div
+                  class="pt-minicart pt-popup-glass"
+                  id="PtMiniCart"
+                  role="region"
+                  aria-label="{{ 'sections.cart.title' | t | escape }}"
+                  data-minicart-panel
+                  data-money-format="{% if settings.currency_code_enabled %}{{ shop.money_with_currency_format | strip_html | escape }}{% else %}{{ shop.money_format | strip_html | escape }}{% endif %}"
+                  data-cart-url="{{ routes.cart_url }}"
+                  data-shop-url="{{ routes.all_products_collection_url }}"
+                  data-title="{{ 'sections.cart.title' | t | escape }}"
+                  data-empty="{{ 'sections.cart.empty' | t | escape }}"
+                  data-count-one="{{ 'sections.header.cart_count' | t: count: 1 | escape }}"
+                  data-count-other="{{ 'sections.header.cart_count' | t: count: 2 | escape }}"
+                  data-total="{{ 'sections.cart.estimated_total' | t | escape }}"
+                  data-view="{{ 'general.cart.view_empty_cart' | t | escape }}"
+                  data-checkout="{{ 'sections.cart.checkout' | t | escape }}"
+                  data-shop="{{ 'general.continue_shopping' | t | escape }}"
+                  data-qty="{{ 'products.product.quantity.label' | t | escape }}"
+                >
+                  <div class="pt-minicart__skeleton"></div>
+                </div>
+              {%- endif -%}
+            </div>
           {%- endif -%}
 
           {%- if s.show_account and shop.customer_accounts_enabled -%}
@@ -1101,6 +1126,14 @@
       "id": "show_cart",
       "label": "Show cart",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_preview",
+      "label": "Show cart preview on hover",
+      "info": "Desktop only. A glass panel lists the cart when shoppers hover the bag; clicking the bag still opens the cart page.",
+      "default": true,
+      "visible_if": "{{ section.settings.show_cart }}"
     },
     {
       "type": "color_scheme",

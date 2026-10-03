@@ -232,8 +232,26 @@ cart-drawer [class*='color-scheme-'] {
 
 /* —— Cart drawer (the cart popup is styled in patelle-header.css) ————————— */
 
+/* The glass surface is .pt-popup-glass in patelle-base.css. The overlay must
+   not get a backdrop-filter or the drawer's own frost stops seeing the page. */
+cart-drawer .drawer {
+  background-color: rgb(10 10 10 / 0.28);
+}
+
 cart-drawer .drawer__inner {
+  border-right: 0;
+  border-radius: var(--pt-popup-radius, 24px) 0 0 var(--pt-popup-radius, 24px);
   font-family: var(--pt-font);
+}
+
+cart-drawer .drawer__footer {
+  background-color: transparent;
+}
+
+cart-drawer .cart-items thead {
+  background-color: rgb(255 255 255 / 0.5);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 cart-drawer .cart-item__image {

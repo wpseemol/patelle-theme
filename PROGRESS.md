@@ -8,7 +8,7 @@ Figma file: [Product Landing Page Design](https://www.figma.com/design/RZhucKZlv
 
 | Page | Template | Figma node | Status | Notes |
 |---|---|---|---|---|
-| Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 160ms; hover-to-expand search field with live results |
+| Header (all pages) | `sections/header-group.json` | — | Done | Glass overlay header on every page; ink colors off the homepage; image-card submenu panels; flyout speed 160ms; hover-to-expand search field with live results; glass cart preview on bag hover and glass added-to-cart popup |
 | Home | `templates/index.json` | 35-30 (hero card), 82-567 / 82-571 (seasonal), 137-587 (single product) | Done | GSAP hero slider, Shop All, Seasonal ×2, Collage, More to Love, Single product, News strip, Brand banner, Quality promise |
 | Shop / collection | `templates/collection.json` | 232-738 | Done | Measured from the Figma presentation view: hero, tile grid with wide cards, why-shop. Needs cut-out bottle photos for the exact look |
 | Product | `templates/product.json` | 117-14 | Built from screenshot, needs Figma check | Reels play in a floating on-page player; product video plays inline. See **Product page to-do** |
@@ -66,17 +66,32 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Check the blog and article pages once a blog post exists (the News blog is empty, so the article cards were not seen).
 - [ ] The 404 page could not be previewed locally (the CLI dev server returns a 502 error). Check it on the live theme. Gift card and password pages use their own layouts and still have the Dawn look.
 - [ ] Shop hero and You May Also Like titles use `rem` sizes, which come out smaller under Dawn's 10px root size. Switch them to px if they look small next to the Figma design.
-- [ ] Finish the merge of `sections/header-group.json` (conflict resolved in the file): `git add sections/header-group.json` then `git commit`, before pushing.
+- [x] Finish the merge of `sections/header-group.json` (committed).
+- [ ] Every product is sold out, so the added-to-cart popup and a filled cart preview were checked with sample data only. Once a product has stock, add it to the cart and check both on the live theme.
 
 ### Known issues (not caused by recent work)
 - [ ] `sections/hero-banner.liquid`: 6 `ImgWidthAndHeight` theme check errors (missing width and height on `<img>`).
-- [ ] `sections/header.liquid`: 52 settings, over Shopify's recommended 40 (warning only).
+- [ ] `sections/header.liquid`: 53 settings, over Shopify's recommended 40 (warning only).
 - [ ] Global settings that still only affect Dawn's own sections (cart, search results, account, blog pages), not the PATÉLLE sections, by design: **Colors** (color schemes), **Buttons**, **Variant pills**, **Inputs**, **Product/Collection/Blog cards**, **Content containers**, **Media**, **Badges**, **Typography → font size scale**, **Layout → Section spacing / Grid spacing**, **Animations**. The PATÉLLE sections take these from their own section settings to match Figma. Wire any of them up if the store owner asks. While **Theme settings → PATÉLLE style → Use PATÉLLE style on Dawn pages** is on, `assets/patelle-dawn.css` also overrides Colors, Buttons, Inputs and card corners on those Dawn pages; turn it off to use the Dawn settings again.
 - [ ] `sections/patelle-product-reels.liquid` is no longer used on the product page (reels moved into Product main). Keep or delete.
 
 ## Work log
 
 ### 2026-10-03
+- Cart and popups:
+  - **Cart preview on hover**: hovering the header bag on desktop opens a glass panel. It lists each cart item (photo with a quantity badge, name, variant, line price) and the estimated total, with **View cart** and **Check out** buttons. When the cart is empty it shows "Your cart is empty" and a **Continue shopping** button.
+  - Clicking the bag still opens the cart page. The panel updates after every add to cart and also opens with keyboard focus; Esc closes it. Phones and tablets keep the plain bag link.
+  - New setting: **Header → Show cart preview on hover** (on).
+  - **Glass popups everywhere**: one popup glass style in `assets/patelle-base.css` (`.pt-popup-glass` and the `--pt-popup-*` tokens: frosted white, 30px blur, light rim, 24px corners). It is used by:
+    - the added-to-cart popup;
+    - the cart preview;
+    - the cart drawer;
+    - Dawn's quick-add and product popup modals;
+    - the country/language list;
+    - the search page filter dropdowns.
+  - The added-to-cart popup was restyled inside: Inter text, black check badge, round close button, product row in a soft glass card, pill **View cart** (glass) and **Check out** (black) buttons, underlined "Continue shopping".
+  - New rule in `AGENTS.md`: every popup uses the glass style.
+  - Files: `sections/header.liquid`, `assets/patelle-header.js`, `assets/patelle-header.css`, `assets/patelle-base.css`, `assets/patelle-dawn.css`, `AGENTS.md`.
 - Shop / collection page rebuilt to match Figma 232-738. The Figma tools still say "no edit access", so sizes were measured in pixels from the Figma presentation view (1440 frame, content 1240px):
   - **Product grid**: new **Tiles** card design (now the default in Shop grid → Card design). White 398 × 394 cards with 16px corners and 24px gaps, 3 columns. Each card has the rating with a gold star at the top left and a round heart button at the top right. The bottle is centered, the name is uppercase, and the price row shows the struck-through compare-at price before the price, with a round bag (add to cart) button at the bottom right. **Wide cards** (new setting, on): the 1st and 6th card of every 7 span two columns with a taller bottle, like Figma. Tablets show 2 columns and phones 2 smaller columns, with the first card of each group full width. Products per page now 14 (range 6–48). Add to cart now uses the cart pop-up instead of reloading the page (`product-form.js` was missing).
   - The card photo uses the product metafield `custom.card_image` (a cut-out bottle) if set, otherwise the featured image. Lifestyle photos show as rounded pictures inside the card.

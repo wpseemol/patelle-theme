@@ -63,6 +63,7 @@
       this.lensObserver?.disconnect();
       clearTimeout(this.openTimer);
       clearTimeout(this.closeTimer);
+      clearTimeout(this.miniTimer);
       document.documentElement.classList.remove('pt-header-locked');
     }
 
@@ -697,27 +698,166 @@
       const count = this.querySelector('[data-cart-count]');
       if (!count) return;
 
-      const refresh = async () => {
-        try {
-          const response = await fetch(`${(window.routes && window.routes.cart_url) || '/cart'}.js`, {
-            headers: { Accept: 'application/json' },
-          });
-          const cart = await response.json();
-          this.setCount(cart.item_count);
-        } catch (error) {
-          /* The count is decorative; the cart page stays the source of truth. */
-        }
+      const refresh = () => {
+        this.cartRequest = null;
+        return this.loadCart();
       };
 
       if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
         this.unsubscribeCart = subscribe(PUB_SUB_EVENTS.cartUpdate, () => {
           this.reveal();
+          this.closeMiniCart(true);
           refresh();
         });
       }
 
       // Restore the count when a page comes back from the back/forward cache.
       window.addEventListener('pageshow', (event) => event.persisted && refresh(), { signal });
+
+      this.bindMiniCart(signal);
+    }
+
+    loadCart() {
+      if (this.cartRequest) return this.cartRequest;
+      this.cartRequest = fetch(`${(window.routes && window.routes.cart_url) || '/cart'}.js`, {
+        headers: { Accept: 'application/json' },
+      })
+        .then((response) => response.json())
+        .then((cart) => {
+          this.cart = cart;
+          this.setCount(cart.item_count);
+          this.renderMiniCart();
+          return cart;
+        })
+        .catch(() => {
+          /* The count is decorative; the cart page stays the source of truth. */
+          this.cartRequest = null;
+        });
+      return this.cartRequest;
+    }
+
+    /* Cart preview --------------------------------------------------------- */
+
+    // Desktop hover (or keyboard focus) on the bag shows a glass summary of
+    // the cart. The bag stays a plain link, so a click still opens the cart.
+    bindMiniCart(signal) {
+      this.miniCart = this.querySelector('[data-minicart]');
+      this.miniPanel = this.miniCart?.querySelector('[data-minicart-panel]');
+      if (!this.miniCart || !this.miniPanel) return;
+
+      const canHover = window.matchMedia('(hover: hover) and (min-width: 990px)');
+      const open = () => {
+        if (!canHover.matches) return;
+        clearTimeout(this.miniTimer);
+        this.loadCart();
+        this.miniTimer = setTimeout(() => {
+          if (this.activeKey) this.closeFlyout();
+          this.miniCart.classList.add('is-preview-open');
+        }, 90);
+      };
+      const close = () => {
+        clearTimeout(this.miniTimer);
+        this.miniTimer = setTimeout(() => this.closeMiniCart(), 180);
+      };
+
+      this.miniCart.addEventListener('pointerenter', open, { signal });
+      this.miniCart.addEventListener('pointerleave', close, { signal });
+      this.miniCart.addEventListener(
+        'focusin',
+        () => {
+          if (this.miniCart.querySelector(':focus-visible')) open();
+        },
+        { signal }
+      );
+      this.miniCart.addEventListener(
+        'focusout',
+        (event) => {
+          if (!this.miniCart.contains(event.relatedTarget)) close();
+        },
+        { signal }
+      );
+      document.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key !== 'Escape' || !this.miniCart.classList.contains('is-preview-open')) return;
+          this.closeMiniCart(true);
+          this.miniCart.querySelector('[data-cart-link]')?.focus();
+        },
+        { signal }
+      );
+    }
+
+    closeMiniCart(instant = false) {
+      if (!this.miniCart) return;
+      clearTimeout(this.miniTimer);
+      this.miniCart.classList.remove('is-preview-open');
+      if (instant) this.miniPanel.style.transition = 'none';
+      requestAnimationFrame(() => {
+        if (this.miniPanel) this.miniPanel.style.transition = '';
+      });
+    }
+
+    renderMiniCart() {
+      const panel = this.miniPanel;
+      const cart = this.cart;
+      if (!panel || !cart) return;
+
+      const labels = panel.dataset;
+      const esc = (value) =>
+        String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+      const money = (cents) => esc(this.formatMoney(cents / 100, labels.moneyFormat));
+      const countLabel = (labels[cart.item_count === 1 ? 'countOne' : 'countOther'] || '').replace(/\d+/, cart.item_count);
+
+      if (!cart.item_count) {
+        panel.innerHTML = `
+          <div class="pt-minicart__head"><p class="pt-minicart__title">${esc(labels.title)}</p></div>
+          <p class="pt-minicart__empty">${esc(labels.empty)}</p>
+          <a class="pt-minicart__btn pt-minicart__btn--dark" href="${esc(labels.shopUrl)}">${esc(labels.shop)}</a>`;
+        return;
+      }
+
+      const items = cart.items
+        .map((item) => {
+          let image = '';
+          if (item.image) {
+            const src = new URL(item.image, window.location.origin);
+            src.searchParams.set('width', '120');
+            image = `<img src="${esc(src.href)}" alt="" width="56" height="56" loading="lazy">`;
+          }
+          const variant = item.product_has_only_default_variant ? '' : item.variant_title;
+          return `
+            <li>
+              <a class="pt-minicart__item" href="${esc(item.url)}">
+                <span class="pt-minicart__media">
+                  ${image}
+                  <span class="pt-minicart__qty"><span class="visually-hidden">${esc(labels.qty)}</span> ${item.quantity}</span>
+                </span>
+                <span>
+                  <span class="pt-minicart__name">${esc(item.product_title)}</span>
+                  ${variant ? `<span class="pt-minicart__variant">${esc(variant)}</span>` : ''}
+                </span>
+                <span class="pt-minicart__price">${money(item.final_line_price)}</span>
+              </a>
+            </li>`;
+        })
+        .join('');
+
+      panel.innerHTML = `
+        <div class="pt-minicart__head">
+          <p class="pt-minicart__title">${esc(labels.title)}</p>
+          <span class="pt-minicart__count">${esc(countLabel)}</span>
+        </div>
+        <ul class="pt-minicart__list" role="list">${items}</ul>
+        <div class="pt-minicart__total">
+          <span>${esc(labels.total)}</span>
+          <strong>${money(cart.total_price)}</strong>
+        </div>
+        <div class="pt-minicart__actions">
+          <a class="pt-minicart__btn" href="${esc(labels.cartUrl)}">${esc(labels.view)}</a>
+          <form action="${esc(labels.cartUrl)}" method="post">
+            <button type="submit" class="pt-minicart__btn pt-minicart__btn--dark" name="checkout">${esc(labels.checkout)}</button>
+          </form>
+        </div>`;
     }
 
     setCount(value) {

@@ -70,6 +70,7 @@
         "menu_card_new": {
           "type": "menu_card",
           "settings": {
+            "menu_position": "2",
             "menu_item": "Shop",
             "heading": "New Arrivals",
             "link": "/collections/all"
@@ -78,6 +79,7 @@
         "menu_card_best": {
           "type": "menu_card",
           "settings": {
+            "menu_position": "2",
             "menu_item": "Shop",
             "heading": "Best Sellers",
             "link": "/collections/all"
@@ -86,6 +88,7 @@
         "menu_card_gift": {
           "type": "menu_card",
           "settings": {
+            "menu_position": "2",
             "menu_item": "Shop",
             "heading": "Gift Sets",
             "link": "/collections/all"

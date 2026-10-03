@@ -43,7 +43,7 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 - [ ] Compare with Figma node 143-696 once Figma access works (spacing and exact text).
 
 ### Header to-do
-- [ ] Theme editor → Header → the 3 **Menu image card** blocks: upload an image (or pick a collection) and set the link for New Arrivals, Best Sellers and Gift Sets (links point to `/collections/all` for now). Add cards for other menu items by typing their name in **Menu item**.
+- [ ] Theme editor → Header → the 3 **Menu image card** blocks: upload an image (or pick a collection) and set the link for New Arrivals, Best Sellers and Gift Sets (links point to `/collections/all` for now). Add cards for other menu items with **Show under menu item**.
 - [ ] Shopify admin: create the Men, Unisex, Best Sellers, New Arrivals and Gift Sets collections and link them in the main menu (most Shop submenu links are `#` now). "New Arrivels" in the menu is misspelled.
 - [ ] Fine-tune **Header → Open and close speed** in the theme editor if 160ms feels too quick or too slow.
 - [ ] Live search: Shopify returns "Vanila Rebal" for every search term, even nonsense words. Check **Search & Discovery** app → product boosts or synonyms in Shopify admin and remove the rule that pins it. Vanila Rebal also shows a price of $0.00; set its price.
@@ -61,6 +61,8 @@ Status values: **Not started**, **In progress**, **Built from screenshot, needs 
 ## Work log
 
 ### 2026-10-03
+- Menu image card: **Show under menu item** is now a dropdown (Every menu item with a dropdown, 1st–8th menu item, or Match by name). The name field only shows with "Match by name". The 3 sample cards use 2nd menu item (Shop) (`sections/header.liquid`, `sections/header-group.json`).
+- Header over the homepage hero: the script now finds the hero section on every scroll update and after theme editor section changes, instead of once at page load. Before, editing or moving sections in the theme editor could leave the text in the wrong color (white over light content, or dark over the hero) until a reload (`assets/patelle-header.js`).
 - Theme settings fixes (audit of global settings against the PATÉLLE sections):
   - **Layout → Page width** now sets the width of every PATÉLLE section (`--pt-max` in `assets/patelle-base.css`, fed from `layout/theme.liquid`). Shop, About, Product, Contact and the homepage single product section keep their narrower design widths as a share of the page width. The header got **Match page width** (on by default) so the logo and icons line up with the content; turn it off to use the header's own **Content width**. Tested at 1400px and 1000px.
   - **Typography → PATÉLLE sections font** (new): Inter (design, default), or the theme's Body or Heading font. Inter is only loaded when it is used.

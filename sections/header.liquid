@@ -301,10 +301,12 @@
           {%- for link in main_menu.links -%}
             {%- if link.links.size > 0 -%}
               {%- liquid
-                # Cards come from "Menu image card" blocks whose menu item name
-                # matches this link. Without blocks, collection and product
-                # links in the submenu supply their featured images.
+                # Cards come from "Menu image card" blocks set to this menu
+                # item's position (or name, or every dropdown). Without blocks,
+                # collection and product links in the submenu supply their
+                # featured images.
                 assign item_key = link.title | downcase | strip
+                assign menu_index = forloop.index | append: ''
                 assign card_count = 0
                 assign card_start = link.links.size | plus: 1
               -%}
@@ -312,8 +314,13 @@
                 {%- if s.flyout_style == 'images' -%}
                   {%- for block in section.blocks -%}
                     {%- liquid
-                      assign card_key = block.settings.menu_item | downcase | strip
-                      if card_key != item_key and card_key != link.handle
+                      assign card_target = block.settings.menu_position | default: 'name'
+                      if card_target == 'name'
+                        assign card_key = block.settings.menu_item | downcase | strip
+                        if card_key != item_key and card_key != link.handle
+                          continue
+                        endif
+                      elsif card_target != 'all' and card_target != menu_index
                         continue
                       endif
                       if card_count >= s.flyout_card_limit
@@ -1109,11 +1116,61 @@
       "limit": 16,
       "settings": [
         {
+          "type": "select",
+          "id": "menu_position",
+          "label": "Show under menu item",
+          "info": "Count the main menu from the left, Home included. Only items with a dropdown show cards.",
+          "options": [
+            {
+              "value": "all",
+              "label": "Every menu item with a dropdown"
+            },
+            {
+              "value": "1",
+              "label": "1st menu item"
+            },
+            {
+              "value": "2",
+              "label": "2nd menu item"
+            },
+            {
+              "value": "3",
+              "label": "3rd menu item"
+            },
+            {
+              "value": "4",
+              "label": "4th menu item"
+            },
+            {
+              "value": "5",
+              "label": "5th menu item"
+            },
+            {
+              "value": "6",
+              "label": "6th menu item"
+            },
+            {
+              "value": "7",
+              "label": "7th menu item"
+            },
+            {
+              "value": "8",
+              "label": "8th menu item"
+            },
+            {
+              "value": "name",
+              "label": "Match by name (type below)"
+            }
+          ],
+          "default": "2"
+        },
+        {
           "type": "text",
           "id": "menu_item",
-          "label": "Menu item",
-          "info": "Name of the top menu item this card shows under, like Shop.",
-          "default": "Shop"
+          "label": "Menu item name",
+          "info": "Exact name of the top menu item, like Shop. Keeps working if the menu order changes.",
+          "default": "Shop",
+          "visible_if": "{{ block.settings.menu_position == 'name' }}"
         },
         {
           "type": "collection",

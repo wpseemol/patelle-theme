@@ -150,9 +150,7 @@
     bindScroll(signal) {
       let ticking = false;
       const heroOffset = Number(this.dataset.heroOffset);
-      const hero = this.dataset.heroOffset
-        ? document.querySelector('main .shopify-section, #MainContent > *')
-        : null;
+      const watchHero = Boolean(this.dataset.heroOffset);
 
       const update = () => {
         ticking = false;
@@ -160,8 +158,10 @@
         this.classList.toggle('is-scrolled', y > 8);
 
         // The header text flips to ink once the hero no longer sits behind the bar.
-        if (hero) {
-          this.classList.toggle('is-past-hero', hero.getBoundingClientRect().bottom <= heroOffset);
+        // Looked up on every update: the theme editor replaces and reorders sections.
+        if (watchHero) {
+          const hero = document.querySelector('main .shopify-section, #MainContent > *');
+          this.classList.toggle('is-past-hero', !hero || hero.getBoundingClientRect().bottom <= heroOffset);
         }
 
         if (this.sticky === 'reveal') {
@@ -185,7 +185,12 @@
         },
         { passive: true, signal }
       );
-      if (hero) window.addEventListener('resize', update, { passive: true, signal });
+      if (watchHero) {
+        window.addEventListener('resize', update, { passive: true, signal });
+        ['shopify:section:load', 'shopify:section:unload', 'shopify:section:reorder'].forEach((type) =>
+          document.addEventListener(type, () => requestAnimationFrame(update), { signal })
+        );
+      }
       update();
     }
 
